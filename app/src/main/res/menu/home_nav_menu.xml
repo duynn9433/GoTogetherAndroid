@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/home_menu_search"
+        android:title="Search"
+        android:icon="@drawable/search_icon" />
+    <item android:id="@+id/home_menu_publish"
+        android:title="Publish"
+        android:icon="@drawable/publish_icon" />
+    <item android:id="@+id/home_menu_your_rides"
+        android:title="Your rides"
+        android:icon="@drawable/your_ride_icon" />
+    <item android:id="@+id/home_menu_chat"
+        android:title="Chat"
+        android:icon="@drawable/chat_icon" />
+    <item android:id="@+id/home_menu_profile"
+        android:title="Profile"
+        android:icon="@drawable/profile_icon" />
+</menu>
