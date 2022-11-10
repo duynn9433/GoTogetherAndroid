@@ -18,4 +18,28 @@
     <string name="find_place">Tìm kiếm địa điểm</string>
     <string name="date">Date</string>
     <string name="_0">0</string>
+    <string name="input_license_plate">Nhập biển số xe</string>
+    <string name="description">Mô tả</string>
+    <string name="transport_name">Nhập tên phương tiện</string>
+    <string name="add">Add</string>
+    <string name="publish_route">Publish route</string>
+    <string name="back">Quay lại</string>
+
+    <string-array name="planets_array">
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+    </string-array>
+
+    <string-array name="transport_array">
+        <item>Car</item>
+        <item>Bus</item>
+        <item>Bike</item>
+        <item>Motorbike</item>
+    </string-array>
 </resources>

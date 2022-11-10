@@ -1,5 +1,6 @@
 package duynn.gotogether.ui_layer.activity.publish_route;
 
+import android.widget.AdapterView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -17,16 +18,23 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Objects;
 
 import duynn.gotogether.R;
 import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.GoongPlaceDetailResult;
 import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Place;
+import duynn.gotogether.data_layer.model.model.Client;
+import duynn.gotogether.data_layer.model.model.Transport;
+import duynn.gotogether.data_layer.model.model.TransportWithoutOwner;
 import duynn.gotogether.data_layer.model.model.Trip;
+import duynn.gotogether.data_layer.repository.SessionManager;
 import duynn.gotogether.databinding.ActivityPublishBinding;
 import duynn.gotogether.domain_layer.common.Constants;
 import duynn.gotogether.ui_layer.activity.get_place_goong.GetPlaceGoongActivity;
+import duynn.gotogether.ui_layer.adapter.TransportSpinnerAdapter;
 
 public class PublishActivity extends AppCompatActivity {
 
@@ -51,9 +59,32 @@ public class PublishActivity extends AppCompatActivity {
         initPublishButton();
 
         initPassengerNumberAndPrice();
+        initTransportSpinner();
 
         observerViewModel();
 
+    }
+
+    private void initTransportSpinner() {
+        Client client = SessionManager.getInstance(this).getClient();
+        List<TransportWithoutOwner> transportList = client.getTransports();
+        TransportSpinnerAdapter transportSpinnerAdapter = new TransportSpinnerAdapter(transportList,this);
+        binding.transportSpinner.setAdapter(transportSpinnerAdapter);
+        binding.transportSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                TransportWithoutOwner transport = transportList.get(position);
+                Trip trip = publishViewModel.getTripMutableLiveData().getValue();
+                assert trip != null;
+                trip.setTransport(transport);
+                publishViewModel.getTripMutableLiveData().setValue(trip);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private void initPassengerNumberAndPrice() {
@@ -108,10 +139,21 @@ public class PublishActivity extends AppCompatActivity {
             binding.endPoint.setText(trip.getEndPlace().getFormattedAddress());
 
             binding.startDate.setText(
-                    new SimpleDateFormat("dd-MM-yyyy   HH:mm")
+                    new SimpleDateFormat("dd-MM-yyyy  HH:mm")
                             .format(trip.getStartTime().getTime()));
             binding.emptySeat.setText(trip.getEmptySeat().toString());
             binding.pricePerKm.setText(trip.getPricePerKm().toString());
+        });
+
+        publishViewModel.getStatus().observe(this, status -> {
+            if(status != ""){
+                if (Objects.equals(status, Constants.SUCCESS)) {
+                    Toast.makeText(this, "Đăng thành công", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else if (Objects.equals(status, Constants.FAIL)) {
+                    Toast.makeText(this, "Đăng thất bại", Toast.LENGTH_SHORT).show();
+                }
+            }
         });
     }
 
@@ -256,7 +298,7 @@ public class PublishActivity extends AppCompatActivity {
                 Toast.makeText(this, "Please choose price per km", Toast.LENGTH_SHORT).show();
                 return;
             }
-            publishViewModel.publishTrip();
+            publishViewModel.publishTrip(this);
             Log.d(TAG, "initPublishButton: " + publishViewModel.tripMutableLiveData.getValue().toString());
         });
     }

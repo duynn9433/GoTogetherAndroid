@@ -3,9 +3,6 @@
     <item android:id="@+id/home_menu_search"
         android:title="Search"
         android:icon="@drawable/search_icon" />
-    <item android:id="@+id/home_menu_publish"
-        android:title="Publish"
-        android:icon="@drawable/publish_icon" />
     <item android:id="@+id/home_menu_your_rides"
         android:title="Your rides"
         android:icon="@drawable/your_ride_icon" />

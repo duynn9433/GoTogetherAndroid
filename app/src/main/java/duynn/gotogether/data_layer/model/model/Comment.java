@@ -1,7 +1,18 @@
 package duynn.gotogether.data_layer.model.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Comment implements Serializable {
     private static final long serialVersionUID = 11L;
 
@@ -11,9 +22,12 @@ public class Comment implements Serializable {
 
     private Integer rating;
 
-    private Client Author;
+    @SerializedName("author")
+    private Client author;
 
-    private Client Receiver;
+    @SerializedName("receiver")
+    private Client receiver;
 
     private Trip trip;
+
 }

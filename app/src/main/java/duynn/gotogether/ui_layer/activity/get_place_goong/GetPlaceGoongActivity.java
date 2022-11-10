@@ -58,6 +58,8 @@ public class GetPlaceGoongActivity extends AppCompatActivity {
 
         initRecyclerView();
         initViewModel();
+
+        binding.searchText.requestFocus();
     }
 
     private void initViewModel() {

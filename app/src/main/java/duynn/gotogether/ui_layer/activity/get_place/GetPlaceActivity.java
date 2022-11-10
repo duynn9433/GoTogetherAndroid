@@ -53,7 +53,6 @@ import org.json.JSONException;
 import java.util.List;
 import duynn.gotogether.BuildConfig;
 import duynn.gotogether.R;
-import duynn.gotogether.data_layer.model.model.Position;
 import duynn.gotogether.data_layer.model.dto.response.GoogleGeocoding.GeocodingResult;
 import duynn.gotogether.databinding.ActivityGetPlaceBinding;
 import duynn.gotogether.domain_layer.PermissionsUseCase;
@@ -110,8 +109,8 @@ public class GetPlaceActivity extends AppCompatActivity implements EasyPermissio
         binding.getPlaceMyLocationBtn.setOnClickListener(v -> {
             Intent intent = new Intent();
             Bundle bundle = new Bundle();
-            Position position = getMyLocation();
-            bundle.putSerializable(Constants.Position, position);
+//            Position position = getMyLocation();
+//            bundle.putSerializable(Constants.Position, position);
             intent.putExtra(Constants.Bundle, bundle);
             setResult(RESULT_OK, intent);
             finish();
@@ -123,38 +122,38 @@ public class GetPlaceActivity extends AppCompatActivity implements EasyPermissio
     }
 
     /**Get current location of device*/
-    @SuppressLint("MissingPermission")
-    private Position getMyLocation() {
-        Position position = new Position();
-        position.setPrimaryAddress("My location");
-        position.setFormattedAddress("My location");
-        position.setFullAddress("My location");
-        if(PermissionsUseCase.hasLocationPermission(this)){
-            Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
-            locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
-                @Override
-                public void onComplete(@NonNull Task<Location> task) {
-                    if (task.isSuccessful()) {
-                        // Set the map's camera position to the current location of the device.
-                        Location lastKnownLocation = task.getResult();
-                        if (lastKnownLocation != null) {
-                            position.setLatitude(lastKnownLocation.getLatitude());
-                            position.setLongitude(lastKnownLocation.getLongitude());
-                        }
-                    } else {
-                        Toast.makeText(GetPlaceActivity.this, "Không thể lấy vị trí của bạn", Toast.LENGTH_SHORT).show();
-                        //default location is Hanoi
-                        position.setLatitude(21.028511);
-                        position.setLongitude(105.804817);
-                        Log.e(TAG, "Exception: %s", task.getException());
-                    }
-                }
-            });
-        }else{
-            PermissionsUseCase.requestLocationPermission(this);
-        }
-        return position;
-    }
+//    @SuppressLint("MissingPermission")
+//    private Position getMyLocation() {
+//        Position position = new Position();
+//        position.setPrimaryAddress("My location");
+//        position.setFormattedAddress("My location");
+//        position.setFullAddress("My location");
+//        if(PermissionsUseCase.hasLocationPermission(this)){
+//            Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
+//            locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
+//                @Override
+//                public void onComplete(@NonNull Task<Location> task) {
+//                    if (task.isSuccessful()) {
+//                        // Set the map's camera position to the current location of the device.
+//                        Location lastKnownLocation = task.getResult();
+//                        if (lastKnownLocation != null) {
+//                            position.setLatitude(lastKnownLocation.getLatitude());
+//                            position.setLongitude(lastKnownLocation.getLongitude());
+//                        }
+//                    } else {
+//                        Toast.makeText(GetPlaceActivity.this, "Không thể lấy vị trí của bạn", Toast.LENGTH_SHORT).show();
+//                        //default location is Hanoi
+//                        position.setLatitude(21.028511);
+//                        position.setLongitude(105.804817);
+//                        Log.e(TAG, "Exception: %s", task.getException());
+//                    }
+//                }
+//            });
+//        }else{
+//            PermissionsUseCase.requestLocationPermission(this);
+//        }
+//        return position;
+//    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -179,27 +178,27 @@ public class GetPlaceActivity extends AppCompatActivity implements EasyPermissio
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        /**Get location from map*/
-        if(requestCode == Constants.GET_LOCATION_FROM_MAP_GET_PLACE){
-            if(resultCode == RESULT_OK){
-                //get data
-                Bundle bundle = data.getBundleExtra(Constants.Bundle);
-                Position position = (Position) bundle.getSerializable(Constants.Position);
-                //send data
-                Intent intent = new Intent();
-                Bundle bundle1 = new Bundle();
-                bundle1.putSerializable(Constants.Position, position);
-                intent.putExtra(Constants.Bundle, bundle1);
-                setResult(RESULT_OK, intent);
-                finish();
-            }else{
-                Toast.makeText(this, "Không thể lấy vị trí ", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        /**Get location from map*/
+//        if(requestCode == Constants.GET_LOCATION_FROM_MAP_GET_PLACE){
+//            if(resultCode == RESULT_OK){
+//                //get data
+//                Bundle bundle = data.getBundleExtra(Constants.Bundle);
+//                Position position = (Position) bundle.getSerializable(Constants.Position);
+//                //send data
+//                Intent intent = new Intent();
+//                Bundle bundle1 = new Bundle();
+//                bundle1.putSerializable(Constants.Position, position);
+//                intent.putExtra(Constants.Bundle, bundle1);
+//                setResult(RESULT_OK, intent);
+//                finish();
+//            }else{
+//                Toast.makeText(this, "Không thể lấy vị trí ", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//    }
 
     /**Create recyclerview*/
     private void initRecyclerView() {
@@ -216,7 +215,7 @@ public class GetPlaceActivity extends AppCompatActivity implements EasyPermissio
         placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
             Place place = response.getPlace();
             Log.i(TAG, "Place found: " + place);
-            displayDialog(placePrediction,place);
+//            displayDialog(placePrediction,place);
 //            Position position = new Position();
 //            position.setPrimaryAddress(place.getName());
 //            position.setFormattedAddress(place.getAddress());
@@ -279,35 +278,35 @@ public class GetPlaceActivity extends AppCompatActivity implements EasyPermissio
         queue.add(request);
     }
 
-    private void displayDialog(AutocompletePrediction placePrediction, Place place) {
-        Log.d(TAG, "displayDialog: " + place.toString());
-        new AlertDialog.Builder(this)
-                .setTitle(placePrediction.getPrimaryText(null))
-                .setMessage("Geocoding result:\n" + place.getLatLng().toString())
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent();
-                        Bundle bundle = new Bundle();
-                        Position position = new Position();
-                        position.setLatitude(place.getLatLng().latitude);
-                        position.setLongitude(place.getLatLng().longitude);
-                        position.setFormattedAddress(place.getAddress());
-                        position.setFullAddress(placePrediction.getFullText(null).toString());
-                        position.setPrimaryAddress(placePrediction.getPrimaryText(null).toString());
-                        bundle.putSerializable(Constants.Position, position);
-
-//                        result.formattedAddress = placePrediction.getPrimaryText(null).toString();
-//                        bundle.putSerializable(Constants.GeocodingResult, (Serializable) result);
-
-                        intent.putExtra(Constants.Bundle, bundle);
-                        setResult(RESULT_OK, intent);
-                        finish();
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, null)
-                .show();
-    }
+//    private void displayDialog(AutocompletePrediction placePrediction, Place place) {
+//        Log.d(TAG, "displayDialog: " + place.toString());
+//        new AlertDialog.Builder(this)
+//                .setTitle(placePrediction.getPrimaryText(null))
+//                .setMessage("Geocoding result:\n" + place.getLatLng().toString())
+//                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        Intent intent = new Intent();
+//                        Bundle bundle = new Bundle();
+//                        Position position = new Position();
+//                        position.setLatitude(place.getLatLng().latitude);
+//                        position.setLongitude(place.getLatLng().longitude);
+//                        position.setFormattedAddress(place.getAddress());
+//                        position.setFullAddress(placePrediction.getFullText(null).toString());
+//                        position.setPrimaryAddress(placePrediction.getPrimaryText(null).toString());
+//                        bundle.putSerializable(Constants.Position, position);
+//
+////                        result.formattedAddress = placePrediction.getPrimaryText(null).toString();
+////                        bundle.putSerializable(Constants.GeocodingResult, (Serializable) result);
+//
+//                        intent.putExtra(Constants.Bundle, bundle);
+//                        setResult(RESULT_OK, intent);
+//                        finish();
+//                    }
+//                })
+//                .setNegativeButton(android.R.string.cancel, null)
+//                .show();
+//    }
 
     /**Create menu*/
     @Override

@@ -32,7 +32,6 @@ import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import duynn.gotogether.R;
-import duynn.gotogether.data_layer.model.model.Position;
 import duynn.gotogether.databinding.ActivityGetDirectionMapsBinding;
 import duynn.gotogether.domain_layer.common.Constants;
 import duynn.gotogether.ui_layer.activity.get_place.GetPlaceActivity;
@@ -100,7 +99,7 @@ public class GetDirectionMapsActivity extends FragmentActivity implements OnMapR
         onClickStartAndEndEditText();
 
         tripViewModel = new ViewModelProvider(this).get(TripViewModel.class);
-        observeTripViewModel();
+//        observeTripViewModel();
     }
 
     private void onClickStartAndEndEditText() {
@@ -121,39 +120,39 @@ public class GetDirectionMapsActivity extends FragmentActivity implements OnMapR
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == Constants.GET_START_POINT && resultCode == RESULT_OK) {
-            Position position = (Position) data.getBundleExtra(Constants.Bundle).get(Constants.Position);
-//            GeocodingResult result = (GeocodingResult) data
-//                    .getBundleExtra(Constants.Bundle)
-//                    .get(Constants.GeocodingResult);
-            tripViewModel.setStartLocation(position);
-            Log.d(TAG, "onActivityResult: " + position.getFullAddress());
-        } else if (requestCode == Constants.GET_END_POINT && resultCode == RESULT_OK) {
-            Position position = (Position) data.getBundleExtra(Constants.Bundle).get(Constants.Position);
-//            GeocodingResult result = (GeocodingResult) data
-//                    .getBundleExtra(Constants.Bundle)
-//                    .get(Constants.GeocodingResult);
-            tripViewModel.setEndLocation(position);
-            Log.d(TAG, "onActivityResult: " + position.getFullAddress());
-        }
-    }
-
-    private void observeTripViewModel() {
-        tripViewModel.getStartLocation().observe(this, startLocation -> {
-            if (startLocation != null) {
-                binding.startPointGetDirection.setText(startLocation.getPrimaryAddress());
-            }
-        });
-        tripViewModel.getEndLocation().observe(this, endLocation -> {
-            if (endLocation != null) {
-                binding.endPointGetDirection.setText(endLocation.getPrimaryAddress());
-            }
-        });
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if (requestCode == Constants.GET_START_POINT && resultCode == RESULT_OK) {
+//            Position position = (Position) data.getBundleExtra(Constants.Bundle).get(Constants.Position);
+////            GeocodingResult result = (GeocodingResult) data
+////                    .getBundleExtra(Constants.Bundle)
+////                    .get(Constants.GeocodingResult);
+//            tripViewModel.setStartLocation(position);
+//            Log.d(TAG, "onActivityResult: " + position.getFullAddress());
+//        } else if (requestCode == Constants.GET_END_POINT && resultCode == RESULT_OK) {
+//            Position position = (Position) data.getBundleExtra(Constants.Bundle).get(Constants.Position);
+////            GeocodingResult result = (GeocodingResult) data
+////                    .getBundleExtra(Constants.Bundle)
+////                    .get(Constants.GeocodingResult);
+//            tripViewModel.setEndLocation(position);
+//            Log.d(TAG, "onActivityResult: " + position.getFullAddress());
+//        }
+//    }
+//
+//    private void observeTripViewModel() {
+//        tripViewModel.getStartLocation().observe(this, startLocation -> {
+//            if (startLocation != null) {
+//                binding.startPointGetDirection.setText(startLocation.getPrimaryAddress());
+//            }
+//        });
+//        tripViewModel.getEndLocation().observe(this, endLocation -> {
+//            if (endLocation != null) {
+//                binding.endPointGetDirection.setText(endLocation.getPrimaryAddress());
+//            }
+//        });
+//    }
 
     private void startLocationChange() {
         startLocation.setOnEditorActionListener(new TextView.OnEditorActionListener() {

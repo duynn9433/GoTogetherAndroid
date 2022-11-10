@@ -2,9 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <data>
-        <variable
-            name="accountViewModel"
-            type="duynn.gotogether.ui_layer.state_holders.view_model.AccountViewModel" />
+
     </data>
 
     <LinearLayout
@@ -13,22 +11,35 @@
         android:orientation="vertical"
         android:padding="16dp"
         android:gravity="center"
-        tools:context=".ui_layer.activity.login.LoginActivity">
+        tools:context=".ui_layer.activity.authen.LoginActivity">
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@={accountViewModel.username}"
+            android:id="@+id/username"
             android:hint="Username"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@={accountViewModel.password}"
+            android:id="@+id/password"
             android:hint="Password"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="@{() -> accountViewModel.onCLickLogin()}"
-            android:text="Login"/>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center">
+            <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btn_login"
+                    android:layout_marginRight="50dp"
+                    android:text="Login"/>
+            <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btn_register"
+                    android:text="Register"/>
+        </LinearLayout>
+
 
     </LinearLayout>
 

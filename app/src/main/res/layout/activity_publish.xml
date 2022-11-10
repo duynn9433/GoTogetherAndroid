@@ -67,17 +67,46 @@
                     android:drawableLeft="@drawable/person_icon"/>
             </LinearLayout>
             <EditText
-                android:id="@+id/price_per_km"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="16dp"
-                android:gravity="center|left"
-                android:textSize="20sp"
-                android:ems="10"
-                android:inputType="none"
-                android:textColor="@color/black"
-                android:background="@drawable/white_border"
-                android:hint="@string/price_per_km" />
+                    android:id="@+id/price_per_km"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center|left"
+                    android:textSize="20sp"
+                    android:ems="10"
+                    android:inputType="none"
+                    android:textColor="@color/black"
+                    android:background="@drawable/white_border"
+                    android:hint="@string/price_per_km" />
+            <EditText
+                    android:id="@+id/description"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center|left"
+                    android:textSize="20sp"
+                    android:ems="10"
+                    android:inputType="none"
+                    android:textColor="@color/black"
+                    android:background="@drawable/white_border"
+                    android:hint="Description" />
+
+<!--            <Spinner-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:id="@+id/transport1"-->
+<!--                    android:entries="@array/transport_array"-->
+<!--                    android:background="@drawable/white_border"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:minHeight="48dp"/>-->
+            <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/transport_spinner"
+                    android:background="@drawable/white_border"
+                    android:layout_marginTop="16dp"
+                    android:minHeight="48dp"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

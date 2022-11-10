@@ -13,13 +13,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="10dp">
-            <EditText
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Leaving from"
                 android:drawableLeft="@drawable/location_icon"
                 android:id="@+id/search_leaving_from_edit_text"/>
-            <EditText
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Going to"

@@ -14,6 +14,7 @@ import java.util.List;
 import duynn.gotogether.databinding.ActivityPermissionBinding;
 import duynn.gotogether.domain_layer.PermissionsUseCase;
 import duynn.gotogether.ui_layer.activity.execute_route.TrackingMapsActivity;
+import duynn.gotogether.ui_layer.activity.home.HomeActivity;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -29,10 +30,17 @@ public class PermissionActivity extends AppCompatActivity implements EasyPermiss
         binding = ActivityPermissionBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        if(PermissionsUseCase.hasLocationPermission(this)){
+            Intent intent = new Intent(this, HomeActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
         binding.btnAgreePermission.setOnClickListener(v -> {
             if(PermissionsUseCase.hasLocationPermission(this)){
                 //TODO: custom tracking && get direction
-                Intent intent = new Intent(this, TrackingMapsActivity.class);
+//                Intent intent = new Intent(this, TrackingMapsActivity.class);
+                Intent intent = new Intent(this, HomeActivity.class);
                 startActivity(intent);
                 finish();
             }else{
@@ -50,7 +58,8 @@ public class PermissionActivity extends AppCompatActivity implements EasyPermiss
     @Override
     public void onPermissionsGranted(int requestCode, @NonNull List<String> perms) {
         //TODO: custom tracking && get direction
-        Intent intent = new Intent(this, TrackingMapsActivity.class);
+//        Intent intent = new Intent(this, TrackingMapsActivity.class);
+        Intent intent = new Intent(this, HomeActivity.class);
         startActivity(intent);
         finish();
     }

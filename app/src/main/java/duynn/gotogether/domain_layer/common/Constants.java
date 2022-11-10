@@ -14,6 +14,9 @@ public class Constants {
     public static final int START_LOCATION_REQUEST_CODE = 6;
     public static final int END_LOCATION_REQUEST_CODE = 7;
     public static final int STOP_LOCATION_REQUEST_CODE = 8;
+    public static final int ADD_TRANSPORT_REQUEST_CODE = 9;
+    public static final int GET_START_PLACE_FROM_SEARCH_REQUEST_CODE = 10;
+    public static final int GET_END_PLACE_FROM_SEARCH_REQUEST_CODE = 11;
 
     public static final String ACTION_SERVICE_START = "ACTION_SERVICE_START";
     public static final String ACTION_SERVICE_STOP = "ACTION_SERVICE_STOP";
@@ -42,6 +45,7 @@ public class Constants {
     public static final String Bundle = "Bundle";
     public static final String GeocodingResult = "GeocodingResult";
     public static final String Position = "Position";
+    public static final String TRANSPORT = "Transport";
     public static final String GOONG_PLACE_DETAIL_RESULT = "GOONG_PLACE_DETAIL_RESULT";
 
     //for get place activity
@@ -52,6 +56,16 @@ public class Constants {
             Place.Field.LAT_LNG);
 
 
+    //status
+    public static final String SUCCESS = "Success";
+    public static final String FAIL = "Fail";
+    public static final String UNAUTHORIZED = "UNAUTHORIZED";
 
+
+    public static final String EMAIL_REGEX = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+    public static final String PHONE_REGEX = "(84|0[3|5|7|8|9])+([0-9]{8})\\b";
+
+
+    public static String Trips = "TRIPS";
 }
 
