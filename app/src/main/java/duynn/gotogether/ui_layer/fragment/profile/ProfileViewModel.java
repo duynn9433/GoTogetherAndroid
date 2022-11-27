@@ -18,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 
 @Getter
 public class ProfileViewModel extends AndroidViewModel {
-    // TODO: Implement the ViewModel
     private MutableLiveData<Client> client;
     private SessionManager sessionManager;
     private ClientRepo clientRepo;
@@ -33,8 +32,8 @@ public class ProfileViewModel extends AndroidViewModel {
         status.setValue(new Status());
         sessionManager = SessionManager.getInstance(application);
         clientRepo = ClientRepo.getInstance(sessionManager.getToken());
-        User user = sessionManager.getUser();
-        getClientWithId(user.getId());
+        Client client = sessionManager.getClient();
+        getClientWithId(client.getId());
     }
 
     private void getClientWithId(Long id) {
@@ -43,5 +42,9 @@ public class ProfileViewModel extends AndroidViewModel {
 
     public void addTransport(Transport transport) {
         clientRepo.addTransport(transport, status, client);
+    }
+
+    public void logout() {
+        sessionManager.logout();
     }
 }

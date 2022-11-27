@@ -25,7 +25,7 @@ public class ClientTrip implements Serializable {
     private Place pickUpPlace;
 
     @SerializedName("dropoff_place")
-    private Place dropOffplace;
+    private Place dropOffPlace;
 
     @SerializedName("pickup_time")
     private Calendar pickUpTime;

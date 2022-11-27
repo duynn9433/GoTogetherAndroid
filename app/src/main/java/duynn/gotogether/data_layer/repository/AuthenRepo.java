@@ -7,6 +7,7 @@ import duynn.gotogether.data_layer.model.dto.request.Authen.LoginReq;
 import duynn.gotogether.data_layer.model.dto.response.Authen.LoginResp;
 import duynn.gotogether.data_layer.model.dto.response.Authen.RegisterRes;
 import duynn.gotogether.data_layer.model.model.Client;
+import duynn.gotogether.data_layer.model.model.Status;
 import duynn.gotogether.data_layer.model.model.User;
 import duynn.gotogether.data_layer.retrofit_client.RetrofitClient;
 import duynn.gotogether.data_layer.service.AuthenService;
@@ -14,6 +15,8 @@ import duynn.gotogether.domain_layer.common.Constants;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import java.util.Stack;
 
 public class AuthenRepo {
     public static final String TAG = AuthenRepo.class.getSimpleName();
@@ -116,5 +119,30 @@ public class AuthenRepo {
             }
         });
 
+    }
+
+    public void checkLogin(MutableLiveData<String> status) {
+        Call<Status> call = authenService.checkLogin();
+        call.enqueue(new Callback<Status>() {
+            @Override
+            public void onResponse(Call<Status> call, Response<Status> response) {
+                if (response.isSuccessful()) {
+//                    Log.d(TAG, "onResponse1: " + response.body().toString());
+                    status.setValue(Constants.SUCCESS);
+                } else if (response.code() == 401) {
+//                    Log.d(TAG, "onResponse2: " + response.message());
+                    status.setValue(Constants.UNAUTHORIZED);
+                } else{
+//                    Log.d(TAG, "onResponse3: " + response.message());
+                    status.setValue(Constants.FAIL);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Status> call, Throwable t) {
+                status.setValue(Constants.FAIL);
+//                Log.d(TAG, "onFailure: " + t.getMessage());
+            }
+        });
     }
 }

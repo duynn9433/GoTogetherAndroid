@@ -6,6 +6,8 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
@@ -16,16 +18,19 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
 import duynn.gotogether.R;
+import duynn.gotogether.data_layer.repository.FirebaseMessageRepo;
+import duynn.gotogether.data_layer.repository.SessionManager;
 import duynn.gotogether.databinding.ActivityHomeBinding;
 import duynn.gotogether.ui_layer.activity.publish_route.PublishActivity;
 
 public class HomeActivity extends AppCompatActivity {
+    HomeActivityViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
+        viewModel = new ViewModelProvider(this).get(HomeActivityViewModel.class);
         ActivityHomeBinding activityHomeBinding = DataBindingUtil.setContentView(this, R.layout.activity_home);
         BottomNavigationView bottomNavigationView = activityHomeBinding.homeBottomNavigationView;
 
@@ -50,13 +55,13 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 switch (position) {
-                    case 2:
+                    case 1:
                         bottomNavigationView.setSelectedItemId(R.id.home_menu_your_rides);
                         break;
-                    case 3:
+                    case 2:
                         bottomNavigationView.setSelectedItemId(R.id.home_menu_chat);
                         break;
-                    case 4:
+                    case 3:
                         bottomNavigationView.setSelectedItemId(R.id.home_menu_profile);
                         break;
                     default:
@@ -79,16 +84,30 @@ public class HomeActivity extends AppCompatActivity {
                     activityHomeBinding.homeViewPager.setCurrentItem(0);
                     break;
                 case R.id.home_menu_your_rides:
-                    activityHomeBinding.homeViewPager.setCurrentItem(2);
+                    activityHomeBinding.homeViewPager.setCurrentItem(1);
                     break;
                 case R.id.home_menu_chat:
-                    activityHomeBinding.homeViewPager.setCurrentItem(3);
+                    activityHomeBinding.homeViewPager.setCurrentItem(2);
                     break;
                 case R.id.home_menu_profile:
-                    activityHomeBinding.homeViewPager.setCurrentItem(4);
+                    activityHomeBinding.homeViewPager.setCurrentItem(3);
                     break;
             }
             return true;
         });
+
+        viewModel.updateToken();
+        observerData();
+        SessionManager.getInstance(this).clearGeofence();
     }
+
+    private void observerData() {
+        viewModel.getToken().observe(this, token -> {
+            Log.e("fcmtoken", token);
+            //send to client
+            viewModel.sendTokenToServer(token);
+        });
+    }
+
+
 }

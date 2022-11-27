@@ -19,20 +19,12 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_login);
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         authenViewModel = new ViewModelProvider(this).get(AuthenViewModel.class);
-
         authenViewModel.checkLogin();
         initButton();
-
         observeViewModel();
-
-
-//        ActivityMainBinding activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-//        AccountViewModel accountViewModel = new AccountViewModel();
-//        activityMainBinding.setAccountViewModel(accountViewModel);
     }
 
     private void initButton() {
@@ -62,7 +54,6 @@ public class LoginActivity extends AppCompatActivity {
         authenViewModel.getStatus().observe(this, status -> {
             switch (status) {
                 case Constants.SUCCESS:
-                    //TODO: go to next activity
                     ToastUseCase.showLongToast(this, "Login success");
                     Intent intent = new Intent(this, PermissionActivity.class);
                     startActivity(intent);

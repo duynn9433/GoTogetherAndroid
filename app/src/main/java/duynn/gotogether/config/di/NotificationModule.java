@@ -31,7 +31,7 @@ public class NotificationModule {
                         new Intent(context, TrackerService.class)
                                 .setAction(Constants.ACTION_NAVIGATE_TO_TRACKER_ACTIVITY)
                 },
-                PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 
     @ServiceScoped

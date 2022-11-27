@@ -1,5 +1,6 @@
 package duynn.gotogether.data_layer.service;
 
+import duynn.gotogether.data_layer.model.dto.firebase.UpdateTokenRequest;
 import duynn.gotogether.data_layer.model.model.Client;
 import duynn.gotogether.data_layer.model.model.Status;
 import duynn.gotogether.data_layer.model.model.Transport;
@@ -15,4 +16,7 @@ public interface ClientService {
 
     @POST("client/{id}/transport")
     Call<Status> addTransport(@Path("id") Long id, @Body Transport transport);
+
+    @POST("updatetoken")
+    Call<Status> updateFcmToken(@Body UpdateTokenRequest updateTokenRequest);
 }

@@ -2,6 +2,7 @@ package duynn.gotogether.domain_layer.common;
 
 import com.google.android.libraries.places.api.model.Place;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,6 +18,8 @@ public class Constants {
     public static final int ADD_TRANSPORT_REQUEST_CODE = 9;
     public static final int GET_START_PLACE_FROM_SEARCH_REQUEST_CODE = 10;
     public static final int GET_END_PLACE_FROM_SEARCH_REQUEST_CODE = 11;
+    public static final int FINISH_TRIP_REQUEST_CODE = 12;
+    public static final int PASSENGER_REQUEST_CODE = 13;
 
     public static final String ACTION_SERVICE_START = "ACTION_SERVICE_START";
     public static final String ACTION_SERVICE_STOP = "ACTION_SERVICE_STOP";
@@ -46,6 +49,35 @@ public class Constants {
     public static final String GeocodingResult = "GeocodingResult";
     public static final String Position = "Position";
     public static final String TRANSPORT = "Transport";
+    public static final String TRIP = "TRIP";
+    public static final String START_TRIP_SUCCESS = "START_TRIP_SUCCESS";
+    public static final String ROLE = "ROLE";
+    public static final String DRIVER = "DRIVER";
+    public static final String LIST_CLIENT_TRIP = "LIST_CLIENT_TRIP";
+    public static final String GOOGLE_MAPS_TRAVEL_MODE_DRIVING = "driving";
+    public static final String GOOGLE_MAPS_TRAVEL_MODE_WALKING = "walking";
+    public static final String GOOGLE_MAPS_TRAVEL_MODE_BICYCLING = "bicycling";
+    public static final String CLIENT_TRIP = "CLIENT_TRIP";
+    public static final String DISTANCE = "DISTANCE";
+    public static final String PRICE = "PRICE";
+    public static final String PASSENGER_NUM = "PASSENGER_NUM";
+    public static final float GEOFENCE_RADIUS = 100;
+
+    public static final String USER_TOKEN = "user_token";
+    public static final String USER_OBJECT = "user_object";
+    public static final String CLIENT_OBJECT = "client_object";
+    public static final String FCM_TOKEN = "fcm_token";
+    public static final String GEOFENCE = "GEOFENCE";
+    public static final String PASSENGER_FINISH_TRIP = "PASSENGER_FINISH_TRIP";
+    public static final String TITLE = "TITLE";
+    public static final String CLIENT_TRIP_ID = "CLIENT_TRIP_ID";
+    public static final String DRIVER_ID = "DRIVER_ID";
+
+    public static final String LAST_DISTANCE = "LAST_DISTANCE";
+    public static final String POSITION = "POSITION";
+    public static final String TIME = "TIME";
+
+    public static String TRIPS = "TRIPS";
     public static final String GOONG_PLACE_DETAIL_RESULT = "GOONG_PLACE_DETAIL_RESULT";
 
     //for get place activity
@@ -65,7 +97,15 @@ public class Constants {
     public static final String EMAIL_REGEX = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
     public static final String PHONE_REGEX = "(84|0[3|5|7|8|9])+([0-9]{8})\\b";
 
+    public static final String SEARCH_TRIP_REQUEST = "SEARCH_TRIP_REQUEST";
+    public static final String FCM_CHANNEL_ID = "FIREBASE_MESSAGE_NOTIFICATION";
+    public static final CharSequence FCM_CHANNEL_NAME = "FIREBASE_MESSAGE_NOTIFICATION_NAME";
 
-    public static String Trips = "TRIPS";
+    //FOR DIRECTION
+    public static String VEHICLE_CAR = "car";
+    public static String VEHICLE_BIKE = "bike";
+    public static String VEHICLE_TAXI = "taxi";
+    public static String VEHICLE_TRUCK = "truck";
+    public static String VEHICLE_HD = "hd"; //(for ride hailing vehicles)
 }
 

@@ -13,7 +13,7 @@
     <string name="drop_location">Drop Location</string>
     <string name="price_per_km">Price Per Km</string>
     <string name="add_stop_location">Add Stop Location</string>
-    <string name="cancel">Cancel</string>
+    <string name="cancel">Huỷ</string>
     <string name="publish">Publish</string>
     <string name="find_place">Tìm kiếm địa điểm</string>
     <string name="date">Date</string>
@@ -24,6 +24,16 @@
     <string name="add">Add</string>
     <string name="publish_route">Publish route</string>
     <string name="back">Quay lại</string>
+    <string name="public_trip">Chuyến đi chia sẻ</string>
+    <string name="regit_trip">Chuyến đi đăng kí</string>
+    <string name="driver_info">Thông tin tài xế</string>
+    <string name="trip_info">Thông chuyến đi</string>
+    <string name="passenger_info">Thông tin hành khách</string>
+    <string name="join_list">Danh sách tham gia</string>
+    <string name="waiting_list">Danh sách chờ duyệt</string>
+    <string name="delete">Delete</string>
+    <string name="regiter_trip">Bạn muốn đăng kí tham gia chuyến đi này chứ?</string>
+    <string name="ok">Đồng ý</string>
 
     <string-array name="planets_array">
         <item>Mercury</item>
@@ -42,4 +52,12 @@
         <item>Bike</item>
         <item>Motorbike</item>
     </string-array>
+    <string name="title_activity_maps_test">MapsTestActivity</string>
+    <string name="logout">Đăng xuất</string>
+    <string name="start_place">Điểm bắt đầu</string>
+    <string name="end_palce">Điểm kết thúc</string>
+    <string name="start_date">Ngày khởi hành</string>
+    <string name="_1">1</string>
+    <string name="comment">Nhận xét</string>
+    <string name="send">Gửi</string>
 </resources>

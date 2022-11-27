@@ -12,7 +12,7 @@ import java.util.Calendar;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SearchTripRequest {
+public class SearchTripRequest implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
 
     private Place startPlace;

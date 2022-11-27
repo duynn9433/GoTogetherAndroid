@@ -28,12 +28,13 @@ public class DistanceUseCase {
     }
 
     public static double calculateDistance(List<LatLng> locationList){
-        if(locationList.size() < 2) return 0;
+        if(locationList == null || locationList.size() < 2) return 0;
         double distance = 0;
         for(int i = 0; i < locationList.size() - 1; i++){
             LatLng location1 = locationList.get(i);
             LatLng location2 = locationList.get(i + 1);
-            distance += calculateDistanceBetweenTwoPoint(location1.latitude, location1.longitude, location2.latitude, location2.longitude);
+            distance+= (SphericalUtil.computeDistanceBetween(location1, location2)/1000); //km
+//            distance += calculateDistanceBetweenTwoPoint(location1.latitude, location1.longitude, location2.latitude, location2.longitude);
         }
 
         return distance;
@@ -46,7 +47,7 @@ public class DistanceUseCase {
         return distance / 1000;
     }
 
-    public static String distanceToString(double distance){
+    public static String formatToString2digitEndPoint(double distance){
         return new DecimalFormat("#.##").format(distance);
     }
 }

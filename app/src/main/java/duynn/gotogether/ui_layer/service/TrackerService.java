@@ -5,10 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.location.Location;
-import android.os.Binder;
-import android.os.Build;
-import android.os.IBinder;
-import android.os.Looper;
+import android.os.*;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -28,24 +25,35 @@ import java.util.List;
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import duynn.gotogether.data_layer.model.model.ClientTrip;
+import duynn.gotogether.data_layer.model.model.Trip;
+import duynn.gotogether.data_layer.repository.SessionManager;
+import duynn.gotogether.data_layer.repository.TripRepo;
 import duynn.gotogether.domain_layer.common.Constants;
+import lombok.Getter;
 
 @AndroidEntryPoint
+@Getter
 public class TrackerService extends LifecycleService {
     @Inject
     NotificationCompat.Builder notification;
-
     @Inject
     NotificationManager notificationManager;
-
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationCallback locationCallback;
-
     private final String TAG = TrackerService.class.getSimpleName();
     private MutableLiveData<Boolean> started;
     private MutableLiveData<Long> startTime;
     private MutableLiveData<Long> endTime;
     private MutableLiveData<List<LatLng>> locationList;
+    private MutableLiveData<duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location>
+            driverLocation;
+    private MutableLiveData<List<duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location>>
+            passengerLocation;
+    private String role;
+    private Trip trip;
+    private SessionManager sessionManager;
+    private TripRepo tripRepo;
 
     // Binder given to clients
     private final IBinder binder = new LocalBinder();
@@ -64,6 +72,14 @@ public class TrackerService extends LifecycleService {
     @Override
     public IBinder onBind(Intent intent) {
         super.onBind(intent);
+        Bundle bundle = intent.getBundleExtra(Constants.Bundle);
+        if (bundle != null) {
+            role = bundle.getString(Constants.ROLE);
+            trip = (Trip) bundle.getSerializable(Constants.TRIP);
+            List<ClientTrip> clientTrips = (List<ClientTrip>) bundle.getSerializable(Constants.LIST_CLIENT_TRIP);
+            Log.d(TAG, "onBind: -trip " + trip);
+            Log.d(TAG, "onBind: -clientTrip " + clientTrips);
+        }
         return binder;
     }
 
@@ -74,7 +90,6 @@ public class TrackerService extends LifecycleService {
     @Override
     public void onCreate() {
         super.onCreate();
-
         started = new MutableLiveData<>();
         startTime = new MutableLiveData<>();
         endTime = new MutableLiveData<>();
@@ -83,25 +98,46 @@ public class TrackerService extends LifecycleService {
         started.postValue(false);
         locationList = new MutableLiveData<>();
         locationList.postValue(new ArrayList<>());
+        sessionManager = SessionManager.getInstance(this);
+        tripRepo = TripRepo.getInstance(sessionManager.getToken());
+        driverLocation = new MutableLiveData<>();
+        passengerLocation = new MutableLiveData<>();
+        passengerLocation.postValue(new ArrayList<>());
+        driverLocation.postValue(new duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location());
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
-        locationCallback = new LocationCallback(){
+        locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
-                for(Location location : locationResult.getLocations()){
+                List<Location> locations = locationResult.getLocations();
+                for (Location location : locations) {
                     updateLocationList(location);
+                    driverLocation.postValue(new duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location(0L,location.getLatitude(), location.getLongitude()));
                     Log.d(TAG, "onLocationResult: " + location.getLatitude() + " " + location.getLongitude());
                 }
+                //TODO: update location to server
+                Location lastLocation = locations.get(locations.size() - 1);
+                duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location location =
+                        duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location
+                                .builder()
+                                .id(trip.getDriver().getLocation().getId())
+                                .lat(lastLocation.getLatitude())
+                                .lng(lastLocation.getLongitude())
+                                .build();
+                tripRepo.updateDriverLocation(
+                        location,
+                        trip.getId(),
+                        sessionManager.getClient().getId(),
+                        passengerLocation);
             }
         };
 
     }
 
-    private void updateLocationList(Location location){
+    private void updateLocationList(Location location) {
         List<LatLng> list = locationList.getValue();
-        if(list == null){
+        if (list == null) {
             list = new ArrayList<>();
         }
         list.add(new LatLng(location.getLatitude(), location.getLongitude()));
@@ -110,17 +146,27 @@ public class TrackerService extends LifecycleService {
 
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
-        if(intent.getAction().equals(Constants.ACTION_SERVICE_START)){
-            Log.d(TAG, "onStartCommand: ACTION_SERVICE_START");
-            started.postValue(true);
-            startForegroundService();
-            startLocationUpdates();
-        }else if(intent.getAction().equals(Constants.ACTION_SERVICE_STOP)){
-            Log.d(TAG, "onStartCommand: ACTION_SERVICE_STOP");
-            started.postValue(false);
-            stopForegroundService();
-        }else{
-            Log.d(TAG, "onStartCommand: else");
+        if (intent != null) {
+            if (intent.getAction().equals(Constants.ACTION_SERVICE_START)) {
+                Bundle bundle = intent.getBundleExtra(Constants.Bundle);
+                if (bundle != null) {
+                    role = bundle.getString(Constants.ROLE);
+                    trip = (Trip) bundle.getSerializable(Constants.TRIP);
+                    List<ClientTrip> clientTrips = (List<ClientTrip>) bundle.getSerializable(Constants.LIST_CLIENT_TRIP);
+//                    Log.d(TAG, "onStartCommand: -trip " + trip);
+//                    Log.d(TAG, "onStartCommand: -clientTrip " + clientTrips);
+                }
+//                Log.d(TAG, "onStartCommand: ACTION_SERVICE_START");
+                started.postValue(true);
+                startForegroundService();
+                startLocationUpdates();
+            } else if (intent.getAction().equals(Constants.ACTION_SERVICE_STOP)) {
+//                Log.d(TAG, "onStartCommand: ACTION_SERVICE_STOP");
+                started.postValue(false);
+                stopForegroundService();
+            } else {
+//                Log.d(TAG, "onStartCommand: else");
+            }
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -139,13 +185,13 @@ public class TrackerService extends LifecycleService {
     }
 
 
-    private void startForegroundService(){
+    private void startForegroundService() {
         createNotificationChanel();
         startForeground(Constants.TRACKER_NOTIFICATION_ID, notification.build());
     }
 
     @SuppressLint("MissingPermission")
-    private void startLocationUpdates(){
+    private void startLocationUpdates() {
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(Constants.LOCATION_UPDATE_INTERVAL);
         locationRequest.setFastestInterval(Constants.LOCATION_UPDATE_FASTEST_INTERVAL);
@@ -159,8 +205,8 @@ public class TrackerService extends LifecycleService {
         startTime.postValue(System.currentTimeMillis());
     }
 
-    private void createNotificationChanel(){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+    private void createNotificationChanel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                     Constants.TRACKER_NOTIFICATION_CHANNEL_ID,
                     Constants.TRACKER_NOTIFICATION_CHANNEL_NAME,

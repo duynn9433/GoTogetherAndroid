@@ -1,6 +1,7 @@
 package duynn.gotogether.data_layer.repository;
 
 import androidx.lifecycle.MutableLiveData;
+import duynn.gotogether.data_layer.model.dto.firebase.UpdateTokenRequest;
 import duynn.gotogether.data_layer.model.model.Client;
 import duynn.gotogether.data_layer.model.model.Status;
 import duynn.gotogether.data_layer.model.model.Transport;
@@ -67,6 +68,26 @@ public class ClientRepo {
             @Override
             public void onFailure(Call<Status> call, Throwable t) {
                 status.setValue(new Status("fail", "add transport fail"));
+                t.printStackTrace();
+            }
+        });
+    }
+
+    public void updateFcmToken(String fcmToken, Long clientId) {
+        UpdateTokenRequest updateTokenRequest = new UpdateTokenRequest(fcmToken, clientId);
+        Call<Status> call = clientService.updateFcmToken(updateTokenRequest);
+        call.enqueue(new Callback<Status>() {
+            @Override
+            public void onResponse(Call<Status> call, Response<Status> response) {
+                if (response.isSuccessful()) {
+                    System.out.println("update fcm token successfully");
+                } else {
+                    System.out.println("update fcm token fail");
+                }
+            }
+            @Override
+            public void onFailure(Call<Status> call, Throwable t) {
+                System.out.println("update fcm token fail");
                 t.printStackTrace();
             }
         });

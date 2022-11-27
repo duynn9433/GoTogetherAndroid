@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.widget.Toast;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -19,25 +17,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import duynn.gotogether.R;
 import duynn.gotogether.data_layer.model.dto.request.SearchTripRequest;
 import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.GoongPlaceDetailResult;
 import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Place;
-import duynn.gotogether.data_layer.model.dto.response.SearchTripResponse;
-import duynn.gotogether.data_layer.model.model.Trip;
-import duynn.gotogether.databinding.FragmentProfileBinding;
+import duynn.gotogether.data_layer.model.dto.response.ListTripResponse;
 import duynn.gotogether.databinding.FragmentSearchBinding;
 import duynn.gotogether.domain_layer.common.Constants;
 import duynn.gotogether.ui_layer.activity.get_place_goong.GetPlaceGoongActivity;
-import duynn.gotogether.ui_layer.activity.publish_route.PublishActivity;
 import duynn.gotogether.ui_layer.activity.search.SearchResultActivity;
-import duynn.gotogether.ui_layer.fragment.profile.ProfileViewModel;
 
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Objects;
 
 public class SearchFragment extends Fragment {
@@ -87,7 +78,7 @@ public class SearchFragment extends Fragment {
                     Toast.makeText(getContext(), "Tìm thành công", Toast.LENGTH_SHORT).show();
                     //TODO: chuyển sang màn hình kết quả tìm kiếm
 //                    Intent intent = new Intent(getContext(), SearchResultActivity.class);
-                    SearchTripResponse response = searchViewModel.getSearchTripResponse().getValue();
+                    ListTripResponse response = searchViewModel.getSearchTripResponse().getValue();
                     if(response == null
                             || response.getTrips() == null || response.getTrips().size() == 0 ){
                         Toast.makeText(getContext(), "Không tìm thấy", Toast.LENGTH_SHORT).show();
@@ -97,7 +88,8 @@ public class SearchFragment extends Fragment {
                         Intent intent = new Intent(getContext(), SearchResultActivity.class);
                         //data
                         Bundle bundle = new Bundle();
-                        bundle.putSerializable(Constants.Trips, new ArrayList<>(response.getTrips()));
+                        bundle.putSerializable(Constants.TRIPS, new ArrayList<>(response.getTrips()));
+                        bundle.putSerializable(Constants.SEARCH_TRIP_REQUEST, searchViewModel.getSearchTripRequest().getValue());
                         intent.putExtra(Constants.Bundle, bundle);
                         //go to search result activity
                         startActivity(intent);

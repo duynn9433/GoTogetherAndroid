@@ -3,11 +3,223 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+             android:padding="6dp"
     tools:context=".ui_layer.fragment.your_rides.YourRidesFragment">
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/swipeRefershLayout">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="ride" />
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/public_trip"
+                android:textSize="30sp"
+                android:textStyle="bold"/>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:background="@drawable/boder"
+                android:padding="5dp"
+                android:id="@+id/public_trip"
+                android:layout_height="wrap_content">
 
+            <LinearLayout
+                    android:layout_weight="1"
+                    android:id="@+id/public_trip_ll"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/public_license_plate"
+                        android:textStyle="bold"
+                        android:textSize="20dp"
+                        android:text="biensoxe"/>
+
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:weightSum="2"
+                        android:orientation="horizontal">
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:id="@+id/public_from"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="Vinh Vinh phuv"/>
+                    <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/arrow_forward"/>
+                    <TextView
+                            android:layout_weight="1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:id="@+id/public_to"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="Ha noi noi"/>
+                </LinearLayout>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/public_time"
+                        android:text="thoi gian bat dau"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/public_price"
+                        android:text="gia tien"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/public_total_seat"
+                        android:visibility="gone"
+                        android:text="so ghe con trong"/>
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:weightSum="2"
+                    android:orientation="vertical">
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/start"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:id="@+id/start_trip"/>
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/delete_forever"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:id="@+id/delete_trip"/>
+            </LinearLayout>
+
+        </LinearLayout>
+        <View
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_width="fill_parent"
+                android:layout_height="5dp"
+                android:background="@color/gray"/>
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/regit_trip"
+                android:textSize="30sp"
+                android:textStyle="bold"/>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:background="@drawable/boder"
+                android:padding="5dp"
+                android:id="@+id/accepted_trip"
+                android:layout_height="wrap_content">
+
+            <LinearLayout
+                    android:layout_weight="1"
+                    android:id="@+id/accepted_trip_ll"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/accepted_license_plate"
+                        android:textStyle="bold"
+                        android:textSize="20dp"
+                        android:text="biensoxe"/>
+
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:weightSum="2"
+                        android:orientation="horizontal">
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:id="@+id/accepted_from"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="Vinh Vinh phuv"/>
+                    <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/arrow_forward"/>
+                    <TextView
+                            android:layout_weight="1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:id="@+id/accepted_to"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="Ha noi noi"/>
+                </LinearLayout>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/accepted_time"
+                        android:text="thoi gian bat dau"/>
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/accepted_price"
+                        android:text="gia tien"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/accepted_total_seat"
+                        android:visibility="gone"
+                        android:text="so ghe con trong"/>
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:weightSum="2"
+                    android:orientation="vertical">
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/start"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:id="@+id/join_trip"/>
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/delete_forever"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:id="@+id/cancel_trip"/>
+            </LinearLayout>
+
+        </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/regit_trip_rv"/>
+    </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </FrameLayout>

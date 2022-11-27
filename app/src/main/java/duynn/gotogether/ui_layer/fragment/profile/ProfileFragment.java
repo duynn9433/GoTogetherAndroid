@@ -20,7 +20,10 @@ import duynn.gotogether.R;
 import duynn.gotogether.data_layer.model.model.Transport;
 import duynn.gotogether.databinding.FragmentProfileBinding;
 import duynn.gotogether.domain_layer.common.Constants;
+import duynn.gotogether.ui_layer.activity.authen.LoginActivity;
 import duynn.gotogether.ui_layer.activity.profile.AddTransportActivity;
+
+import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -43,7 +46,20 @@ public class ProfileFragment extends Fragment {
         initRecyclerView();
         observeData();
         initAddTransport();
+        initLogout();
         return view;
+    }
+
+    private void initLogout() {
+        binding.btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mViewModel.logout();
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
     }
 
     private void initAddTransport() {

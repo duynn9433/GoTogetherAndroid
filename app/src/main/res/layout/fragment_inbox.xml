@@ -10,5 +10,31 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="inbox" />
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="test"
+                android:id="@+id/test"/>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="b1"
+                android:id="@+id/bt1"/>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="b2"
+                android:id="@+id/bt2"/>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="b3"
+                android:id="@+id/b3"/>
+    </LinearLayout>
+
+
 
 </FrameLayout>

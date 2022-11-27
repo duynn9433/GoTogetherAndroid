@@ -7,7 +7,6 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import duynn.gotogether.ui_layer.fragment.inbox.InboxFragment;
 import duynn.gotogether.ui_layer.fragment.profile.ProfileFragment;
-import duynn.gotogether.ui_layer.fragment.publish.PublishFragment;
 import duynn.gotogether.ui_layer.fragment.search.SearchFragment;
 import duynn.gotogether.ui_layer.fragment.your_rides.YourRidesFragment;
 
@@ -21,12 +20,10 @@ public class HomeViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 1:
-                return new PublishFragment();
-            case 2:
                 return new YourRidesFragment();
-            case 3:
+            case 2:
                 return new InboxFragment();
-            case 4:
+            case 3:
                 return new ProfileFragment();
             default:
                 return new SearchFragment();
@@ -35,6 +32,6 @@ public class HomeViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 5;
+        return 4;
     }
 }

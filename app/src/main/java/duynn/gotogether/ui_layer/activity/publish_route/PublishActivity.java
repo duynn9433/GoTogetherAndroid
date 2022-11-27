@@ -149,9 +149,12 @@ public class PublishActivity extends AppCompatActivity {
             if(status != ""){
                 if (Objects.equals(status, Constants.SUCCESS)) {
                     Toast.makeText(this, "Đăng thành công", Toast.LENGTH_SHORT).show();
+                    //TODO: hen gio bao thuc
+
                     finish();
                 } else if (Objects.equals(status, Constants.FAIL)) {
-                    Toast.makeText(this, "Đăng thất bại", Toast.LENGTH_SHORT).show();
+                    String message = publishViewModel.message.getValue();
+                    Toast.makeText(this, "Đăng thất bại: " + message, Toast.LENGTH_SHORT).show();
                 }
             }
         });

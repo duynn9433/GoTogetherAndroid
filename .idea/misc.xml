@@ -7,40 +7,61 @@
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/drawable-v24/arrow_back.xml" value="0.2095" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/drawable-v24/arrow_forward.xml" value="0.2095" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/drawable-v24/date_icon.xml" value="0.161" />
+        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/drawable-v24/delete_forever.xml" value="0.2095" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/drawable-v24/done.xml" value="0.176" />
+        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/drawable-v24/finish_trip.xml" value="0.1415" />
+        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/drawable-v24/group.xml" value="0.1415" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/drawable-v24/location_center.xml" value="0.176" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/drawable-v24/publish_icon.xml" value="0.1575" />
+        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/drawable-v24/refresh.xml" value="0.2095" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/drawable-v24/search_icon.xml" value="0.161" />
+        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/drawable-v24/start.xml" value="0.2095" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/drawable-v24/two_wheeler.xml" value="0.2095" />
+        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/drawable-v24/visibility.xml" value="0.2095" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/drawable-v24/your_ride_icon.xml" value="0.2095" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/drawable/boder.xml" value="0.2095" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/drawable/congratulation_bg.xml" value="0.222" />
+        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/drawable/emoji_people.xml" value="0.133" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/drawable/white_border.xml" value="0.1575" />
+        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout-v28/activity_home.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/activity_add_transport.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/activity_congratulation.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/activity_driver_finish.xml" value="0.24010416666666667" />
+        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/activity_driver_trip_detail.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/activity_get_direction_maps.xml" value="0.2" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/activity_get_location_from_map.xml" value="0.24456521739130435" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/activity_get_place.xml" value="0.24456521739130435" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/activity_get_place_goong.xml" value="0.24320652173913043" />
-        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/activity_home.xml" value="0.17753623188405798" />
+        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/activity_home.xml" value="0.2" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/activity_maps_test.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/activity_passenger.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/activity_passenger_finish.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/activity_passenger_trip_detail.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/activity_permission.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/activity_publish.xml" value="0.24456521739130435" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/activity_register.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/activity_result.xml" value="0.24456521739130435" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/activity_search_result.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/activity_tracking_maps.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/activity_tracking_maps_for_passenger.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/direction_2_point.xml" value="0.253125" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/fragment_inbox.xml" value="0.24010416666666667" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/fragment_profile.xml" value="0.33" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/fragment_publish.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/fragment_search.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/fragment_your_rides.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/passenger_item.xml" value="0.253125" />
+        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/passenger_join_item.xml" value="0.253125" />
+        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/passenger_wait_item.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/place_autocomplete_item.xml" value="0.24320652173913043" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/place_prediction_item.xml" value="0.24456521739130435" />
+        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/regit_trip_item.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/search_trip_item.xml" value="0.25416666666666665" />
-        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/stop_place_item.xml" value="0.2" />
+        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/stop_place_item.xml" value="0.4" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/transport_item.xml" value="0.264" />
+        <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/layout/waiting_trip_item.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/menu/get_place_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/menu/home_nav_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/nndng/AndroidStudioProjects/PTIT/GoTogether/app/src/main/res/xml/network_security_config.xml" value="0.25416666666666665" />

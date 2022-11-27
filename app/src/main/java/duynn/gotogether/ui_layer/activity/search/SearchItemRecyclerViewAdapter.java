@@ -4,13 +4,12 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import duynn.gotogether.data_layer.model.model.Trip;
 import duynn.gotogether.databinding.SearchTripItemBinding;
 import duynn.gotogether.domain_layer.CalendarConvertUseCase;
-import duynn.gotogether.ui_layer.activity.get_place_goong.GetPlaceGoongAdapter;
+import duynn.gotogether.domain_layer.DistanceUseCase;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,11 +21,14 @@ public class SearchItemRecyclerViewAdapter extends RecyclerView.Adapter<SearchIt
     private List<Trip> listTrip;
     private Context context;
     private OnItemClickListener itemClickListener;
+    private Double estimatedDistance;
 
-    public SearchItemRecyclerViewAdapter(List<Trip> listTrip, Context context) {
+    public SearchItemRecyclerViewAdapter(List<Trip> listTrip, Context context, Double estimatedDistance) {
         this.listTrip = listTrip;
         this.context = context;
+        this.estimatedDistance = estimatedDistance;
     }
+
 
     @NonNull
     @Override
@@ -40,7 +42,7 @@ public class SearchItemRecyclerViewAdapter extends RecyclerView.Adapter<SearchIt
 
     @Override
     public void onBindViewHolder(@NonNull SearchItemViewHolder holder, int position) {
-        holder.bind(listTrip.get(position));
+        holder.bind(listTrip.get(position), estimatedDistance);
     }
 
     @Override
@@ -73,12 +75,13 @@ public class SearchItemRecyclerViewAdapter extends RecyclerView.Adapter<SearchIt
             });
         }
 
-        public void bind(Trip trip) {
-            binding.searchItemDriverName.setText(trip.getDriver().getFullNameString());
+        public void bind(Trip trip, Double estimatedDistance) {
+            binding.searchItemDriverName.setText(trip.getId()+" - "+trip.getDriver().getFullNameString());
             binding.searchItemFrom.setText(trip.getStartPlace().getName());
             binding.searchItemTo.setText(trip.getEndPlace().getName());
             binding.searchItemTime.setText("Thời gian: "+ CalendarConvertUseCase.fromCalendarToString(trip.getStartTime()));
             binding.searchItemPrice.setText("Giá: "+trip.getPricePerKm().toString()+" VND/km");
+            binding.estimatedPrice.setText("Dự kiến phải trả: "+ DistanceUseCase.formatToString2digitEndPoint(estimatedDistance*trip.getPricePerKm())+" VND");
         }
     }
 

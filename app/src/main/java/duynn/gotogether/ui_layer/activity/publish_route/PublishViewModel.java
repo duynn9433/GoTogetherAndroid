@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 import java.io.IOException;
 import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Place;
 import duynn.gotogether.data_layer.model.model.Trip;
+import duynn.gotogether.data_layer.repository.SessionManager;
 import duynn.gotogether.data_layer.repository.TripRepo;
 import duynn.gotogether.data_layer.retrofit_client.RetrofitClient;
 import duynn.gotogether.domain_layer.common.Constants;
@@ -23,6 +24,7 @@ public class PublishViewModel extends ViewModel{
     MutableLiveData<Place> endLocation;
 
     MutableLiveData<String> status;
+    MutableLiveData<String> message;
 
     public PublishViewModel() {
         tripMutableLiveData = new MutableLiveData<>();
@@ -33,10 +35,15 @@ public class PublishViewModel extends ViewModel{
         endLocation.setValue(new Place());
         status = new MutableLiveData<>();
         status.setValue("");
+        message = new MutableLiveData<>();
+        message.setValue("");
     }
 
     public void publishTrip(Context context) {
+        SessionManager sessionManager = SessionManager.getInstance(context);
+        String token = sessionManager.getToken();
+
         Trip trip = tripMutableLiveData.getValue();
-        TripRepo.getInstance().publish(trip, tripMutableLiveData, status, context);
+        TripRepo.getInstance(token).publish(trip, tripMutableLiveData, status, message, context);
     }
 }

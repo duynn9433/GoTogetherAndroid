@@ -66,6 +66,9 @@ public class Trip implements Serializable {
 //    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     private Client driver;
 
+    @SerializedName("fcm_topic")
+    private String fcmTopic;
+
     public Trip() {
         this.startPlace = new Place();
         this.endPlace = new Place();

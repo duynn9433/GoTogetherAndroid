@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "555896610967",
+    "project_id": "gotogether-ebbee",
+    "storage_bucket": "gotogether-ebbee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555896610967:android:c690491aaed64d73b449d2",
+        "android_client_info": {
+          "package_name": "duynn.gotogether"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "555896610967-73sb4j4vqhu5bb6ae1dls64fn0g39r0g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTEthIgXjkLRWmRpwXv3Z3JLM3b6HMUFw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "555896610967-73sb4j4vqhu5bb6ae1dls64fn0g39r0g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,33 +1,39 @@
 package duynn.gotogether.ui_layer.fragment.search;
 
 import android.content.Context;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import duynn.gotogether.data_layer.model.dto.request.SearchTripRequest;
-import duynn.gotogether.data_layer.model.dto.response.SearchTripResponse;
-import duynn.gotogether.data_layer.model.model.Trip;
+import duynn.gotogether.data_layer.model.dto.response.ListTripResponse;
+import duynn.gotogether.data_layer.repository.SessionManager;
 import duynn.gotogether.data_layer.repository.TripRepo;
 import lombok.Getter;
+
+import java.util.Calendar;
 
 @Getter
 public class SearchViewModel extends ViewModel {
 
     private static final String TAG = SearchViewModel.class.getSimpleName();
     private MutableLiveData<SearchTripRequest> searchTripRequest;
-    private MutableLiveData<SearchTripResponse> searchTripResponse;
+    private MutableLiveData<ListTripResponse> searchTripResponse;
     private MutableLiveData<String> status;
     public SearchViewModel() {
         searchTripRequest = new MutableLiveData<>();
-        searchTripRequest.setValue(new SearchTripRequest());
+        SearchTripRequest request = new SearchTripRequest();
+        request.setStartTime(Calendar.getInstance());
+        request.setNumOfSeat(1);
+        searchTripRequest.setValue(request);
         status = new MutableLiveData<>();
         status.setValue("");
         searchTripResponse = new MutableLiveData<>();
-        searchTripResponse.setValue(new SearchTripResponse());
+        searchTripResponse.setValue(new ListTripResponse());
     }
     public void searchTrip(Context context) {
+        SessionManager sessionManager = SessionManager.getInstance(context);
+        String token = sessionManager.getToken();
         SearchTripRequest request = searchTripRequest.getValue();
-        TripRepo.getInstance().searchTrip(context, searchTripRequest, searchTripResponse , status);
+        TripRepo.getInstance(token).searchTrip(context, searchTripRequest, searchTripResponse , status);
     }
 
 

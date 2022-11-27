@@ -3,9 +3,11 @@ package duynn.gotogether.data_layer.service;
 import duynn.gotogether.data_layer.model.dto.request.Authen.LoginReq;
 import duynn.gotogether.data_layer.model.dto.response.Authen.LoginResp;
 import duynn.gotogether.data_layer.model.dto.response.Authen.RegisterRes;
+import duynn.gotogether.data_layer.model.model.Status;
 import duynn.gotogether.data_layer.model.model.User;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public interface AuthenService {
@@ -17,4 +19,7 @@ public interface AuthenService {
 
     @POST("register")
     Call<RegisterRes> register(@Body User user);
+
+    @GET("checkLogin")
+    Call<Status> checkLogin();
 }

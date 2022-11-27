@@ -26,6 +26,42 @@
             android:usesCleartextTraffic="true"
             tools:targetApi="31">
         <activity
+                android:name=".ui_layer.activity.execute_route.client_trip.PassengerActivity"
+                android:theme="@style/Theme.AppCompat.Dialog"
+                android:label="Danh sách hành khách"
+                android:exported="false"/>
+        <activity
+                android:name=".ui_layer.activity.execute_route.DriverFinishActivity"
+                android:theme="@style/Theme.AppCompat.Dialog"
+                android:label="Hoàn thành chuyến đi"
+                android:exported="false"/>
+        <activity
+                android:name=".ui_layer.activity.execute_route.PassengerFinishActivity"
+                android:launchMode="singleTask"
+                android:taskAffinity=""
+                android:excludeFromRecents="true"
+                android:theme="@style/Theme.AppCompat.Dialog"
+                android:label="Hoàn thành chuyến đi"
+                android:exported="false"/>
+
+        <meta-data
+                android:name="com.google.android.geo.API_KEY"
+                android:value="${MAPS_API_KEY}"/>
+
+        <activity
+                android:name=".ui_layer.activity.execute_route.MapsTestActivity"
+                android:exported="false"
+                android:label="@string/title_activity_maps_test"/>
+        <activity
+                android:name=".ui_layer.activity.trip.PassengerTripDetailActivity"
+                android:exported="false"/>
+        <activity
+                android:name=".ui_layer.activity.execute_route.Direc2pointActivity"
+                android:exported="false"/>
+        <activity
+                android:name=".ui_layer.activity.trip.DriverTripDetailActivity"
+                android:exported="false"/>
+        <activity
                 android:name=".ui_layer.activity.search.SearchResultActivity"
                 android:exported="false"/>
         <activity
@@ -46,11 +82,6 @@
                 android:name=".ui_layer.activity.publish_route.PublishActivity"
                 android:exported="true">
         </activity>
-
-        <meta-data
-                android:name="com.google.android.geo.API_KEY"
-                android:value="${MAPS_API_KEY}"/>
-
         <activity
                 android:name=".ui_layer.activity.get_place.GetLocationFromMapActivity"
                 android:exported="false"
@@ -66,6 +97,14 @@
                 android:name=".ui_layer.service.TrackerService"
                 android:exported="false"
                 android:foregroundServiceType="location"/>
+        <service
+                android:name=".ui_layer.service.TrackerForPassengerService"
+                android:exported="false"
+                android:foregroundServiceType="location"/>
+        <receiver
+                android:name=".ui_layer.activity.execute_route.geofence.GeofenceBroadcastReceiver"
+                android:enabled="true"
+                android:exported="true"></receiver>
 
         <activity
                 android:name=".ui_layer.activity.PermissionActivity"
@@ -75,19 +114,16 @@
                 android:exported="true"
                 android:label="@string/title_activity_tracking_maps"/>
         <activity
+                android:name=".ui_layer.activity.execute_route.TrackingMapsForPassengerActivity"
+                android:exported="true"
+                android:label="@string/title_activity_tracking_maps"/>
+        <activity
                 android:name=".ui_layer.activity.publish_route.GetDirectionMapsActivity"
                 android:exported="true"
                 android:label="@string/title_activity_get_direction_maps"/>
         <activity
                 android:name=".ui_layer.activity.home.HomeActivity"
                 android:exported="true">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
         </activity>
         <activity
                 android:name=".ui_layer.activity.authen.LoginActivity"
@@ -101,6 +137,14 @@
         <activity
                 android:name=".MainActivity"
                 android:exported="true"/>
+
+        <service
+                android:name=".ui_layer.service.MyFirebaseMessagingService"
+                android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

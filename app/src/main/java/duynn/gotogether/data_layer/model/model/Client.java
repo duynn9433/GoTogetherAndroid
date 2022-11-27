@@ -10,9 +10,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Client extends User implements Serializable {
@@ -20,7 +22,8 @@ public class Client extends User implements Serializable {
     private Location location;
 
     private Double rate;
-
+    @SerializedName("fcm_token")
+    private String fcmToken;
     @SerializedName("is_in_trip")
     private boolean isInTrip;
 
@@ -29,9 +32,10 @@ public class Client extends User implements Serializable {
 
     @Override
     public String toString() {
-        String s = super.toString() + "ClientDTO{" +
+        String s = super.toString() + "Client{" +
                 ", location=" + location +
                 ", rate=" + rate +
+                ", fcmToken='" + fcmToken + '\'' +
                 ", isInTrip=" + isInTrip +
                 ", transports=" + transports +
                 '}';

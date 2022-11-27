@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
 
     </data>
@@ -14,43 +15,50 @@
             android:orientation="vertical"
             android:padding="10dp">
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Leaving from"
-                android:drawableLeft="@drawable/location_icon"
-                android:id="@+id/search_leaving_from_edit_text"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/start_place"
+                    android:gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:id="@+id/search_leaving_from_edit_text"
+                    app:drawableLeftCompat="@drawable/location_icon"/>
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Going to"
-                android:drawableLeft="@drawable/location_icon"
-                android:id="@+id/search_going_to_edit_text"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/end_palce"
+                    android:gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:id="@+id/search_going_to_edit_text"
+                    app:drawableLeftCompat="@drawable/location_icon"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:layout_marginTop="16dp"
                 android:weightSum="1"
                 android:orientation="horizontal">
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:layout_weight="1"
                     android:id="@+id/search_date_text_view"
-                    android:text="Date"
-                    android:drawableLeft="@drawable/date_icon"/>
+                    android:text="@string/start_date"
+                    app:drawableLeftCompat="@drawable/date_icon"/>
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/search_people_edit_text"
-                    android:text="10"
+                    android:layout_marginRight="16dp"
+                    android:text="@string/_1"
                     android:drawableLeft="@drawable/person_icon"/>
             </LinearLayout>
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/search_button"
-                android:text="Search" />
+                android:layout_marginTop="16dp"
+                android:text="@string/search" />
 
         </LinearLayout>
 
