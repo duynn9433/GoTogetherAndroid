@@ -19,6 +19,7 @@ public class YourRidesViewModel extends AndroidViewModel {
     //for driver
     MutableLiveData<Trip> currentTrip;
     MutableLiveData<List<ClientTrip>> clientTrips;
+
     //for passenger
     MutableLiveData<Trip> acceptedTrip;
     MutableLiveData<ClientTrip> currentClientTrip;
@@ -62,7 +63,7 @@ public class YourRidesViewModel extends AndroidViewModel {
     public void getAcceptedTrip() {
         Client client = sessionManager.getClient();
         if (client != null) {
-            tripRepo.getAcceptedTrip(status, message, acceptedTrip, client.getId());
+            tripRepo.getAcceptedTrip(status, message, acceptedTrip, currentClientTrip, client.getId());
         }
     }
 
@@ -76,7 +77,18 @@ public class YourRidesViewModel extends AndroidViewModel {
     public void cancelTrip(Trip trip) {
         Client client = sessionManager.getClient();
         if (client != null) {
-            tripRepo.cancelTrip(status, message, trip, client.getId());
+            tripRepo.passengerCancelTrip(status, message, trip, client.getId());
+        }
+    }
+
+    public void driverCancelTrip(Trip trip) {
+        tripRepo.driverCancelTrip(status, message, trip);
+    }
+
+    public void passengerCancelTrip() {
+        Client client = sessionManager.getClient();
+        if (client != null) {
+            tripRepo.passengerCancelTrip(status, message, acceptedTrip.getValue(), client.getId());
         }
     }
 }

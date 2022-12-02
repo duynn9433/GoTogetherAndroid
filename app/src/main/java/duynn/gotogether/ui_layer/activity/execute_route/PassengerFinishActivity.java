@@ -1,5 +1,7 @@
 package duynn.gotogether.ui_layer.activity.execute_route;
 
+import android.app.NotificationManager;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.RatingBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +15,7 @@ import duynn.gotogether.data_layer.model.model.Comment;
 import duynn.gotogether.databinding.ActivityPassengerFinishBinding;
 import duynn.gotogether.domain_layer.ToastUseCase;
 import duynn.gotogether.domain_layer.common.Constants;
+import org.modelmapper.internal.asm.Handle;
 
 public class PassengerFinishActivity extends AppCompatActivity {
     private static final String TAG = PassengerFinishActivity.class.getSimpleName();
@@ -26,6 +29,7 @@ public class PassengerFinishActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(PassengerFinishViewModel.class);
 
         Bundle bundle = getIntent().getBundleExtra(Constants.Bundle);
+        Log.d(TAG, "onCreate: " + bundle);
         long clientTripId = Long.parseLong(bundle.getString(Constants.CLIENT_TRIP_ID));
         long driverId = Long.parseLong(bundle.getString(Constants.DRIVER_ID));
         String distance = bundle.getString(Constants.DISTANCE);
@@ -34,12 +38,15 @@ public class PassengerFinishActivity extends AppCompatActivity {
         binding.distance.setText("Quãng đường: "+distance+" km");
         binding.price.setText("Thanh toán: "+price+" VND");
         binding.numOfSeat.setText("Số người: "+passengerNumber+" người");
+        binding.comment.setText("Tuyệt vời");
 
         binding.send.setOnClickListener(v -> {
             PassengerFinishRequest passengerFinishRequest = new PassengerFinishRequest();
             Comment data = Comment.builder()
                     .driver(Client.builder().id(driverId).build())
-                    .clientTrip(ClientTrip.builder().id(clientTripId).build())
+                    .clientTrip(ClientTrip.builder().id(clientTripId)
+                            .distance(Double.parseDouble(distance))
+                            .build())
                     .content(binding.comment.getText().toString())
                     .rating((int) binding.rating.getRating())
                     .build();
@@ -47,8 +54,20 @@ public class PassengerFinishActivity extends AppCompatActivity {
             Log.d("PassengerFinishViewModel", "finishTrip: "+passengerFinishRequest);
             viewModel.finishTrip(passengerFinishRequest);
             ToastUseCase.showShortToast(this, "Đã gửi đánh giá");
+            //CLOSE NOTI
+            NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            manager.cancel(Constants.TRIP_CANCEL_NOTI_ID);
+            setResult(RESULT_OK);
             finish();
         });
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                binding.send.performClick();
+            }
+        }, 2000);
     }
 
 }

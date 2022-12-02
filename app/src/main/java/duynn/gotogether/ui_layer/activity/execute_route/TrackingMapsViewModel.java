@@ -50,6 +50,10 @@ public class TrackingMapsViewModel extends AndroidViewModel {
         Map<String,Double> map = new HashMap<>();
         map.put("my location",0.0);
         mapDistance.setValue(map);
+        status = new MutableLiveData<>();
+        status.setValue("");
+        message = new MutableLiveData<>();
+        message.setValue("");
     }
 
     public void requestFinishPassenger(int position, Long clientTripId) {

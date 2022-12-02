@@ -49,7 +49,7 @@ public class SearchResultActivity extends AppCompatActivity {
                     finish();
                     break;
                 case Constants.FAIL:
-                    ToastUseCase.showLongToast(this, viewModel.message.getValue());
+                    ToastUseCase.showLongToast(this, viewModel.message.getValue()+"");
                     break;
             }
         });

@@ -48,6 +48,8 @@ public class DistanceUseCase {
     }
 
     public static String formatToString2digitEndPoint(double distance){
-        return new DecimalFormat("#.##").format(distance);
+        distance = Math.round(distance * 100.0) / 100.0;
+        return String.valueOf(distance);
+//        return new DecimalFormat("#.##").format(distance);
     }
 }

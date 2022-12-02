@@ -304,8 +304,6 @@ public class TrackingMapsActivity extends FragmentActivity
         )).title("End").snippet(trip.getEndPlace().getName());
         markerOptionsList.add(endMarker);
     }
-
-
     @Override
     protected void onStop() {
         super.onStop();
@@ -316,7 +314,15 @@ public class TrackingMapsActivity extends FragmentActivity
 
     private void onStopBtnClick(View v) {
         stopForegroundService();
-        displayResult();
+        binding.progressBar.setVisibility(View.VISIBLE);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                binding.progressBar.setVisibility(View.GONE);
+                displayResult();
+            }
+        }, 5000);
     }
 
     private void onStartBtnClick(View v) {
@@ -541,12 +547,14 @@ public class TrackingMapsActivity extends FragmentActivity
                             .position(new LatLng(location.getLat(), location.getLng()))
                             .icon(bitmapDescriptorFromVector(this, emoji_people)));
             passengerMarkerList.add(marker);
-            Double distance = SphericalUtil.computeDistanceBetween(
-                    new LatLng(location.getLat(), location.getLng()),
-                    new LatLng(driverLocation.getLat(), driverLocation.getLng()));
-            if(distance < Constants.GEOFENCE_RADIUS){
-                //update data
-                updateDistance(String.valueOf(location.getId()));
+            if(driverLocation != null){
+                Double distance = SphericalUtil.computeDistanceBetween(
+                        new LatLng(location.getLat(), location.getLng()),
+                        new LatLng(driverLocation.getLat(), driverLocation.getLng()));
+                if(distance < Constants.GEOFENCE_RADIUS){
+                    //update data
+                    updateDistance(String.valueOf(location.getId()));
+                }
             }
         }
     }

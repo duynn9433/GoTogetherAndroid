@@ -52,6 +52,8 @@ public class TrackerService extends LifecycleService {
             passengerLocation;
     private String role;
     private Trip trip;
+    private List<ClientTrip> clientTrips;
+    private List<Long> clientLocationIDs = new ArrayList<>();
     private SessionManager sessionManager;
     private TripRepo tripRepo;
 
@@ -71,12 +73,16 @@ public class TrackerService extends LifecycleService {
 
     @Override
     public IBinder onBind(Intent intent) {
+        Log.d(TAG, "onBind");
         super.onBind(intent);
         Bundle bundle = intent.getBundleExtra(Constants.Bundle);
         if (bundle != null) {
             role = bundle.getString(Constants.ROLE);
             trip = (Trip) bundle.getSerializable(Constants.TRIP);
-            List<ClientTrip> clientTrips = (List<ClientTrip>) bundle.getSerializable(Constants.LIST_CLIENT_TRIP);
+            clientTrips = (List<ClientTrip>) bundle.getSerializable(Constants.LIST_CLIENT_TRIP);
+            for(ClientTrip clientTrip : clientTrips) {
+                clientLocationIDs.add(clientTrip.getClient().getLocation().getId());
+            }
             Log.d(TAG, "onBind: -trip " + trip);
             Log.d(TAG, "onBind: -clientTrip " + clientTrips);
         }
@@ -89,6 +95,7 @@ public class TrackerService extends LifecycleService {
 
     @Override
     public void onCreate() {
+        Log.d(TAG, "onCreate");
         super.onCreate();
         started = new MutableLiveData<>();
         startTime = new MutableLiveData<>();
@@ -125,10 +132,15 @@ public class TrackerService extends LifecycleService {
                                 .lat(lastLocation.getLatitude())
                                 .lng(lastLocation.getLongitude())
                                 .build();
-                tripRepo.updateDriverLocation(
+                //TODO: new driver
+//                tripRepo.updateDriverLocation(
+//                        location,
+//                        trip.getId(),
+//                        sessionManager.getClient().getId(),
+//                        passengerLocation);
+                tripRepo.newUpdateDriverLocation(
                         location,
-                        trip.getId(),
-                        sessionManager.getClient().getId(),
+                        clientLocationIDs,
                         passengerLocation);
             }
         };
@@ -213,13 +225,5 @@ public class TrackerService extends LifecycleService {
                     NotificationManager.IMPORTANCE_LOW);
             notificationManager.createNotificationChannel(channel);
         }
-    }
-
-    public MutableLiveData<Long> getStartTime() {
-        return startTime;
-    }
-
-    public MutableLiveData<Long> getEndTime() {
-        return endTime;
     }
 }

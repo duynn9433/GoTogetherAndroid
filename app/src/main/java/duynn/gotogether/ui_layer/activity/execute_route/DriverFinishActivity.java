@@ -15,8 +15,8 @@ public class DriverFinishActivity extends AppCompatActivity {
         binding = ActivityDriverFinishBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         Bundle bundle = getIntent().getBundleExtra(Constants.Bundle);
-        binding.distance.setText(bundle.getString(Constants.DISTANCE));
-        binding.time.setText(bundle.getString(Constants.TIME));
+        binding.distance.setText("Khoảng cách: "+bundle.getString(Constants.DISTANCE) + " km");
+        binding.time.setText("Thời gian: "+bundle.getString(Constants.TIME));
 
         binding.finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override

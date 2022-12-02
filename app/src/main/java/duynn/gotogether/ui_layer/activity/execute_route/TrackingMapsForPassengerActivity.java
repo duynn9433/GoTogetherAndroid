@@ -1,19 +1,17 @@
 package duynn.gotogether.ui_layer.activity.execute_route;
 
 import android.annotation.SuppressLint;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
+import android.app.AlertDialog;
+import android.content.*;
 import android.graphics.Color;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
@@ -23,23 +21,23 @@ import com.google.android.gms.location.Priority;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.*;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.maps.android.SphericalUtil;
 import dagger.hilt.android.AndroidEntryPoint;
 import duynn.gotogether.R;
 import duynn.gotogether.data_layer.direction_helpers.FetchURL;
 import duynn.gotogether.data_layer.direction_helpers.TaskLoadedCallback;
 import duynn.gotogether.data_layer.model.model.ClientTrip;
 import duynn.gotogether.data_layer.model.model.Trip;
-import duynn.gotogether.databinding.ActivityTrackingMapsBinding;
 import duynn.gotogether.databinding.ActivityTrackingMapsForPassengerBinding;
 import duynn.gotogether.domain_layer.*;
 import duynn.gotogether.domain_layer.common.Constants;
 import duynn.gotogether.ui_layer.service.TrackerForPassengerService;
-import duynn.gotogether.ui_layer.service.TrackerService;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @AndroidEntryPoint
 public class TrackingMapsForPassengerActivity extends FragmentActivity
@@ -58,10 +56,12 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
      * Connect to service
      */
     private List<LatLng> locationList;
+    private Map<String, Double> distanceMap;
     /**
      * Defines callbacks for service binding, passed to bindService()
      */
     private ServiceConnection connection;
+    private boolean isInCar = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +73,10 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        distanceMap = new HashMap<>();
+        distanceMap.clear();
+        Log.d(TAG, "disMap create: " + distanceMap.toString());
+        isInCar = false;
         connection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName className,
@@ -98,14 +102,14 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
             ClientTrip clientTrip = (ClientTrip) bundle.getSerializable(Constants.CLIENT_TRIP);
             viewModel.trip.setValue(trip);
             viewModel.clientTrip.setValue(clientTrip);
-            Log.d(TAG, "onCreate - trip: " + trip.toString());
-            Log.d(TAG, "onCreate - clientTrip: " + clientTrip.toString());
+//            Log.d(TAG, "onCreate - trip: " + trip.toString());
+//            Log.d(TAG, "onCreate - clientTrip: " + clientTrip.toString());
             //marker
             initMarker();
         }
         // Bind to TrackerService
         Intent intent = new Intent(this, TrackerForPassengerService.class);
-        intent.putExtra(Constants.Bundle,viewModel.bundle.getValue());
+        intent.putExtra(Constants.Bundle,bundle);
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
     }
 
@@ -177,16 +181,16 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
 
     private void onStopBtnClick(View v) {
         stopForegroundService();
-        binding.btnStopTracking.setVisibility(View.GONE);
-        binding.btnStartTracking.setVisibility(View.VISIBLE);
+//        binding.btnStopTracking.setVisibility(View.GONE);
+//        binding.btnStartTracking.setVisibility(View.VISIBLE);
         displayResult();
     }
 
     private void onStartBtnClick(View v) {
         if (PermissionsUseCase.hasBackgroundLocationPermission(this)) {
-            binding.btnStartTracking.setVisibility(View.INVISIBLE);
-            binding.btnStartTracking.setEnabled(false);
-            binding.btnStopTracking.setVisibility(View.VISIBLE);
+//            binding.btnStartTracking.setVisibility(View.INVISIBLE);
+//            binding.btnStartTracking.setEnabled(false);
+//            binding.btnStopTracking.setVisibility(View.VISIBLE);
 
             sendActionCommandToService(Constants.ACTION_SERVICE_START);
             observeTrackerService();
@@ -310,7 +314,7 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
             locationListLiveData.observe(this, locations -> {
                 if (locations != null) {
                     locationList = locations;
-                    Log.d(TAG, "observeTrackerService: " + locationList.toString());
+//                    Log.d(TAG, "observeTrackerService: " + locationList.toString());
                     drawPolyline();
                     followPolyline();
                 }
@@ -338,6 +342,88 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
                     showBiggerPicture();
                 }
             });
+        }
+        //distance
+        trackerService.getDriverLocation().observe(this, driverLocation -> {
+            Log.d(TAG, "disMap: " + distanceMap.toString());
+            if (driverLocation != null && driverLocation.getLat() != 0 && driverLocation.getLng() != 0) {
+                duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location passengerLocation
+                        = trackerService.getPassengerLocation().getValue();
+                if(passengerLocation != null){
+                    //check trung diem
+
+                    Double radius = SphericalUtil.computeDistanceBetween(
+                            new LatLng(driverLocation.getLat(), driverLocation.getLng()),
+                            new LatLng(passengerLocation.getLat(), passengerLocation.getLng()));
+                    Log.d(TAG, "radius: "+radius+" \npassenger: " + passengerLocation.toString() + " - \ndriver:" +driverLocation.toString() );
+                    if(radius < Constants.GEOFENCE_RADIUS){
+                        Double distance = DistanceUseCase.calculateDistance(locationList);
+                        distanceMap.putIfAbsent(Constants.START_DISTANCE, distance);
+                        Log.d(TAG, "disMapPutStart: " + distance + "\nradius:" + radius);
+                        if(!isInCar){
+                            isInCar = true;
+                            displayAlert();
+                        }
+                    }
+                    radius = SphericalUtil.computeDistanceBetween(
+                            new LatLng(driverLocation.getLat(), driverLocation.getLng()),
+                            new LatLng(viewModel.clientTrip.getValue().getDropOffPlace().getGeometry().getLocation().getLat(),
+                                    viewModel.clientTrip.getValue().getDropOffPlace().getGeometry().getLocation().getLng()));
+                    if(radius < Constants.GEOFENCE_RADIUS){
+                        Double distance = DistanceUseCase.calculateDistance(locationList);
+                        distanceMap.putIfAbsent(Constants.END_DISTANCE, distance);
+                        goToPassengerFinishActivity();
+                    }
+                }
+            }
+        });
+    }
+
+    private void displayAlert() {
+        new AlertDialog.Builder(this)
+                .setTitle("Thông báo")
+                .setMessage("Tài xế của bạn đã đến")
+
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Continue with delete operation
+                    }
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+//                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    private void goToPassengerFinishActivity() {
+        Intent intent = new Intent(this, PassengerFinishActivity.class);
+        ClientTrip clientTrip = viewModel.clientTrip.getValue();
+        Trip trip = viewModel.trip.getValue();
+        Bundle bundle = new Bundle();
+        assert clientTrip != null;
+        bundle.putString(Constants.CLIENT_TRIP_ID, clientTrip.getId()+"");
+        assert trip != null;
+        bundle.putString(Constants.DRIVER_ID, trip.getDriver().getId()+"");
+        Double distance = distanceMap.get(Constants.END_DISTANCE) - distanceMap.get(Constants.START_DISTANCE);
+        bundle.putString(Constants.DISTANCE, DistanceUseCase.formatToString2digitEndPoint(distance));
+        bundle.putString(Constants.PRICE,
+                DistanceUseCase.formatToString2digitEndPoint(trip.getPricePerKm()*distance*clientTrip.getNumOfPeople()));
+        bundle.putString(Constants.PASSENGER_NUM, clientTrip.getNumOfPeople() + "");
+        intent.putExtra(Constants.Bundle, bundle);
+        startActivityForResult(intent, Constants.PASSENGER_FINISH_TRIP_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == Constants.PASSENGER_FINISH_TRIP_REQUEST_CODE){
+            if(resultCode == RESULT_OK){
+                binding.btnStopTracking.performClick();
+                finish();
+            }
         }
     }
 
@@ -368,7 +454,7 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
             polylineOptions.startCap(new ButtCap());
             polylineOptions.endCap(new ButtCap());
             map.addPolyline(polylineOptions);
-            Log.d(TAG, "drawPolyline: " + locationList.toString());
+//            Log.d(TAG, "drawPolyline: " + locationList.toString());
         }
     }
 

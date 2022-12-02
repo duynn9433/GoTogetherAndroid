@@ -36,6 +36,9 @@ public class ClientTrip implements Serializable {
     @SerializedName("price_per_km")
     private Double pricePerKmForOnePeople;
 
+    @SerializedName("distance")
+    private Double distance;
+
     @SerializedName("is_accepted")
     private boolean isAccepted;
 

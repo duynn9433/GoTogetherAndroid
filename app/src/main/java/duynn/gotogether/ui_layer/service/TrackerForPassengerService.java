@@ -13,18 +13,24 @@ import androidx.lifecycle.LifecycleService;
 import androidx.lifecycle.MutableLiveData;
 import com.google.android.gms.location.*;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.SphericalUtil;
 import dagger.hilt.android.AndroidEntryPoint;
 import duynn.gotogether.data_layer.model.model.ClientTrip;
 import duynn.gotogether.data_layer.model.model.Trip;
 import duynn.gotogether.data_layer.repository.SessionManager;
 import duynn.gotogether.data_layer.repository.TripRepo;
 import duynn.gotogether.domain_layer.common.Constants;
+import duynn.gotogether.ui_layer.activity.execute_route.PassengerFinishActivity;
+import lombok.Getter;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @AndroidEntryPoint
+@Getter
 public class TrackerForPassengerService extends LifecycleService {
     @Inject
     NotificationCompat.Builder notification;
@@ -43,8 +49,10 @@ public class TrackerForPassengerService extends LifecycleService {
             passengerLocation;
     private String role;
     private Trip trip;
+    private ClientTrip clientTrip;
     private SessionManager sessionManager;
     private TripRepo tripRepo;
+    private Map<String, Double> distanceMap;
 
     // Binder given to clients
     private final IBinder binder = new LocalBinder();
@@ -65,10 +73,10 @@ public class TrackerForPassengerService extends LifecycleService {
         super.onBind(intent);
         Bundle bundle = intent.getBundleExtra(Constants.Bundle);
         if (bundle != null) {
-            role = bundle.getString(Constants.ROLE);
+//            role = bundle.getString(Constants.ROLE);
             trip = (Trip) bundle.getSerializable(Constants.TRIP);
-//            List<ClientTrip> clientTrips = (List<ClientTrip>) bundle.getSerializable(Constants.LIST_CLIENT_TRIP);
-            Log.d(TAG, "onBind: -trip " + trip);
+            clientTrip = (ClientTrip) bundle.getSerializable(Constants.CLIENT_TRIP);
+//            Log.d(TAG, "onBind: -trip " + trip);
 //            Log.d(TAG, "onBind: -clientTrip " + clientTrips);
         }
         return binder;
@@ -95,6 +103,7 @@ public class TrackerForPassengerService extends LifecycleService {
         passengerLocation = new MutableLiveData<>();
         passengerLocation.postValue(new duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location());
         driverLocation.postValue(new duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location());
+        distanceMap = new HashMap<>();
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         locationCallback = new LocationCallback() {
@@ -115,10 +124,16 @@ public class TrackerForPassengerService extends LifecycleService {
                                 .lat(lastLocation.getLatitude())
                                 .lng(lastLocation.getLongitude())
                                 .build();
-                tripRepo.updatePassengerLocation(
+                //TODO:new passenger
+//                tripRepo.updatePassengerLocation(
+//                        location,
+//                        trip.getId(),
+//                        sessionManager.getClient().getId(),
+//                        driverLocation);
+
+                tripRepo.newUpdatePassengerLocation(
                         location,
-                        trip.getId(),
-                        sessionManager.getClient().getId(),
+                        trip.getDriver().getId(),
                         driverLocation);
             }
         };

@@ -283,6 +283,9 @@ public class PublishActivity extends AppCompatActivity {
 
     private void initPublishButton() {
         binding.publishButton.setOnClickListener(v -> {
+            binding.emptySeat.clearFocus();
+            binding.pricePerKm.clearFocus();
+            binding.description.clearFocus();
             Trip trip = publishViewModel.getTripMutableLiveData().getValue();
             assert trip != null;
             if (trip.getStartPlace() == null || trip.getEndPlace() == null) {

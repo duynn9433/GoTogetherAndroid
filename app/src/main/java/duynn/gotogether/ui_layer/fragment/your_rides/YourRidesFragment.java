@@ -49,6 +49,9 @@ public class YourRidesFragment extends Fragment implements SwipeRefreshLayout.On
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentYourRidesBinding.inflate(inflater, container, false);
         mViewModel = new ViewModelProvider(this).get(YourRidesViewModel.class);
+        //get data
+        mViewModel.getAcceptedTrip();
+        mViewModel.getWaitingTrips();
         //        initRecyclerView();
         mViewModel.getCurrentTrip();
         observeData();
@@ -63,9 +66,6 @@ public class YourRidesFragment extends Fragment implements SwipeRefreshLayout.On
     private void initRegitTrip() {
         binding.acceptedTrip.setVisibility(View.GONE);
         binding.regitTripRv.setVisibility(View.GONE);
-        //get data
-        mViewModel.getAcceptedTrip();
-        mViewModel.getWaitingTrips();
         //init recyclerview
         waitingTripRVAdapter = new WaitingTripRVAdapter(new ArrayList<>(), getContext());
         binding.regitTripRv.setAdapter(waitingTripRVAdapter);
@@ -144,11 +144,22 @@ public class YourRidesFragment extends Fragment implements SwipeRefreshLayout.On
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(Constants.TRIP, trip);
                 bundle.putSerializable(Constants.CLIENT_TRIP, clientTrip);
-                intent.putExtra(Constants.Bundle,bundle);
-                startActivity(intent);
+                intent.putExtra(Constants.Bundle, bundle);
+                startActivityForResult(intent,Constants.EXECUTE_TRIP_REQUEST_CODE);
             }
         });
-
+        binding.cancelTrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mViewModel.passengerCancelTrip();
+            }
+        });
+        binding.deleteTrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mViewModel.driverCancelTrip(mViewModel.currentTrip.getValue());
+            }
+        });
     }
 
     private void observeData() {
@@ -217,10 +228,18 @@ public class YourRidesFragment extends Fragment implements SwipeRefreshLayout.On
                     bundle.putSerializable(Constants.LIST_CLIENT_TRIP, new ArrayList<>(clientTrips));
                     bundle.putString(Constants.ROLE, Constants.DRIVER);
                     intent.putExtra(Constants.Bundle, bundle);
-                    startActivity(intent);
+                    startActivityForResult(intent,Constants.EXECUTE_TRIP_REQUEST_CODE);
                 }
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == Constants.EXECUTE_TRIP_REQUEST_CODE){
+            binding.swipeRefershLayout.setRefreshing(true);
+        }
     }
 
     @Override

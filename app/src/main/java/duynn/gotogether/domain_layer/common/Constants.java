@@ -76,6 +76,13 @@ public class Constants {
     public static final String LAST_DISTANCE = "LAST_DISTANCE";
     public static final String POSITION = "POSITION";
     public static final String TIME = "TIME";
+    public static final String FINISH_TRIP_SUCCESS = "FINISH_TRIP_SUCCESS";
+    public static final String TRIP_CANCEL = "TRIP_CANCEL";
+    public static final int TRIP_CANCEL_NOTI_ID = 100;
+    public static final int PASSENGER_FINISH_TRIP_REQUEST_CODE = 101;
+    public static final String START_DISTANCE = "START_DISTANCE";
+    public static final String END_DISTANCE = "END_DISTANCE";
+    public static final int EXECUTE_TRIP_REQUEST_CODE = 102;
 
     public static String TRIPS = "TRIPS";
     public static final String GOONG_PLACE_DETAIL_RESULT = "GOONG_PLACE_DETAIL_RESULT";

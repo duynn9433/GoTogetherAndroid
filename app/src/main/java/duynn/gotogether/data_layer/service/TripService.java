@@ -4,7 +4,9 @@ import duynn.gotogether.data_layer.model.dto.client_trip_dto.ClientTripDTO;
 import duynn.gotogether.data_layer.model.dto.execute_trip.ClientUpdateLocationRequest;
 import duynn.gotogether.data_layer.model.dto.execute_trip.ListLocationResponse;
 import duynn.gotogether.data_layer.model.dto.execute_trip.LocationResponse;
+import duynn.gotogether.data_layer.model.dto.request.NewClientUpdateLocationRequest;
 import duynn.gotogether.data_layer.model.dto.request.SearchTripRequest;
+import duynn.gotogether.data_layer.model.dto.response.AcceptedTripResponse;
 import duynn.gotogether.data_layer.model.dto.response.StartTripResponse;
 import duynn.gotogether.data_layer.model.dto.response.TripResponse;
 import duynn.gotogether.data_layer.model.dto.response.ListTripResponse;
@@ -36,14 +38,25 @@ public interface TripService {
     @POST("location/update-passenger-location")
     Call<LocationResponse> updatePassengerLocation(@Body ClientUpdateLocationRequest request);
 
-    @GET("trip/get-accepted-trip/{id}")
-    Call<TripResponse> getAcceptedTrip(@Path("id") Long clientId);
+    @POST("location/new-update-driver-location")
+    Call<ListLocationResponse> newUpdateDriverLocation(@Body NewClientUpdateLocationRequest request);
 
-    @GET("trip//get-waiting-trip-by-passenger-id/{id}")
+    @POST("location/new-update-passenger-location")
+    Call<LocationResponse> newUpdatePassengerLocation(@Body NewClientUpdateLocationRequest request);
+
+    @GET("trip/get-accepted-trip/{id}")
+    Call<AcceptedTripResponse> getAcceptedTrip(@Path("id") Long clientId);
+
+    @GET("trip/get-waiting-trip-by-passenger-id/{id}")
     Call<ListTripResponse> getWaitingTripByPassengerId(@Path("id") Long clientId);
 
     Call<Status> requestFinishPassenger(@Body ClientTripDTO clientTrip);
 
     @POST("trip/finish/{id}")
     Call<Status> finishTrip(@Path("id") Long id);
+    @POST("trip/cancel/{id}")
+    Call<Status> driverCancelTrip(Long id);
+
+    @POST("clienttrip/cancel/{tripId}/{clientId}")
+    Call<Status> passengerCancelTrip(@Path("tripId") Long id, @Path("clientId") Long clientId);
 }

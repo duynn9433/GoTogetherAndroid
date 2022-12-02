@@ -101,6 +101,7 @@ public class ClientTripRepo {
                         status.postValue(Constants.FAIL);
                     }
                 } else {
+                    message.postValue("Dữ liệu trả về không hợp lệ");
                     status.postValue(Constants.FAIL);
                 }
             }

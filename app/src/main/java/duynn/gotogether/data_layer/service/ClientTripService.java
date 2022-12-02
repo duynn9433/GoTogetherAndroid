@@ -26,4 +26,7 @@ public interface ClientTripService {
     Call<ClientTripResponse> update(@Body ClientTripDTO clientTripDTO);
     @POST("clienttrip/finish")
     Call<Status> finishTrip(@Body PassengerFinishRequest passengerFinishRequest);
+
+    @POST("clienttrip/cancel/{tripId}/{clientId}")
+    Call<Status> passengerCancelTrip(@Path("tripId") Long id, @Path("clientId") Long clientId);
 }
