@@ -10,4 +10,7 @@
     <color name="red">#FF0000</color>
     <color name="gray">#B5B5B5</color>
     <color name="light_blue">#00b0ff</color>
+    <color name="green">#4CAF50</color>
+    <color name="receive_msg_color">#FFFFFF</color>
+    <color name="send_msg_color">#fcffff</color>
 </resources>

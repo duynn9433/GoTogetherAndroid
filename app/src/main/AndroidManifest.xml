@@ -26,23 +26,26 @@
             android:usesCleartextTraffic="true"
             tools:targetApi="31">
         <activity
-                android:name=".ui_layer.activity.execute_route.client_trip.PassengerActivity"
-                android:theme="@style/Theme.AppCompat.Dialog"
-                android:label="Danh sách hành khách"
+                android:name=".ui_layer.activity.chat.ChatActivity"
                 android:exported="false"/>
+        <activity
+                android:name=".ui_layer.activity.execute_route.client_trip.PassengerActivity"
+                android:exported="false"
+                android:label="Danh sách hành khách"
+                android:theme="@style/Theme.AppCompat.Dialog"/>
         <activity
                 android:name=".ui_layer.activity.execute_route.DriverFinishActivity"
-                android:theme="@style/Theme.AppCompat.Dialog"
+                android:exported="false"
                 android:label="Hoàn thành chuyến đi"
-                android:exported="false"/>
+                android:theme="@style/Theme.AppCompat.Dialog"/>
         <activity
                 android:name=".ui_layer.activity.execute_route.PassengerFinishActivity"
+                android:excludeFromRecents="true"
+                android:exported="false"
+                android:label="Hoàn thành chuyến đi"
                 android:launchMode="singleTask"
                 android:taskAffinity=""
-                android:excludeFromRecents="true"
-                android:theme="@style/Theme.AppCompat.Dialog"
-                android:label="Hoàn thành chuyến đi"
-                android:exported="false"/>
+                android:theme="@style/Theme.AppCompat.Dialog"/>
 
         <meta-data
                 android:name="com.google.android.geo.API_KEY"
@@ -101,10 +104,11 @@
                 android:name=".ui_layer.service.TrackerForPassengerService"
                 android:exported="false"
                 android:foregroundServiceType="location"/>
+
         <receiver
                 android:name=".ui_layer.activity.execute_route.geofence.GeofenceBroadcastReceiver"
                 android:enabled="true"
-                android:exported="true"></receiver>
+                android:exported="true"/>
 
         <activity
                 android:name=".ui_layer.activity.PermissionActivity"

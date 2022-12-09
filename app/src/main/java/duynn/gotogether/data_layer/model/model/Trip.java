@@ -29,7 +29,7 @@ public class Trip implements Serializable {
     private Place endPlace;
 
     @SerializedName("stop_places")
-    private List<Place> listStopPlace;
+    private List<TripStopPlace> listStopPlace;
 
     @SerializedName("start_time")
     

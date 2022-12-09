@@ -5,12 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui_layer.fragment.inbox.InboxFragment">
-
-    <TextView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/swipeRefershLayout">
+<LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="inbox" />
+        android:orientation="vertical">
     <LinearLayout
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <Button
@@ -33,8 +37,14 @@
                 android:layout_height="wrap_content"
                 android:text="b3"
                 android:id="@+id/b3"/>
+
     </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/user_recycler_view"
+            tools:listitem="@layout/msg_user_item"/>
 
-
-
+</LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </FrameLayout>

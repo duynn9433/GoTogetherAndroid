@@ -83,6 +83,7 @@ public class Constants {
     public static final String START_DISTANCE = "START_DISTANCE";
     public static final String END_DISTANCE = "END_DISTANCE";
     public static final int EXECUTE_TRIP_REQUEST_CODE = 102;
+    public static final String CLIENT = "CLIENT";
 
     public static String TRIPS = "TRIPS";
     public static final String GOONG_PLACE_DETAIL_RESULT = "GOONG_PLACE_DETAIL_RESULT";

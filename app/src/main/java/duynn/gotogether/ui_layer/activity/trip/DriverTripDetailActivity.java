@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import duynn.gotogether.data_layer.model.model.ClientTrip;
 import duynn.gotogether.data_layer.model.model.Trip;
+import duynn.gotogether.data_layer.model.model.TripStopPlace;
 import duynn.gotogether.databinding.ActivityDriverTripDetailBinding;
 import duynn.gotogether.domain_layer.CalendarConvertUseCase;
 import duynn.gotogether.domain_layer.ToastUseCase;
@@ -17,6 +18,7 @@ import duynn.gotogether.ui_layer.activity.publish_route.StopPlaceRecyclerViewAda
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DriverTripDetailActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -96,7 +98,9 @@ public class DriverTripDetailActivity extends AppCompatActivity implements Swipe
 
     private void initStopPlaceRV() {
         stopPlaceRecyclerViewAdapter = new StopPlaceRecyclerViewAdapter();
-        stopPlaceRecyclerViewAdapter.setListItem(trip.getListStopPlace());
+        stopPlaceRecyclerViewAdapter.setListItem(trip.getListStopPlace().stream()
+                .map(TripStopPlace::getPlace)
+                .collect(Collectors.toList()));
         binding.tripStopList.setAdapter(stopPlaceRecyclerViewAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         binding.tripStopList.setLayoutManager(linearLayoutManager);

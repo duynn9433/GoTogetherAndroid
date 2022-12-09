@@ -216,19 +216,21 @@ public class YourRidesFragment extends Fragment implements SwipeRefreshLayout.On
         
         mViewModel.status.observe(getViewLifecycleOwner(), status -> {
             if(status.equals(Constants.SUCCESS)){
-                if(mViewModel.message.getValue().equals(Constants.START_TRIP_SUCCESS)){
-                    //go to tracking activity
-                    Intent intent = new Intent(getActivity(), TrackingMapsActivity.class);
-                    Trip trip = mViewModel.currentTrip.getValue();
-                    List<ClientTrip> clientTrips = mViewModel.clientTrips.getValue();
-                    Log.d(TAG, "observeData: - trip"+trip);
-                    Log.d(TAG, "observeData: -clienttrip "+clientTrips);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable(Constants.TRIP, trip);
-                    bundle.putSerializable(Constants.LIST_CLIENT_TRIP, new ArrayList<>(clientTrips));
-                    bundle.putString(Constants.ROLE, Constants.DRIVER);
-                    intent.putExtra(Constants.Bundle, bundle);
-                    startActivityForResult(intent,Constants.EXECUTE_TRIP_REQUEST_CODE);
+                if(mViewModel.message.getValue() != null){
+                    if(mViewModel.message.getValue().equals(Constants.START_TRIP_SUCCESS)){
+                        //go to tracking activity
+                        Intent intent = new Intent(getActivity(), TrackingMapsActivity.class);
+                        Trip trip = mViewModel.currentTrip.getValue();
+                        List<ClientTrip> clientTrips = mViewModel.clientTrips.getValue();
+                        Log.d(TAG, "observeData: - trip"+trip);
+                        Log.d(TAG, "observeData: -clienttrip "+clientTrips);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(Constants.TRIP, trip);
+                        bundle.putSerializable(Constants.LIST_CLIENT_TRIP, new ArrayList<>(clientTrips));
+                        bundle.putString(Constants.ROLE, Constants.DRIVER);
+                        intent.putExtra(Constants.Bundle, bundle);
+                        startActivityForResult(intent,Constants.EXECUTE_TRIP_REQUEST_CODE);
+                    }
                 }
             }
         });

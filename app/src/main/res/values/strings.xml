@@ -61,4 +61,12 @@
     <string name="comment">Nhận xét</string>
     <string name="send">Gửi</string>
     <string name="waiting_trip">Danh sách chờ chấp nhận</string>
+    <string name="app_title">Go Together</string>
+    <string name="login">Đăng nhập</string>
+    <string name="username">Tài khoản</string>
+    <string name="password">Mật khẩu</string>
+    <string name="forgot_password">Quên mật khẩu?</string>
+    <string name="register">Đăng kí</string>
+    <string name="other_login">Hoặc đăng kí với tài khoản mạng xã hội</string>
+    <string name="msg_content">Nội dung tin nhắn</string>
 </resources>

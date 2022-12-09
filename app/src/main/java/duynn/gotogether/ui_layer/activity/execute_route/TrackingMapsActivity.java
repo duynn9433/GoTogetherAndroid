@@ -34,6 +34,7 @@ import com.google.android.gms.maps.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -45,6 +46,7 @@ import duynn.gotogether.data_layer.direction_helpers.TaskLoadedCallback;
 import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Place;
 import duynn.gotogether.data_layer.model.model.ClientTrip;
 import duynn.gotogether.data_layer.model.model.Trip;
+import duynn.gotogether.data_layer.model.model.TripStopPlace;
 import duynn.gotogether.data_layer.repository.SessionManager;
 import duynn.gotogether.databinding.ActivityTrackingMapsBinding;
 import duynn.gotogether.domain_layer.*;
@@ -289,7 +291,7 @@ public class TrackingMapsActivity extends FragmentActivity
         )).title("Start").snippet(trip.getStartPlace().getName());
         markerOptionsList.add(startMarker);
         for(int i = 0 ;i<trip.getListStopPlace().size();i++){
-            Place place = trip.getListStopPlace().get(i);
+            Place place = trip.getListStopPlace().get(i).getPlace();
             duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location location =
                     place.getGeometry().getLocation();
             MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(
@@ -404,7 +406,8 @@ public class TrackingMapsActivity extends FragmentActivity
                                             myLocation,
                                             trip.getStartPlace(),
                                             trip.getEndPlace(),
-                                            trip.getListStopPlace(),getGoogleMapTravelMode(trip));
+                                            trip.getListStopPlace().stream().map(TripStopPlace::getPlace).collect(Collectors.toList()),
+                                            getGoogleMapTravelMode(trip));
                                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
 //                                    intent.setPackage("com.google.android.apps.maps");
                                     //TODO: go to google map
@@ -421,9 +424,13 @@ public class TrackingMapsActivity extends FragmentActivity
         String vehicle = getVehicle(trip);
         new FetchURL(TrackingMapsActivity.this)
                 .execute(GetDirectionUrlUseCase.getMultiStopDirectionUrl(
-                        trip.getStartPlace(),
-                        trip.getEndPlace(),
-                        trip.getListStopPlace(), vehicle), vehicle);
+                            trip.getStartPlace(),
+                            trip.getEndPlace(),
+                            trip.getListStopPlace().stream()
+                                    .map(TripStopPlace::getPlace)
+                                    .collect(Collectors.toList()),
+                            vehicle)
+                        , vehicle);
     }
 
     private void drawMarker() {

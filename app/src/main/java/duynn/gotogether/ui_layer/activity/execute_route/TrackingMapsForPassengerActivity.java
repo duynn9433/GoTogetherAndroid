@@ -28,6 +28,7 @@ import duynn.gotogether.data_layer.direction_helpers.FetchURL;
 import duynn.gotogether.data_layer.direction_helpers.TaskLoadedCallback;
 import duynn.gotogether.data_layer.model.model.ClientTrip;
 import duynn.gotogether.data_layer.model.model.Trip;
+import duynn.gotogether.data_layer.model.model.TripStopPlace;
 import duynn.gotogether.databinding.ActivityTrackingMapsForPassengerBinding;
 import duynn.gotogether.domain_layer.*;
 import duynn.gotogether.domain_layer.common.Constants;
@@ -38,6 +39,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @AndroidEntryPoint
 public class TrackingMapsForPassengerActivity extends FragmentActivity
@@ -265,9 +267,13 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
         String vehicle = getVehicle(trip);
         new FetchURL(TrackingMapsForPassengerActivity.this)
                 .execute(GetDirectionUrlUseCase.getMultiStopDirectionUrl(
-                        trip.getStartPlace(),
-                        trip.getEndPlace(),
-                        trip.getListStopPlace(), vehicle), vehicle);
+                            trip.getStartPlace(),
+                            trip.getEndPlace(),
+                            trip.getListStopPlace().stream()
+                                    .map(TripStopPlace::getPlace)
+                                    .collect(Collectors.toList())
+                            , vehicle)
+                        , vehicle);
     }
 
     private String getGoogleMapTravelMode(Trip trip) {

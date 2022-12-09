@@ -22,14 +22,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import duynn.gotogether.R;
 import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.GoongPlaceDetailResult;
 import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Place;
-import duynn.gotogether.data_layer.model.model.Client;
-import duynn.gotogether.data_layer.model.model.Transport;
-import duynn.gotogether.data_layer.model.model.TransportWithoutOwner;
-import duynn.gotogether.data_layer.model.model.Trip;
+import duynn.gotogether.data_layer.model.model.*;
 import duynn.gotogether.data_layer.repository.SessionManager;
 import duynn.gotogether.databinding.ActivityPublishBinding;
 import duynn.gotogether.domain_layer.common.Constants;
@@ -68,7 +66,7 @@ public class PublishActivity extends AppCompatActivity {
     private void initTransportSpinner() {
         Client client = SessionManager.getInstance(this).getClient();
         List<TransportWithoutOwner> transportList = client.getTransports();
-        TransportSpinnerAdapter transportSpinnerAdapter = new TransportSpinnerAdapter(transportList,this);
+        TransportSpinnerAdapter transportSpinnerAdapter = new TransportSpinnerAdapter(transportList, this);
         binding.transportSpinner.setAdapter(transportSpinnerAdapter);
         binding.transportSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -99,11 +97,27 @@ public class PublishActivity extends AppCompatActivity {
                         try {
                             Trip trip = publishViewModel.getTripMutableLiveData().getValue();
                             assert trip != null;
-                            trip.setEmptySeat(Integer.parseInt(s));
+                            trip.setTotalSeat(Integer.parseInt(s));
                             publishViewModel.getTripMutableLiveData().setValue(trip);
-                        }catch (NumberFormatException e){
-                            binding.emptySeat.setError("Số ghế trống phải là số");
+                        } catch (NumberFormatException e) {
+                            binding.emptySeat.setError("Số ghế phải là số");
                         }
+                    }
+                }
+            }
+        });
+        binding.description.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    String s = binding.description.getText().toString();
+                    if (s.isEmpty()) {
+//                    binding.emptySeat.setError("Không được để trống");
+                    } else {
+                        Trip trip = publishViewModel.getTripMutableLiveData().getValue();
+                        assert trip != null;
+                        trip.setDescription(s);
+                        publishViewModel.getTripMutableLiveData().setValue(trip);
                     }
                 }
             }
@@ -141,12 +155,12 @@ public class PublishActivity extends AppCompatActivity {
             binding.startDate.setText(
                     new SimpleDateFormat("dd-MM-yyyy  HH:mm")
                             .format(trip.getStartTime().getTime()));
-            binding.emptySeat.setText(trip.getEmptySeat().toString());
+            binding.emptySeat.setText(trip.getTotalSeat().toString());
             binding.pricePerKm.setText(trip.getPricePerKm().toString());
         });
 
         publishViewModel.getStatus().observe(this, status -> {
-            if(status != ""){
+            if (status != "") {
                 if (Objects.equals(status, Constants.SUCCESS)) {
                     Toast.makeText(this, "Đăng thành công", Toast.LENGTH_SHORT).show();
                     //TODO: hen gio bao thuc
@@ -197,14 +211,17 @@ public class PublishActivity extends AppCompatActivity {
                 assert trip != null;
                 trip.setEndPlace(place);
                 Objects.requireNonNull(publishViewModel.getTripMutableLiveData()).setValue(trip);
-            } else if (requestCode == Constants.STOP_LOCATION_REQUEST_CODE){
+            } else if (requestCode == Constants.STOP_LOCATION_REQUEST_CODE) {
                 Bundle bundle = data.getBundleExtra(Constants.Bundle);
                 Place place = ((GoongPlaceDetailResult) bundle
                         .getSerializable(Constants.GOONG_PLACE_DETAIL_RESULT))
                         .getResult();
                 Trip trip = publishViewModel.getTripMutableLiveData().getValue();
                 assert trip != null;
-                trip.getListStopPlace().add(place);
+                trip.getListStopPlace().add(TripStopPlace.builder()
+                        .position(trip.getListStopPlace().size())
+                        .place(place)
+                        .build());
                 Objects.requireNonNull(publishViewModel.getTripMutableLiveData()).setValue(trip);
             }
         }
@@ -252,7 +269,9 @@ public class PublishActivity extends AppCompatActivity {
         stopPlaceRecyclerViewAdapter.setItemClickListener(this::onItemClick);
         //observer modelview
         publishViewModel.getTripMutableLiveData().observe(this, trip -> {
-            stopPlaceRecyclerViewAdapter.setListItem(trip.getListStopPlace());
+            stopPlaceRecyclerViewAdapter.setListItem(trip.getListStopPlace().stream()
+                    .map(TripStopPlace::getPlace)
+                    .collect(Collectors.toList()));
             stopPlaceRecyclerViewAdapter.notifyDataSetChanged();
         });
 
@@ -263,7 +282,7 @@ public class PublishActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Xoá điểm dừng");
         builder.setMessage("Bạn muốn xoá điểm dừng "
-                + publishViewModel.getTripMutableLiveData().getValue().getListStopPlace().get(position).getName() + " ?");
+                + publishViewModel.getTripMutableLiveData().getValue().getListStopPlace().get(position).getPlace().getName() + " ?");
         builder.setPositiveButton("Đồng ý", (dialog, which) -> {
             Trip trip = publishViewModel.getTripMutableLiveData().getValue();
             assert trip != null;

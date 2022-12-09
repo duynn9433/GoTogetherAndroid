@@ -55,7 +55,7 @@ public interface TripService {
     @POST("trip/finish/{id}")
     Call<Status> finishTrip(@Path("id") Long id);
     @POST("trip/cancel/{id}")
-    Call<Status> driverCancelTrip(Long id);
+    Call<Status> driverCancelTrip(@Path("id") Long id);
 
     @POST("clienttrip/cancel/{tripId}/{clientId}")
     Call<Status> passengerCancelTrip(@Path("tripId") Long id, @Path("clientId") Long clientId);

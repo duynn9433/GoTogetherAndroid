@@ -4,12 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import duynn.gotogether.data_layer.model.model.Trip;
+import duynn.gotogether.data_layer.model.model.TripStopPlace;
 import duynn.gotogether.databinding.ActivityPassengerTripDetailBinding;
 import duynn.gotogether.domain_layer.CalendarConvertUseCase;
 import duynn.gotogether.domain_layer.common.Constants;
 import duynn.gotogether.ui_layer.activity.publish_route.StopPlaceRecyclerViewAdapter;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class PassengerTripDetailActivity extends AppCompatActivity {
     private ActivityPassengerTripDetailBinding binding;
@@ -44,7 +46,7 @@ public class PassengerTripDetailActivity extends AppCompatActivity {
     private void initStopPlaceRV() {
         stopPlaceRecyclerViewAdapter = new StopPlaceRecyclerViewAdapter();
         if(trip != null && trip.getListStopPlace() != null){
-            stopPlaceRecyclerViewAdapter.setListItem(trip.getListStopPlace());
+            stopPlaceRecyclerViewAdapter.setListItem(trip.getListStopPlace().stream().map(TripStopPlace::getPlace).collect(Collectors.toList()));
         }else{
             stopPlaceRecyclerViewAdapter.setListItem(new ArrayList<>());
         }

@@ -60,14 +60,6 @@ public class PassengerFinishActivity extends AppCompatActivity {
             setResult(RESULT_OK);
             finish();
         });
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                binding.send.performClick();
-            }
-        }, 2000);
     }
 
 }
