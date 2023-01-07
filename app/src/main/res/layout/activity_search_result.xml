@@ -27,9 +27,11 @@
                 android:textColor="@color/teal_200"
                 android:layout_gravity="center"/>
     </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
             android:padding="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            tools:listitem="@layout/search_trip_item"
             android:id="@+id/search_result_recycler_view"/>
 </LinearLayout>

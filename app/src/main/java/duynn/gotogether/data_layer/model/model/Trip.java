@@ -1,17 +1,13 @@
 package duynn.gotogether.data_layer.model.model;
 
 import com.google.gson.annotations.SerializedName;
-
-import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Place;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 @Data

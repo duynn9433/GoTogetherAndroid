@@ -17,11 +17,16 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ClientDTO extends UserDTO implements Serializable {
     private static final long serialVersionUID = 5L;
-    private Location location;
+    @SerializedName("lat")
+    private double lat;
+    @SerializedName("lng")
+    private double lng;
     @SerializedName("fcm_token")
     private String fcmToken;
 
     @SerializedName("is_in_trip")
     private boolean isInTrip;
+
+    private Double rate;
 }
 

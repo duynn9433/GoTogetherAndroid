@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.*;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -24,11 +25,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.maps.android.SphericalUtil;
 import dagger.hilt.android.AndroidEntryPoint;
 import duynn.gotogether.R;
-import duynn.gotogether.data_layer.direction_helpers.FetchURL;
-import duynn.gotogether.data_layer.direction_helpers.TaskLoadedCallback;
-import duynn.gotogether.data_layer.model.model.ClientTrip;
-import duynn.gotogether.data_layer.model.model.Trip;
-import duynn.gotogether.data_layer.model.model.TripStopPlace;
+import duynn.gotogether.data_layer.helper.direction_helpers.FetchURL;
+import duynn.gotogether.data_layer.helper.direction_helpers.TaskLoadedCallback;
+import duynn.gotogether.data_layer.model.dto.execute_trip.ClientLocationDTO;
+import duynn.gotogether.data_layer.model.model.*;
 import duynn.gotogether.databinding.ActivityTrackingMapsForPassengerBinding;
 import duynn.gotogether.domain_layer.*;
 import duynn.gotogether.domain_layer.common.Constants;
@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 
 @AndroidEntryPoint
 public class TrackingMapsForPassengerActivity extends FragmentActivity
-        implements TaskLoadedCallback,OnMapReadyCallback, EasyPermissions.PermissionCallbacks {
+        implements TaskLoadedCallback, OnMapReadyCallback, EasyPermissions.PermissionCallbacks {
     private final String TAG = TrackingMapsForPassengerActivity.class.getSimpleName();
     private TrackingMapsForPassengerViewModel viewModel;
     private TrackerForPassengerService trackerService;
@@ -52,6 +52,7 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
     private FusedLocationProviderClient fusedLocationClient;
     private Polyline directionPolyline;
     boolean mBound = false;
+    boolean isFinish = false;
     private MarkerOptions startMarker, endMarker;
 
     /**
@@ -79,6 +80,7 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
         distanceMap.clear();
         Log.d(TAG, "disMap create: " + distanceMap.toString());
         isInCar = false;
+        isFinish = false;
         connection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName className,
@@ -88,6 +90,7 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
                 trackerService = binder.getService();
                 mBound = true;
             }
+
             @Override
             public void onServiceDisconnected(ComponentName arg0) {
                 mBound = false;
@@ -104,14 +107,14 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
             ClientTrip clientTrip = (ClientTrip) bundle.getSerializable(Constants.CLIENT_TRIP);
             viewModel.trip.setValue(trip);
             viewModel.clientTrip.setValue(clientTrip);
-//            Log.d(TAG, "onCreate - trip: " + trip.toString());
-//            Log.d(TAG, "onCreate - clientTrip: " + clientTrip.toString());
+            Log.d(TAG, "onCreate - trip: " + trip.toString());
+            Log.d(TAG, "onCreate - clientTrip: " + clientTrip.toString());
             //marker
             initMarker();
         }
         // Bind to TrackerService
         Intent intent = new Intent(this, TrackerForPassengerService.class);
-        intent.putExtra(Constants.Bundle,bundle);
+        intent.putExtra(Constants.Bundle, bundle);
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
     }
 
@@ -136,33 +139,33 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
             onStopBtnClick(v);
         });
         binding.call.setOnClickListener(v -> {
-            //TODo:  call
+//            //TODo:  call
 //            Intent intent = new Intent(Intent.ACTION_DIAL);
-//            intent.setData(Uri.parse("tel:" + viewModel.trip.getValue().getDriver().getContactInfomation().getPhoneNumber()));
+//            intent.setData(Uri.parse("tel:" +
+//                    viewModel.trip.getValue().getDriver().getContactInfomation().getPhoneNumber()));
 //            startActivity(intent);
-            Intent intent = new Intent(this, PassengerFinishActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString(Constants.DISTANCE, "53.33");
-            bundle.putString(Constants.PRICE, "5000");
-            bundle.putString(Constants.PASSENGER_NUM, "1");
-            intent.putExtra(Constants.Bundle, bundle);
-            startActivity(intent);
+            goToPassengerFinishActivity();
+//            Intent intent = new Intent(this, PassengerFinishActivity.class);
+//            Bundle bundle = new Bundle();
+//            bundle.putString(Constants.DISTANCE, "53.33");
+//            bundle.putString(Constants.PRICE, "5000");
+//            bundle.putString(Constants.PASSENGER_NUM, "1");
+//            intent.putExtra(Constants.Bundle, bundle);
+//            startActivity(intent);
 
         });
     }
 
     private void initMarker() {
         Trip trip = viewModel.trip.getValue();
-        duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location startLocation =
-                trip.getStartPlace().getGeometry().getLocation();
+        Place startPlace = trip.getStartPlace();
         startMarker = new MarkerOptions().position(new LatLng(
-                startLocation.getLat(), startLocation.getLng()
-        )).title("Start");
-        duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location endLocation =
-                trip.getEndPlace().getGeometry().getLocation();
+                startPlace.getLat(), startPlace.getLng()
+        )).title("Bắt đầu");
+        Place endPlace = trip.getEndPlace();
         endMarker = new MarkerOptions().position(new LatLng(
-                endLocation.getLat(), endLocation.getLng()
-        )).title("End");
+                endPlace.getLat(), endPlace.getLng()
+        )).title("Kết thúc");
     }
 
 
@@ -203,7 +206,7 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
 
     private void sendActionCommandToService(String action) {
         Intent intent = new Intent(this, TrackerForPassengerService.class);
-        intent.putExtra(Constants.Bundle,viewModel.bundle.getValue());
+        intent.putExtra(Constants.Bundle, viewModel.bundle.getValue());
         intent.setAction(action);
         startService(intent);
     }
@@ -251,34 +254,34 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                            @Override
-                            public void onSuccess(Location location) {
-                                // Got last known location. In some rare situations this can be null.
-                                if (location != null) {
-                                    LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 15));
-                                }
-                            }
-                        });
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLatLng, 15));
+                        }
+                    }
+                });
         //direction
-//        map.addMarker(startMarker);
-//        map.addMarker(endMarker);
+        map.addMarker(startMarker);
+        map.addMarker(endMarker);
         Trip trip = viewModel.trip.getValue();
         String vehicle = getVehicle(trip);
         new FetchURL(TrackingMapsForPassengerActivity.this)
                 .execute(GetDirectionUrlUseCase.getMultiStopDirectionUrl(
-                            trip.getStartPlace(),
-                            trip.getEndPlace(),
-                            trip.getListStopPlace().stream()
-                                    .map(TripStopPlace::getPlace)
-                                    .collect(Collectors.toList())
-                            , vehicle)
+                                trip.getStartPlace(),
+                                trip.getEndPlace(),
+                                trip.getListStopPlace().stream()
+                                        .map(TripStopPlace::getPlace)
+                                        .collect(Collectors.toList())
+                                , vehicle)
                         , vehicle);
     }
 
     private String getGoogleMapTravelMode(Trip trip) {
         String vehicle = Constants.GOOGLE_MAPS_TRAVEL_MODE_DRIVING;
-        switch (trip.getTransport().getTransportType()){
+        switch (trip.getTransport().getTransportType()) {
             case CAR:
                 vehicle = Constants.GOOGLE_MAPS_TRAVEL_MODE_DRIVING;
                 break;
@@ -294,9 +297,10 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
         }
         return vehicle;
     }
+
     private String getVehicle(Trip trip) {
         String vehicle = Constants.VEHICLE_BIKE;
-        switch (trip.getTransport().getTransportType()){
+        switch (trip.getTransport().getTransportType()) {
             case CAR:
                 vehicle = Constants.VEHICLE_CAR;
                 break;
@@ -344,7 +348,7 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
                     viewModel.endTime.postValue(time);
 //                    Log.d(TAG, "observeTrackerService: " + endTime);
                 }
-                if(time != 0L){
+                if (time != 0L) {
                     showBiggerPicture();
                 }
             });
@@ -353,32 +357,33 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
         trackerService.getDriverLocation().observe(this, driverLocation -> {
             Log.d(TAG, "disMap: " + distanceMap.toString());
             if (driverLocation != null && driverLocation.getLat() != 0 && driverLocation.getLng() != 0) {
-                duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location passengerLocation
-                        = trackerService.getPassengerLocation().getValue();
-                if(passengerLocation != null){
+                Client passengerLocation = trackerService.getPassengerLocation().getValue();
+                if (passengerLocation != null) {
                     //check trung diem
 
                     Double radius = SphericalUtil.computeDistanceBetween(
                             new LatLng(driverLocation.getLat(), driverLocation.getLng()),
                             new LatLng(passengerLocation.getLat(), passengerLocation.getLng()));
-                    Log.d(TAG, "radius: "+radius+" \npassenger: " + passengerLocation.toString() + " - \ndriver:" +driverLocation.toString() );
-                    if(radius < Constants.GEOFENCE_RADIUS){
+//                    Log.d(TAG, "radius: "+radius+" \npassenger: " + passengerLocation.toString() + " - \ndriver:" +driverLocation.toString() );
+                    if (radius < Constants.GEOFENCE_RADIUS) {
                         Double distance = DistanceUseCase.calculateDistance(locationList);
                         distanceMap.putIfAbsent(Constants.START_DISTANCE, distance);
-                        Log.d(TAG, "disMapPutStart: " + distance + "\nradius:" + radius);
-                        if(!isInCar){
+//                        Log.d(TAG, "disMapPutStart: " + distance + "\nradius:" + radius);
+                        if (!isInCar) {
                             isInCar = true;
                             displayAlert();
                         }
                     }
-                    radius = SphericalUtil.computeDistanceBetween(
-                            new LatLng(driverLocation.getLat(), driverLocation.getLng()),
-                            new LatLng(viewModel.clientTrip.getValue().getDropOffPlace().getGeometry().getLocation().getLat(),
-                                    viewModel.clientTrip.getValue().getDropOffPlace().getGeometry().getLocation().getLng()));
-                    if(radius < Constants.GEOFENCE_RADIUS){
-                        Double distance = DistanceUseCase.calculateDistance(locationList);
-                        distanceMap.putIfAbsent(Constants.END_DISTANCE, distance);
-                        goToPassengerFinishActivity();
+                    if (viewModel.clientTrip.getValue().getDropOffPlace() != null) {
+                        radius = SphericalUtil.computeDistanceBetween(
+                                new LatLng(driverLocation.getLat(), driverLocation.getLng()),
+                                new LatLng(viewModel.clientTrip.getValue().getDropOffPlace().getLat(),
+                                        viewModel.clientTrip.getValue().getDropOffPlace().getLng()));
+                        if (radius < Constants.GEOFENCE_RADIUS) {
+                            Double distance = DistanceUseCase.calculateDistance(locationList);
+                            distanceMap.putIfAbsent(Constants.END_DISTANCE, distance);
+                            goToPassengerFinishActivity();
+                        }
                     }
                 }
             }
@@ -405,28 +410,53 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
     }
 
     private void goToPassengerFinishActivity() {
-        Intent intent = new Intent(this, PassengerFinishActivity.class);
-        ClientTrip clientTrip = viewModel.clientTrip.getValue();
-        Trip trip = viewModel.trip.getValue();
-        Bundle bundle = new Bundle();
-        assert clientTrip != null;
-        bundle.putString(Constants.CLIENT_TRIP_ID, clientTrip.getId()+"");
-        assert trip != null;
-        bundle.putString(Constants.DRIVER_ID, trip.getDriver().getId()+"");
-        Double distance = distanceMap.get(Constants.END_DISTANCE) - distanceMap.get(Constants.START_DISTANCE);
-        bundle.putString(Constants.DISTANCE, DistanceUseCase.formatToString2digitEndPoint(distance));
-        bundle.putString(Constants.PRICE,
-                DistanceUseCase.formatToString2digitEndPoint(trip.getPricePerKm()*distance*clientTrip.getNumOfPeople()));
-        bundle.putString(Constants.PASSENGER_NUM, clientTrip.getNumOfPeople() + "");
-        intent.putExtra(Constants.Bundle, bundle);
-        startActivityForResult(intent, Constants.PASSENGER_FINISH_TRIP_REQUEST_CODE);
+        if (isFinish) {
+//            return;
+        }
+        if (distanceMap.get(Constants.END_DISTANCE) != null && distanceMap.get(Constants.START_DISTANCE) != null) {
+            Intent intent = new Intent(this, PassengerFinishActivity.class);
+            ClientTrip clientTrip = viewModel.clientTrip.getValue();
+            Trip trip = viewModel.trip.getValue();
+            Bundle bundle = new Bundle();
+            assert clientTrip != null;
+            bundle.putString(Constants.CLIENT_TRIP_ID, clientTrip.getId() + "");
+            assert trip != null;
+            bundle.putString(Constants.DRIVER_ID, trip.getDriver().getId() + "");
+            Double distance = distanceMap.get(Constants.END_DISTANCE) - distanceMap.get(Constants.START_DISTANCE);
+            bundle.putString(Constants.DISTANCE, DistanceUseCase.formatToString2digitEndPoint(distance));
+            bundle.putString(Constants.PRICE,
+                    DistanceUseCase.formatToString2digitEndPoint(trip.getPricePerKm() * distance * clientTrip.getNumOfPeople()));
+            bundle.putString(Constants.PASSENGER_NUM, clientTrip.getNumOfPeople() + "");
+            intent.putExtra(Constants.Bundle, bundle);
+            isFinish = true;
+            startActivityForResult(intent, Constants.PASSENGER_FINISH_TRIP_REQUEST_CODE);
+        }
+        else {
+            Intent intent = new Intent(this, PassengerFinishActivity.class);
+            ClientTrip clientTrip = viewModel.clientTrip.getValue();
+            Trip trip = viewModel.trip.getValue();
+            Bundle bundle = new Bundle();
+            assert clientTrip != null;
+            bundle.putString(Constants.CLIENT_TRIP_ID, clientTrip.getId() + "");
+            assert trip != null;
+            bundle.putString(Constants.DRIVER_ID, trip.getDriver().getId() + "");
+//            Double distance = distanceMap.get(Constants.END_DISTANCE) - distanceMap.get(Constants.START_DISTANCE);
+            Double distance = 5.0;
+            bundle.putString(Constants.DISTANCE, DistanceUseCase.formatToString2digitEndPoint(distance));
+            bundle.putString(Constants.PRICE,
+                    DistanceUseCase.formatToString2digitEndPoint(trip.getPricePerKm() * distance * clientTrip.getNumOfPeople()));
+            bundle.putString(Constants.PASSENGER_NUM, clientTrip.getNumOfPeople() + "");
+            intent.putExtra(Constants.Bundle, bundle);
+            isFinish = true;
+            startActivityForResult(intent, Constants.PASSENGER_FINISH_TRIP_REQUEST_CODE);
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == Constants.PASSENGER_FINISH_TRIP_REQUEST_CODE){
-            if(resultCode == RESULT_OK){
+        if (requestCode == Constants.PASSENGER_FINISH_TRIP_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
                 binding.btnStopTracking.performClick();
                 finish();
             }
@@ -441,8 +471,8 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
         map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 100), 2000, null);
     }
 
-    private void displayResult(){
-        Double distance =DistanceUseCase.calculateDistance(locationList);
+    private void displayResult() {
+        Double distance = DistanceUseCase.calculateDistance(locationList);
         String distanceS = DistanceUseCase.formatToString2digitEndPoint(distance);
         String time = TimeUseCase.stringElapsedTime(viewModel.startTime.getValue(), viewModel.endTime.getValue());
         Bundle bundle = new Bundle();
@@ -464,8 +494,8 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
         }
     }
 
-    private void followPolyline(){
-        if(!locationList.isEmpty()){
+    private void followPolyline() {
+        if (!locationList.isEmpty()) {
             CameraUpdate cu = CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder()
                     .target(locationList.get(locationList.size() - 1))
                     .zoom(Constants.DEFAULT_ZOOM_FOR_TRACKER)
@@ -478,7 +508,7 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
 
     @Override
     public void onTaskDone(Object... values) {
-        if(directionPolyline != null){
+        if (directionPolyline != null) {
             directionPolyline.remove();
         }
         directionPolyline = map.addPolyline((PolylineOptions) values[0]);

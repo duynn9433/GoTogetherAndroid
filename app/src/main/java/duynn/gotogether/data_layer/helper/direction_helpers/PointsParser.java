@@ -1,15 +1,13 @@
-package duynn.gotogether.data_layer.direction_helpers;
+package duynn.gotogether.data_layer.helper.direction_helpers;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import androidx.core.content.res.ResourcesCompat;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import duynn.gotogether.R;
 import org.json.JSONObject;
 
 import java.util.ArrayList;

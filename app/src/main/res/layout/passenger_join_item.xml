@@ -7,21 +7,41 @@
         app:cardCornerRadius="20dp"
         app:cardPreventCornerOverlap="true"
         app:cardUseCompatPadding="true">
-
+<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
     <LinearLayout
             android:layout_width="match_parent"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:id="@+id/autocomplete_layout"
             android:padding="8dp">
 
-        <TextView
-                android:id="@+id/passenger_name"
-                android:layout_width="wrap_content"
+        <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Ten hanh khach"
-                android:textSize="18sp"
-                android:textStyle="bold"/>
+                android:orientation="horizontal">
+            <TextView
+                    android:id="@+id/passenger_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ten hanh khach"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+            <RatingBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rating_bar"
+                    android:layout_marginLeft="5dp"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:isIndicator="true"
+                    android:layout_gravity="center"
+                    android:numStars="5"
+                    android:rating="3"
+                    android:stepSize="0.1"/>
+        </LinearLayout>
 
         <TextView
                 android:id="@+id/from"
@@ -29,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:autoSizeTextType="uniform"
                 android:text="Thanh pho Phuc yen, vinh phuc"
-                android:textSize="16sp"/>
+                android:textSize="14sp"/>
 
         <TextView
                 android:id="@+id/to"
@@ -37,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:autoSizeTextType="uniform"
                 android:text="Thanh pho Phuc yen, vinh phuc"
-                android:textSize="16sp"/>
+                android:textSize="14sp"/>
 
         <TextView
                 android:id="@+id/time"
@@ -45,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:autoSizeTextType="uniform"
                 android:text="12:12"
-                android:textSize="16sp"/>
+                android:textSize="14sp"/>
 
         <TextView
                 android:id="@+id/num_of_seat"
@@ -53,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:autoSizeTextType="uniform"
                 android:text="123123"
-                android:textSize="16sp"/>
+                android:textSize="14sp"/>
 
         <TextView
                 android:id="@+id/price"
@@ -61,6 +81,24 @@
                 android:layout_height="wrap_content"
                 android:autoSizeTextType="uniform"
                 android:text="1321"
-                android:textSize="16sp"/>
+                android:textSize="14sp"/>
     </LinearLayout>
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_call_24"
+                android:id="@+id/call"/>
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/message"
+                android:id="@+id/message"/>
+    </LinearLayout>
+</LinearLayout>
 </androidx.cardview.widget.CardView>

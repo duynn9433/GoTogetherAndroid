@@ -68,11 +68,12 @@ public class InboxFragment extends Fragment {
 
     private void initRecyclerView() {
         List<Client> data = new ArrayList<>();
-//        data.add(Client.builder()
-//                        .id(1L)
-//                        .name("Duy")
-//                        .phone("0123456789")
-//                        .build());
+        data.add(Client.builder()
+                        .id(71L)
+                        .name("duy2")
+                        .phone("0123456789")
+                        .fcmToken("cJuhAVSzT5SvUM_yTBJiu9:APA91bEki9Ea2p1kjcVB9cVv-nzm_BSocM0WjzqDyoBMUXuswdYSBj7FAYydUHWettArZSoOLFBcd1a42xjY7xDQeASdYdap1bz4kQFOK3iHOF2y_KQ5eNVTX45i84OTprbtlPCPY5li")
+                        .build());
         userAdapter = new UserAdapter(getContext(), data);
         binding.userRecyclerView.setAdapter(userAdapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());

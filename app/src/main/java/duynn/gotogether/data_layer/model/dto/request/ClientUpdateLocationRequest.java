@@ -1,6 +1,6 @@
 package duynn.gotogether.data_layer.model.dto.request;
 
-import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location;
+import duynn.gotogether.data_layer.model.dto.execute_trip.ClientLocationDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,11 +13,11 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NewClientUpdateLocationRequest implements Serializable {
+public class ClientUpdateLocationRequest implements Serializable {
     public static final long serialVersionUID = 1L;
-    private Location location;
+    private ClientLocationDTO location;
     //for driver request
-    private List<Long> clientLocationIDs;
+    private List<Long> passengerIDs;
     //for client request
     private Long driverId;
 }

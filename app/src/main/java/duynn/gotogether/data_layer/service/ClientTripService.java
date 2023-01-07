@@ -7,6 +7,8 @@ import duynn.gotogether.data_layer.model.dto.request.PassengerFinishRequest;
 import duynn.gotogether.data_layer.model.dto.request.SearchTripRequest;
 import duynn.gotogether.data_layer.model.dto.response.ListTripResponse;
 import duynn.gotogether.data_layer.model.dto.response.TripResponse;
+import duynn.gotogether.data_layer.model.model.ClientTrip;
+import duynn.gotogether.data_layer.model.model.Comment;
 import duynn.gotogether.data_layer.model.model.Status;
 import duynn.gotogether.data_layer.model.model.Trip;
 import retrofit2.Call;
@@ -20,13 +22,18 @@ public interface ClientTripService {
     Call<ListClientTripResponse> getAll(@Path("id") Long id);
 
     @POST("clienttrip/regit")
-    Call<ClientTripResponse> regit(@Body ClientTripDTO clientTripDTO);
+    Call<ClientTrip> regit(@Body ClientTrip clientTrip);
 
+//    @POST("clienttrip/update")
+//    Call<ClientTripResponse> update(@Body ClientTripDTO clientTripDTO);
     @POST("clienttrip/update")
-    Call<ClientTripResponse> update(@Body ClientTripDTO clientTripDTO);
+    Call<ClientTrip> update(@Body ClientTrip clientTrip);
     @POST("clienttrip/finish")
-    Call<Status> finishTrip(@Body PassengerFinishRequest passengerFinishRequest);
+    Call<Status> finishTrip(@Body Comment comment);
 
     @POST("clienttrip/cancel/{tripId}/{clientId}")
     Call<Status> passengerCancelTrip(@Path("tripId") Long id, @Path("clientId") Long clientId);
+
+    @GET("clienttrip/get-client-trip-uncommented/{clientId}")
+    Call<duynn.gotogether.data_layer.model.dto.response.ListClientTripResponse> getClientTripUncommented(@Path("clientId") Long clientId);
 }

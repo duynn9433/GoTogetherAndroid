@@ -3,10 +3,14 @@ package duynn.gotogether.ui_layer.service;
 import android.app.*;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationManagerCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.gson.Gson;
+import duynn.gotogether.data_layer.model.chat.ChatRequest;
+import duynn.gotogether.data_layer.repository.MessageRoomRepo;
 import duynn.gotogether.domain_layer.common.Constants;
 import duynn.gotogether.ui_layer.activity.execute_route.PassengerFinishActivity;
 
@@ -30,8 +34,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             passengerFinishTrip(message);
         } else if(title != null && title.equals(Constants.TRIP_CANCEL)){
             notiTripCancel(message);
-        }
-        else{
+        } else if (title != null && title.equals(Constants.CHAT_MESSAGE)){
+            saveChatMessage(message);
+        } else{
             String body = message.getNotification().getBody();
             //notification
             Notification.Builder builder = new Notification.Builder(this, Constants.FCM_CHANNEL_ID)
@@ -43,6 +48,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 
 
+    }
+
+    private void saveChatMessage(RemoteMessage message) {
+        Log.d("MyFirebaseMessaging", "saveChatMessage: " + message.getData().get(Constants.CHAT_REQUEST));
+        MessageRoomRepo messageRoomRepo = MessageRoomRepo.getInstance(this);
+
+        Map<String, String> data = message.getData();
+        String json = data.get(Constants.CHAT_REQUEST);
+        ChatRequest chatRequest = new Gson().fromJson(json, ChatRequest.class);
+        messageRoomRepo.saveClient(chatRequest.getSender());
+        messageRoomRepo.saveMessage(chatRequest.getMessage());
     }
 
     private void passengerFinishTrip(RemoteMessage message) {

@@ -3,6 +3,8 @@ package duynn.gotogether.data_layer.repository;
 import android.content.Context;
 import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
+import duynn.gotogether.data_layer.helper.error_helper.ApiError;
+import duynn.gotogether.data_layer.helper.error_helper.ErrorUtils;
 import duynn.gotogether.data_layer.model.dto.request.Authen.LoginReq;
 import duynn.gotogether.data_layer.model.dto.response.Authen.LoginResp;
 import duynn.gotogether.data_layer.model.dto.response.Authen.RegisterRes;
@@ -11,11 +13,13 @@ import duynn.gotogether.data_layer.model.model.Status;
 import duynn.gotogether.data_layer.model.model.User;
 import duynn.gotogether.data_layer.retrofit_client.RetrofitClient;
 import duynn.gotogether.data_layer.service.AuthenService;
+import duynn.gotogether.domain_layer.ToastUseCase;
 import duynn.gotogether.domain_layer.common.Constants;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import java.io.IOException;
 import java.util.Stack;
 
 public class AuthenRepo {
@@ -56,18 +60,20 @@ public class AuthenRepo {
 
                     //TODO: save token and user to shared preference
                     SessionManager.getInstance(context).saveToken(loginResp.getJwttoken());
-                    System.out.println("Client: " + loginResp.getClient().toString());
+//                    System.out.println("Client: " + loginResp.getClient().toString());
                     SessionManager.getInstance(context).saveClient(loginResp.getClient());
 
 
-                } else if (response.code() == 401) {
-//                    assert response.body() != null;
-                    Log.d(TAG, "onResponse2: " + response.message());
-                    status.setValue(Constants.UNAUTHORIZED);
-
                 } else{
-//                    assert response.body() != null;
-                    Log.d(TAG, "onResponse3: " + response.message()); 
+                    try {
+                        String errorBody = response.errorBody().string();
+                        Log.d(TAG, "error resp: " + errorBody);
+                        ApiError apiError = null;
+                        apiError = ErrorUtils.parseErrorWithGson(errorBody);
+                        ToastUseCase.showLongToast(context, apiError.getMessage());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     status.setValue(Constants.FAIL);
 
                 }

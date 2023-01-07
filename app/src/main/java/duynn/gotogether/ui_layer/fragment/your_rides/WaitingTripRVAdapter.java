@@ -80,20 +80,24 @@ public class WaitingTripRVAdapter extends RecyclerView.Adapter<WaitingTripRVAdap
             });
         }
         public void bind(Trip trip){
-            if(trip.getDriver()!=null){
-                binding.waitingItemDriverName.setText(trip.getDriver().getFullNameString());
-            }
-            if(trip.getStartPlace()!=null){
-                binding.waitingItemFrom.setText(trip.getStartPlace().getName());
-            }
-            if(trip.getEndPlace()!=null){
-                binding.waitingItemTo.setText(trip.getEndPlace().getName());
-            }
-            if(trip.getStartTime()!=null){
-                binding.waitingItemTime.setText(CalendarConvertUseCase.fromCalendarToString(trip.getStartTime()));
-            }
-            if(trip.getPricePerKm()!=null){
-                binding.waitingItemPrice.setText(trip.getPricePerKm().toString());
+            if(trip!=null){
+                binding.waitingItemTripName.setText("Chuyến đi số "+trip.getId());
+                if(trip.getDriver()!=null){
+                    binding.waitingItemDriverName.setText(trip.getDriver().getFullNameString());
+                    binding.waitingItemRatingBar.setRating(trip.getDriver().getRate().floatValue());
+                }
+                if(trip.getStartPlace()!=null){
+                    binding.waitingItemFrom.setText(trip.getStartPlace().getName());
+                }
+                if(trip.getEndPlace()!=null){
+                    binding.waitingItemTo.setText(trip.getEndPlace().getName());
+                }
+                if(trip.getStartTime()!=null){
+                    binding.waitingItemTime.setText(CalendarConvertUseCase.fromCalendarToString(trip.getStartTime()));
+                }
+                if(trip.getPricePerKm()!=null){
+                    binding.waitingItemPrice.setText(trip.getPricePerKm().toString());
+                }
             }
         }
     }

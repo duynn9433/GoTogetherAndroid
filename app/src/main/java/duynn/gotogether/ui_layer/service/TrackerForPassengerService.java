@@ -13,14 +13,15 @@ import androidx.lifecycle.LifecycleService;
 import androidx.lifecycle.MutableLiveData;
 import com.google.android.gms.location.*;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.maps.android.SphericalUtil;
 import dagger.hilt.android.AndroidEntryPoint;
+import duynn.gotogether.data_layer.model.dto.execute_trip.ClientLocationDTO;
+import duynn.gotogether.data_layer.model.model.Client;
 import duynn.gotogether.data_layer.model.model.ClientTrip;
 import duynn.gotogether.data_layer.model.model.Trip;
+import duynn.gotogether.data_layer.repository.ClientRepo;
 import duynn.gotogether.data_layer.repository.SessionManager;
 import duynn.gotogether.data_layer.repository.TripRepo;
 import duynn.gotogether.domain_layer.common.Constants;
-import duynn.gotogether.ui_layer.activity.execute_route.PassengerFinishActivity;
 import lombok.Getter;
 
 import javax.inject.Inject;
@@ -43,15 +44,14 @@ public class TrackerForPassengerService extends LifecycleService {
     private MutableLiveData<Long> startTime;
     private MutableLiveData<Long> endTime;
     private MutableLiveData<List<LatLng>> locationList;
-    private MutableLiveData<duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location>
-            driverLocation;
-    private MutableLiveData<duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location>
-            passengerLocation;
+    private MutableLiveData<Client> driverLocation;
+    private MutableLiveData<Client> passengerLocation;
     private String role;
     private Trip trip;
     private ClientTrip clientTrip;
     private SessionManager sessionManager;
     private TripRepo tripRepo;
+    private ClientRepo clientRepo;
     private Map<String, Double> distanceMap;
 
     // Binder given to clients
@@ -99,10 +99,20 @@ public class TrackerForPassengerService extends LifecycleService {
         locationList.postValue(new ArrayList<>());
         sessionManager = SessionManager.getInstance(this);
         tripRepo = TripRepo.getInstance(sessionManager.getToken());
+        clientRepo = ClientRepo.getInstance(sessionManager.getToken());
         driverLocation = new MutableLiveData<>();
         passengerLocation = new MutableLiveData<>();
-        passengerLocation.postValue(new duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location());
-        driverLocation.postValue(new duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location());
+        passengerLocation.postValue(
+                Client.builder()
+                        .id(sessionManager.getClient().getId())
+                        .lat(0)
+                        .lng(0)
+                        .build());
+        driverLocation.postValue(Client.builder()
+                .id(0L)
+                .lat(0)
+                .lng(0)
+                .build());
         distanceMap = new HashMap<>();
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -112,27 +122,27 @@ public class TrackerForPassengerService extends LifecycleService {
                 super.onLocationResult(locationResult);
                 List<Location> locations = locationResult.getLocations();
                 for (Location location : locations) {
-                    passengerLocation.postValue(new duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location(0L,location.getLatitude(), location.getLongitude()));
+                    passengerLocation.postValue(Client.builder()
+                            .lat(location.getLatitude())
+                            .lng(location.getLongitude())
+                            .build());
                     Log.d(TAG, "onLocationResult: " + location.getLatitude() + " " + location.getLongitude());
                 }
                 //TODO: update location to server
                 Location lastLocation = locations.get(locations.size() - 1);
-                duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location location =
-                        duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location
-                                .builder()
-                                .id(sessionManager.getClient().getLocation().getId())
-                                .lat(lastLocation.getLatitude())
-                                .lng(lastLocation.getLongitude())
-                                .build();
+                Client clientLocationDTO = Client.builder()
+                        .id(sessionManager.getClient().getId())
+                        .lat(lastLocation.getLatitude())
+                        .lng(lastLocation.getLongitude())
+                        .build();
+
                 //TODO:new passenger
 //                tripRepo.updatePassengerLocation(
-//                        location,
-//                        trip.getId(),
-//                        sessionManager.getClient().getId(),
+//                        clientLocationDTO,
+//                        trip.getDriver().getId(),
 //                        driverLocation);
-
-                tripRepo.newUpdatePassengerLocation(
-                        location,
+                clientRepo.updatePassengerLocation(
+                        clientLocationDTO,
                         trip.getDriver().getId(),
                         driverLocation);
             }

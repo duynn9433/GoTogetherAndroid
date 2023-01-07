@@ -12,14 +12,13 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import duynn.gotogether.BuildConfig;
 import duynn.gotogether.R;
-import duynn.gotogether.data_layer.direction_helpers.FetchURL;
-import duynn.gotogether.data_layer.direction_helpers.TaskLoadedCallback;
+import duynn.gotogether.data_layer.helper.direction_helpers.FetchURL;
+import duynn.gotogether.data_layer.helper.direction_helpers.TaskLoadedCallback;
 
 public class Direc2pointActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback {
     private GoogleMap mMap;

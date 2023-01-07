@@ -3,7 +3,7 @@ package duynn.gotogether.domain_layer;
 import com.google.android.gms.maps.model.LatLng;
 import duynn.gotogether.BuildConfig;
 import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location;
-import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Place;
+import duynn.gotogether.data_layer.model.model.Place;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +37,8 @@ public class GetDirectionUrlUseCase {
     }
     public static String getStandartDirectionUrl(Place origin, Place dest, String directionMode) {
         String res = getStandartDirectionUrl(
-                origin.getGeometry().getLocation(),
-                dest.getGeometry().getLocation(),
+                new LatLng(origin.getLat(), origin.getLng()),
+                new LatLng(dest.getLat(), dest.getLng()),
                 directionMode);
         return res;
     }
@@ -68,17 +68,42 @@ public class GetDirectionUrlUseCase {
         return sb.toString();
     }
     public static String getMultiStopDirectionUrl(
+            LatLng origin,
+            LatLng dest,
+            List<LatLng> stopList,
+            String directionMode){
+        StringBuffer sb = new StringBuffer();
+        /**endpoint*/
+        sb.append("https://rsapi.goong.io/Direction?");
+        /**parameter*/
+        // ---Origin of route---
+        sb.append("origin=").append(origin.latitude).append(",").append(origin.longitude);
+        // ---Destination of route---
+        sb.append("&destination=");
+        //--stop--
+        for (LatLng stop : stopList) {
+            sb.append(stop.latitude).append(",").append(stop.longitude).append(";");
+        }
+        //---destination---
+        sb.append(dest.latitude).append(",").append(dest.longitude);
+        // ---Mode---
+        sb.append("&vehicle=").append(directionMode);
+        //---key---
+        sb.append("&api_key=" + BuildConfig.GOONG_API_KEY);
+        return sb.toString();
+    }
+    public static String getMultiStopDirectionUrl(
             Place origin,
             Place dest,
             List<Place> stopList,
             String directionMode){
-        List<Location> stopLocationList = new ArrayList<>();
+        List<LatLng> stopLocationList = new ArrayList<>();
         for (Place stop : stopList) {
-            stopLocationList.add(stop.getGeometry().getLocation());
+            stopLocationList.add(new LatLng(stop.getLat(), stop.getLng()));
         }
         return getMultiStopDirectionUrl(
-                origin.getGeometry().getLocation(),
-                dest.getGeometry().getLocation(),
+                new LatLng(origin.getLat(), origin.getLng()),
+                new LatLng(dest.getLat(), dest.getLng()),
                 stopLocationList,
                 directionMode);
     }

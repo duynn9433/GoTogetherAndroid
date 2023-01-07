@@ -1,5 +1,6 @@
 package duynn.gotogether.ui_layer.activity.trip;
 
+import android.content.Intent;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import duynn.gotogether.domain_layer.CalendarConvertUseCase;
 import duynn.gotogether.domain_layer.ToastUseCase;
 import duynn.gotogether.domain_layer.common.Constants;
 import duynn.gotogether.ui_layer.activity.publish_route.StopPlaceRecyclerViewAdapter;
+import duynn.gotogether.ui_layer.activity.rating.DetailRatingActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,6 +90,16 @@ public class DriverTripDetailActivity extends AppCompatActivity implements Swipe
                 passengerWaitRVAdapter.notifyDataSetChanged();
 
             }
+
+            @Override
+            public void onRatingDetail(View view, int position) {
+                ClientTrip clientTrip = passengerWaitRVAdapter.getListClientTrip().get(position);
+                Intent intent = new Intent(DriverTripDetailActivity.this, DetailRatingActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putLong(Constants.ID, clientTrip.getClient().getId());
+                intent.putExtra(Constants.Bundle, bundle);
+                startActivity(intent);
+            }
         });
     }
     @Override
@@ -119,7 +131,9 @@ public class DriverTripDetailActivity extends AppCompatActivity implements Swipe
                     if(trip.getDriver().getFullNameString() != null)
                         binding.driverName.setText("Tên: "+trip.getDriver().getFullNameString());
                     if(trip.getDriver().getRate() != null)
-                        binding.driverRate.setText("Đánh giá: "+trip.getDriver().getRate());
+                        binding.ratingBar.setRating(trip.getDriver().getRate().floatValue());
+//                        binding.driverRate.setText("Đánh giá: "+trip.getDriver().getRate());
+
                 }
                 if(trip.getTransport() != null && trip.getTransport().getLicensePlate() != null)
                     binding.transportNumber.setText("BKS: "+trip.getTransport().getLicensePlate());

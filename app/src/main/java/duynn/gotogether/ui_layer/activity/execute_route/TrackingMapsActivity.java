@@ -3,12 +3,10 @@ package duynn.gotogether.ui_layer.activity.execute_route;
 import android.app.PendingIntent;
 import android.content.*;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -41,12 +39,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.maps.android.SphericalUtil;
 import dagger.hilt.android.AndroidEntryPoint;
 import duynn.gotogether.R;
-import duynn.gotogether.data_layer.direction_helpers.FetchURL;
-import duynn.gotogether.data_layer.direction_helpers.TaskLoadedCallback;
-import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Place;
-import duynn.gotogether.data_layer.model.model.ClientTrip;
-import duynn.gotogether.data_layer.model.model.Trip;
-import duynn.gotogether.data_layer.model.model.TripStopPlace;
+import duynn.gotogether.data_layer.helper.direction_helpers.FetchURL;
+import duynn.gotogether.data_layer.helper.direction_helpers.TaskLoadedCallback;
+import duynn.gotogether.data_layer.model.dto.execute_trip.ClientLocationDTO;
+import duynn.gotogether.data_layer.model.model.*;
 import duynn.gotogether.data_layer.repository.SessionManager;
 import duynn.gotogether.databinding.ActivityTrackingMapsBinding;
 import duynn.gotogether.domain_layer.*;
@@ -77,10 +73,8 @@ public class TrackingMapsActivity extends FragmentActivity
     boolean isStart = false;
     private MarkerOptions startMarker, endMarker;
     private List<MarkerOptions> markerOptionsList;
-    private List<duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location>
-            passengerLocationList;
-    private duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location
-            driverLocation;
+    private List<Client> passengerLocationList;
+    private Client driverLocation;
     private List<Marker> markerList;
     private List<Marker> passengerMarkerList;
     private List<Geofence> geofenceList;
@@ -88,6 +82,11 @@ public class TrackingMapsActivity extends FragmentActivity
     private List<LatLng> locationList;
     private ServiceConnection connection;
 
+    /**
+     * init attribute
+     * get data from intent
+     * bind to service
+     * */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         isStart = false;
@@ -148,6 +147,9 @@ public class TrackingMapsActivity extends FragmentActivity
 
     }
 
+    /**
+     * start activity
+     * */
     @Override
     protected void onStart() {
         super.onStart();
@@ -163,6 +165,10 @@ public class TrackingMapsActivity extends FragmentActivity
         }, 10000);
     }
 
+    /**
+     * remove geofence
+     * unbind service
+     * */
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -249,12 +255,16 @@ public class TrackingMapsActivity extends FragmentActivity
             viewModel.finishTrip();
         });
     }
+    /**
+     * receive data callback from activity
+     * */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, "onActivityResult: requestCode: " + requestCode);
         if (requestCode == Constants.FINISH_TRIP_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
+                stopForegroundService();
                 finish();
             }
         } else if (requestCode == Constants.PASSENGER_REQUEST_CODE) {
@@ -269,6 +279,9 @@ public class TrackingMapsActivity extends FragmentActivity
             }
         }
     }
+    /**
+     * show the result of trip
+     * */
     private void displayResult(){
         Double distance =DistanceUseCase.calculateDistance(locationList);
         String distanceS = DistanceUseCase.formatToString2digitEndPoint(distance);
@@ -277,32 +290,34 @@ public class TrackingMapsActivity extends FragmentActivity
         Bundle bundle = new Bundle();
         bundle.putString(Constants.DISTANCE, distanceS);
         bundle.putString(Constants.TIME, time);
+        int numPassenger = 0;
+        for(ClientTrip clientTrip: viewModel.clientTrips.getValue()){
+            numPassenger += clientTrip.getNumOfPeople();
+        }
+        bundle.putString(Constants.PASSENGER_NUM, String.valueOf(numPassenger));
         intent.putExtra(Constants.Bundle,bundle);
         startActivity(intent);
         startActivityForResult(intent, Constants.FINISH_TRIP_REQUEST_CODE);
     }
 
+    /**
+     * Marker for start/stop/end place
+     */
     private void initMarker() {
         Trip trip = viewModel.trip.getValue();
-        duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location startLocation =
-                trip.getStartPlace().getGeometry().getLocation();
         startMarker = new MarkerOptions().position(new LatLng(
-                startLocation.getLat(), startLocation.getLng()
+                trip.getStartPlace().getLat(), trip.getStartPlace().getLng()
         )).title("Start").snippet(trip.getStartPlace().getName());
         markerOptionsList.add(startMarker);
         for(int i = 0 ;i<trip.getListStopPlace().size();i++){
             Place place = trip.getListStopPlace().get(i).getPlace();
-            duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location location =
-                    place.getGeometry().getLocation();
             MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(
-                    location.getLat(), location.getLng()
+                    place.getLat(), place.getLng()
             )).title("Stop "+(i+1)).snippet(place.getName());
             markerOptionsList.add(markerOptions);
         }
-        duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location endLocation =
-                trip.getEndPlace().getGeometry().getLocation();
         endMarker = new MarkerOptions().position(new LatLng(
-                endLocation.getLat(), endLocation.getLng()
+                trip.getEndPlace().getLat(), trip.getEndPlace().getLng()
         )).title("End").snippet(trip.getEndPlace().getName());
         markerOptionsList.add(endMarker);
     }
@@ -347,8 +362,6 @@ public class TrackingMapsActivity extends FragmentActivity
         binding.btnStartTracking.setEnabled(false);
         sendActionCommandToService(Constants.ACTION_SERVICE_STOP);
     }
-
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -521,19 +534,17 @@ public class TrackingMapsActivity extends FragmentActivity
             });
         }
         //passenger location
-        MutableLiveData<List<duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location>>
-                passengerLocationLiveData = trackerService.getPassengerLocation();
+        MutableLiveData<List<Client>> passengerLocationLiveData = trackerService.getPassengerLocation();
         if (passengerLocationLiveData != null) {
-            passengerLocationLiveData.observe(this, locations -> {
-                if (locations != null) {
-                    passengerLocationList = locations;
+            passengerLocationLiveData.observe(this, passengerLocations -> {
+                if (passengerLocations != null) {
+                    passengerLocationList = passengerLocations;
                     reloadDrawMarker();
                 }
             });
         }
         //driver location
-        MutableLiveData<duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location>
-                driverLocationLiveData = trackerService.getDriverLocation();
+        MutableLiveData<Client> driverLocationLiveData = trackerService.getDriverLocation();
         if (driverLocationLiveData != null) {
             driverLocationLiveData.observe(this, location -> {
                 if (location != null) {
@@ -547,16 +558,17 @@ public class TrackingMapsActivity extends FragmentActivity
         for(Marker marker : passengerMarkerList){
             marker.remove();
         }
-        for(duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location
-                location : passengerLocationList){
+        for(int i = 0; i < passengerLocationList.size(); i++){
+            Client location = passengerLocationList.get(i);
+            LatLng latLng = new LatLng(location.getLat(), location.getLng());
             Marker marker = map.addMarker(
                     new MarkerOptions()
-                            .position(new LatLng(location.getLat(), location.getLng()))
+                            .position(latLng)
                             .icon(bitmapDescriptorFromVector(this, emoji_people)));
             passengerMarkerList.add(marker);
             if(driverLocation != null){
                 Double distance = SphericalUtil.computeDistanceBetween(
-                        new LatLng(location.getLat(), location.getLng()),
+                        latLng,
                         new LatLng(driverLocation.getLat(), driverLocation.getLng()));
                 if(distance < Constants.GEOFENCE_RADIUS){
                     //update data

@@ -11,6 +11,9 @@ import duynn.gotogether.data_layer.model.dto.client_trip_dto.ClientTripDTO;
 import duynn.gotogether.data_layer.model.dto.client_trip_dto.ClientTripResponse;
 import duynn.gotogether.data_layer.model.dto.client_trip_dto.TripDTO;
 import duynn.gotogether.data_layer.model.dto.request.SearchTripRequest;
+import duynn.gotogether.data_layer.model.model.Client;
+import duynn.gotogether.data_layer.model.model.ClientTrip;
+import duynn.gotogether.data_layer.model.model.Trip;
 import duynn.gotogether.data_layer.repository.ClientTripRepo;
 import duynn.gotogether.data_layer.repository.SessionManager;
 import duynn.gotogether.domain_layer.DistanceUseCase;
@@ -20,7 +23,7 @@ public class SearchResultViewModel extends AndroidViewModel {
     MutableLiveData<String> status;
     MutableLiveData<String> message;
     SessionManager sessionManager;
-    MutableLiveData<ClientTripResponse> clientTripResponse;
+    MutableLiveData<ClientTrip> clientTripResponse;
     ClientTripRepo clientTripRepo;
 
     public SearchResultViewModel(@NonNull @NotNull Application application) {
@@ -31,37 +34,37 @@ public class SearchResultViewModel extends AndroidViewModel {
         sessionManager = SessionManager.getInstance(application);
         status.setValue("loading");
         message.setValue("Loading...");
-        clientTripResponse.setValue(new ClientTripResponse());
+        clientTripResponse.setValue(new ClientTrip());
 
         String token = sessionManager.getToken();
         clientTripRepo = ClientTripRepo.getInstance(token);
     }
 
-    public void regitTrip(Long tripId, Long clientId, SearchTripRequest searchTripRequest) {
-        ClientTripDTO clientTripDTO = new ClientTripDTO();
+    public void regitTrip(Long tripId, Long clientId, ClientTrip searchTripRequest) {
+        ClientTrip clientTrip = new ClientTrip();
         //trip
-        TripDTO tripDTO = TripDTO.builder().id(tripId).build();
-        clientTripDTO.setTrip(tripDTO);
+        Trip tripDTO = Trip.builder().id(tripId).build();
+        clientTrip.setTrip(tripDTO);
         //client
-        ClientDTO clientDTO = new ClientDTO();
+        Client clientDTO = new Client();
         clientDTO.setId(clientId);
-        clientTripDTO.setClient(clientDTO);
+        clientTrip.setClient(clientDTO);
         //from to
-        clientTripDTO.setPickUpPlace(searchTripRequest.getStartPlace());
-        clientTripDTO.setDropOffPlace(searchTripRequest.getEndPlace());
+        clientTrip.setPickUpPlace(searchTripRequest.getPickUpPlace());
+        clientTrip.setDropOffPlace(searchTripRequest.getDropOffPlace());
         //time
-        clientTripDTO.setPickUpTime(searchTripRequest.getStartTime());
+        clientTrip.setPickUpTime(searchTripRequest.getPickUpTime());
         //seat
-        clientTripDTO.setNumOfPeople(searchTripRequest.getNumOfSeat());
+        clientTrip.setNumOfPeople(searchTripRequest.getNumOfPeople());
 
-        clientTripRepo.regitTrip(clientTripDTO, status, message, clientTripResponse);
+        clientTripRepo.regitTrip(clientTrip, status, message, clientTripResponse);
     }
 
-    public Double getEstimatedDistance(SearchTripRequest searchTripRequest) {
-        LatLng start = new LatLng(searchTripRequest.getStartPlace().getGeometry().getLocation().getLat(),
-                searchTripRequest.getStartPlace().getGeometry().getLocation().getLng());
-        LatLng end = new LatLng(searchTripRequest.getEndPlace().getGeometry().getLocation().getLat(),
-                searchTripRequest.getEndPlace().getGeometry().getLocation().getLng());
+    public Double getEstimatedDistance(ClientTrip searchTripRequest) {
+        LatLng start = new LatLng(searchTripRequest.getPickUpPlace().getLat(),
+                searchTripRequest.getPickUpPlace().getLng());
+        LatLng end = new LatLng(searchTripRequest.getDropOffPlace().getLat(),
+                searchTripRequest.getDropOffPlace().getLng());
         return SphericalUtil.computeDistanceBetween(start, end)/1000;//to km
     }
 }

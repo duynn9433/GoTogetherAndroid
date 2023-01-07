@@ -22,10 +22,13 @@ public class Comment implements Serializable {
 
     private Integer rating;
 
-    @SerializedName("driver")
-    private Client driver;
-
-    @SerializedName("client_trip")
+    @SerializedName("client_trip_id")
     private ClientTrip clientTrip;
+
+    @SerializedName("sender")
+    private Client sender;
+
+    @SerializedName("receiver")
+    private Client receiver;
 
 }

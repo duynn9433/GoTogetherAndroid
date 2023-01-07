@@ -1,6 +1,6 @@
 package duynn.gotogether.data_layer.model.dto.request;
 
-import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Place;
+import duynn.gotogether.data_layer.model.model.Place;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

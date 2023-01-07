@@ -1,7 +1,7 @@
 package duynn.gotogether.domain_layer;
 
 import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location;
-import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Place;
+import duynn.gotogether.data_layer.model.model.Place;
 
 import java.util.List;
 
@@ -18,28 +18,22 @@ public class GoogleMapUrlUseCase {
     }
 
     public static String getGoogleMapUrlWithWaypoints(Place startPlace, Place endPlace, List<Place> stopPlaces, String travelMode) {
-        Location startLocation = startPlace.getGeometry().getLocation();
-        Location endLocation = endPlace.getGeometry().getLocation();
-        String origin = startLocation.getLat() + "," + startLocation.getLng();
-        String destination = endLocation.getLat() + "," + endLocation.getLng();
+        String origin = startPlace.getLat() + "," + startPlace.getLng();
+        String destination = endPlace.getLat() + "," + endPlace.getLng();
         StringBuffer waypoints = new StringBuffer();
         for (Place place : stopPlaces) {
-            Location temp = place.getGeometry().getLocation();
-            waypoints.append(temp.getLat()).append(",").append(temp.getLng()).append("|");
+            waypoints.append(place.getLat()).append(",").append(place.getLng()).append("|");
         }
         waypoints.deleteCharAt(waypoints.length() - 1);
         return getGoogleMapUrlWithWaypoints(origin, destination, travelMode, waypoints.toString());
     }
     public static String getGoogleMapUrlWithWaypoints(Location myLocation, Place startPlace, Place endPlace, List<Place> stopPlaces, String travelMode) {
-        Location startLocation = startPlace.getGeometry().getLocation();
-        Location endLocation = endPlace.getGeometry().getLocation();
         String origin = myLocation.getLat() + "," + myLocation.getLng();
-        String destination = endLocation.getLat() + "," + endLocation.getLng();
+        String destination = endPlace.getLat() + "," + endPlace.getLng();
         StringBuffer waypoints = new StringBuffer();
-        waypoints.append(startLocation.getLat()).append(",").append(startLocation.getLng()).append("|");
+        waypoints.append(startPlace.getLat()).append(",").append(startPlace.getLng()).append("|");
         for (Place place : stopPlaces) {
-            Location temp = place.getGeometry().getLocation();
-            waypoints.append(temp.getLat()).append(",").append(temp.getLng()).append("|");
+            waypoints.append(place.getLat()).append(",").append(place.getLng()).append("|");
         }
         waypoints.deleteCharAt(waypoints.length() - 1);
         return getGoogleMapUrlWithWaypoints(origin, destination, travelMode, waypoints.toString());

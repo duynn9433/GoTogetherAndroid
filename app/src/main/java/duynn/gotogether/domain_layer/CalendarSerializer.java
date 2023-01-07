@@ -14,7 +14,7 @@ public class CalendarSerializer implements JsonSerializer<Calendar> {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         formatter.setTimeZone(TimeZone.getDefault());
         String dateAsString = formatter.format(src.getTime());
-        Log.d("CalendarSerializer", dateAsString);
+//        Log.d("CalendarSerializer", dateAsString);
         return new JsonPrimitive(dateAsString);
     }
 }

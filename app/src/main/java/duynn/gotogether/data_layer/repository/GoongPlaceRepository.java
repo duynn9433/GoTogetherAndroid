@@ -49,7 +49,7 @@ public class GoongPlaceRepository {
 
             @Override
             public void onFailure(Call<GoongPlaceAutocompleteResult> call, Throwable t) {
-                Log.d("GoongPlaceRepository", "onFailure: " + t.getMessage());
+                Log.d("GoongPlaceRepository", "getPlaceAutoCompleteWithText: " + t.getMessage());
 //                Toast.makeText(null, "Error", Toast.LENGTH_SHORT).show();
             }
         });
@@ -73,7 +73,7 @@ public class GoongPlaceRepository {
 
             @Override
             public void onFailure(Call<GoongPlaceDetailResult> call, Throwable t) {
-                Log.d("GoongPlaceRepository", "onFailure: " + t.getMessage());
+                Log.d("GoongPlaceRepository", "getPlaceDetail: " + t.getMessage());
             }
         });
     }
@@ -99,7 +99,7 @@ public class GoongPlaceRepository {
 
             @Override
             public void onFailure(Call<GoongPlaceDetailResult> call, Throwable t) {
-                Log.d("GoongPlaceRepository", "onFailure: " + t.getMessage());
+                Log.d("GoongPlaceRepository", "getPlaceDetailWithLocation: " + t.getMessage());
             }
         });
     }

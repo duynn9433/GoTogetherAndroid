@@ -17,7 +17,7 @@ public class CalendarDeserializer implements JsonDeserializer<Calendar> {
 //            formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(formatter.parse(dateAsString));
-            Log.d("CalendarDeserializer", calendar.getTime().toString());
+//            Log.d("CalendarDeserializer", calendar.getTime().toString());
             return calendar;
         } catch (Exception e) {
             throw new JsonParseException(e);

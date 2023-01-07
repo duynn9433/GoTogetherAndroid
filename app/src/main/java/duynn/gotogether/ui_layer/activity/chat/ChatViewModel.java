@@ -4,6 +4,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
+import duynn.gotogether.data_layer.model.chat.ChatRequest;
 import duynn.gotogether.data_layer.model.chat.Message;
 import duynn.gotogether.data_layer.model.chat.Client;
 import duynn.gotogether.data_layer.repository.MessageRoomRepo;
@@ -37,6 +38,7 @@ public class ChatViewModel extends AndroidViewModel {
                 .id(myClient.getId())
                 .name(myClient.getFullNameString())
                 .phone(myClient.getContactInfomation().getPhoneNumber())
+                .fcmToken(myClient.getFcmToken())
                 .build();
         status = new MutableLiveData<>();
         message = new MutableLiveData<>();
@@ -53,6 +55,12 @@ public class ChatViewModel extends AndroidViewModel {
         messageRoomRepo.saveMessage(message);
 
         //call to server to send message
+        ChatRequest chatRequest = ChatRequest.builder()
+                .sender(sender)
+                .receiver(receiver)
+                .message(message)
+                .build();
+        messageRoomRepo.sendToTarget(chatRequest,getApplication());
     }
 
     public void saveClient(){
@@ -62,6 +70,6 @@ public class ChatViewModel extends AndroidViewModel {
     public void getAllMessage(){
         //call to repository to get all message from db
         List<Message> list = messageRoomRepo.getMessageBySenderIdAndReceiverId(sender.getId(),receiver.getId());
-        messages.setValue(list);
+        messages.postValue(list);
     }
 }

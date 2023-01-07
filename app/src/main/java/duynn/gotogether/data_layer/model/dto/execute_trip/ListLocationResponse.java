@@ -18,6 +18,6 @@ public class ListLocationResponse implements Serializable {
 
     private String message;
     private String status;
-    private List<Location> locationList;
+    private List<ClientLocationDTO> locationList;
 
 }

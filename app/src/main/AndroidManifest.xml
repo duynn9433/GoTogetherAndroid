@@ -26,6 +26,16 @@
             android:usesCleartextTraffic="true"
             tools:targetApi="31">
         <activity
+                android:name=".ui_layer.activity.rating.RatingActivity"
+                android:exported="false"
+                android:label="Đánh giá"/>
+        <activity
+                android:name=".ui_layer.activity.rating.DetailRatingActivity"
+                android:exported="false"/>
+        <activity
+                android:name=".ui_layer.activity.rating.UnratedTripActivity"
+                android:exported="false"/>
+        <activity
                 android:name=".ui_layer.activity.chat.ChatActivity"
                 android:exported="false"/>
         <activity

@@ -27,6 +27,6 @@ public interface MessageDao {
     void insert(Message message);
 
     @Transaction
-    @Query("SELECT * FROM message WHERE sender_id = :senderId AND receiver_id = :receiverId ORDER BY created_at ASC")
+    @Query("SELECT * FROM message WHERE (sender_id = :senderId AND receiver_id = :receiverId) OR (sender_id = :receiverId AND receiver_id = :senderId) ORDER BY created_at ASC")
     List<Message> getBySenderIdAndReceiverId(Long senderId, Long receiverId);
 }

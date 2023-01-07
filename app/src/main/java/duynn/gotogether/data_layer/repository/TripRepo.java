@@ -6,12 +6,16 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import androidx.lifecycle.MutableLiveData;
-import duynn.gotogether.data_layer.model.dto.execute_trip.ClientUpdateLocationRequest;
+import com.google.android.gms.maps.model.LatLng;
+import duynn.gotogether.data_layer.helper.error_helper.ApiError;
+import duynn.gotogether.data_layer.helper.error_helper.ErrorUtils;
+import duynn.gotogether.data_layer.model.dto.execute_trip.ClientLocationDTO;
 import duynn.gotogether.data_layer.model.dto.execute_trip.ListLocationResponse;
 import duynn.gotogether.data_layer.model.dto.execute_trip.LocationResponse;
-import duynn.gotogether.data_layer.model.dto.request.NewClientUpdateLocationRequest;
+import duynn.gotogether.data_layer.model.dto.request.ClientUpdateLocationRequest;
 import duynn.gotogether.data_layer.model.dto.request.SearchTripRequest;
 import duynn.gotogether.data_layer.model.dto.response.AcceptedTripResponse;
 import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location;
@@ -24,6 +28,7 @@ import duynn.gotogether.data_layer.model.model.Status;
 import duynn.gotogether.data_layer.model.model.Trip;
 import duynn.gotogether.data_layer.retrofit_client.RetrofitClient;
 import duynn.gotogether.data_layer.service.TripService;
+import duynn.gotogether.domain_layer.ToastUseCase;
 import duynn.gotogether.domain_layer.common.Constants;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -53,23 +58,29 @@ public class TripRepo {
         SessionManager sessionManager = SessionManager.getInstance(context);
         Client client = sessionManager.getClient();
         trip.setDriver(client);
-        Call<TripResponse> call = tripService.publish(trip);
+//        Call<TripResponse> call = tripService.publish(trip);
+        Call<Trip> call = tripService.publish(trip);
 
-        call.enqueue(new Callback<TripResponse>() {
+        call.enqueue(new Callback<Trip>() {
             @Override
-            public void onResponse(Call<TripResponse> call, Response<TripResponse> response) {
+            public void onResponse(Call<Trip> call, Response<Trip> response) {
                 if (response.isSuccessful()) {
-                    TripResponse publicTripResponse = response.body();
-                    if (publicTripResponse.getStatus().equals(Constants.SUCCESS)) {
-                        tripMutableLiveData.setValue(publicTripResponse.getTrip());
-                        message.postValue(publicTripResponse.getMessage());
-                        status.postValue(Constants.SUCCESS);
-                    } else {
-                        message.postValue(publicTripResponse.getMessage());
-                        status.postValue(Constants.FAIL);
-                    }
+                    Trip publicTripResponse = response.body();
+                    tripMutableLiveData.setValue(publicTripResponse);
+                    message.postValue("Chia sẻ chuyến đi thành công");
+                    status.postValue(Constants.SUCCESS);
 //                    Log.d(TAG, "publish: " + response.body().toString());
                 } else {
+                    try {
+                        String errorBody = response.errorBody().string();
+                        Log.d(TAG, "error resp: " + errorBody);
+                        ApiError apiError = null;
+                        apiError = ErrorUtils.parseErrorWithGson(errorBody);
+                        message.postValue(apiError.getMessage());
+//                        ToastUseCase.showLongToast(context, apiError.getMessage());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
 //                    Log.d(TAG, "publish req: " + response.body().toString());
 //                    PublicTripResponse publicTripResponse = response.body();
 //                    message.postValue(publicTripResponse.getMessage());
@@ -78,9 +89,7 @@ public class TripRepo {
             }
 
             @Override
-            public void onFailure(Call<TripResponse> call, Throwable t) {
-//                Log.d(TAG, "onFailure: " + t.getMessage() +"\n" + call.request().toString());
-//                Log.d(TAG, "onFailure gson: " + RetrofitClient.getInstance().getGson().toJson(trip));
+            public void onFailure(Call<Trip> call, Throwable t) {
                 message.postValue(t.getMessage());
                 status.postValue(Constants.FAIL);
 
@@ -88,40 +97,48 @@ public class TripRepo {
         });
     }
 
-    public Trip publishSync(Trip trip) throws IOException {
-        Call<TripResponse> call = RetrofitClient.getInstance().getTripService().publish(trip);
-        Response<TripResponse> response = call.execute();
-        if (response.isSuccessful()) {
-            return response.body().getTrip();
-        } else {
-            throw new IOException(response.message());
-        }
-    }
+//    public Trip publishSync(Trip trip) throws IOException {
+//        Call<TripResponse> call = RetrofitClient.getInstance().getTripService().publish(trip);
+//        Response<TripResponse> response = call.execute();
+//        if (response.isSuccessful()) {
+//            return response.body().getTrip();
+//        } else {
+//            throw new IOException(response.message());
+//        }
+//    }
 
     public void searchTrip(Context context,
-                           MutableLiveData<SearchTripRequest> searchTripRequest,
-                           MutableLiveData<ListTripResponse> searchTripResponse,
-                           MutableLiveData<String> status){
-        SearchTripRequest request = searchTripRequest.getValue();
-        Call<ListTripResponse> call = tripService.search(request);
-        Log.d(TAG, "searchTrip: " + call.request().toString());
+                           MutableLiveData<ClientTrip> searchTripRequest,
+                           MutableLiveData<List<Trip>> searchTripResponse,
+                           MutableLiveData<String> status) {
+        ClientTrip clientTrip = searchTripRequest.getValue();
+        Call<List<Trip>> call = tripService.search(clientTrip);
+//        Log.d(TAG, "searchTrip: " + call.request().toString());
 
-        call.enqueue(new Callback<ListTripResponse>() {
+        call.enqueue(new Callback<List<Trip>>() {
             @Override
-            public void onResponse(Call<ListTripResponse> call, Response<ListTripResponse> response) {
+            public void onResponse(Call<List<Trip>> call, Response<List<Trip>> response) {
                 if (response.isSuccessful()) {
                     Log.d(TAG, "onResponse: " + response.body().toString());
                     searchTripResponse.postValue(response.body());
                     status.postValue(Constants.SUCCESS);
                 } else {
-                    Log.d(TAG, "onResponse: " + response.message());
+                    try {
+                        String errorBody = response.errorBody().string();
+                        Log.d(TAG, "error resp: " + errorBody);
+                        ApiError apiError = null;
+                        apiError = ErrorUtils.parseErrorWithGson(errorBody);
+                        ToastUseCase.showLongToast(context, apiError.getMessage());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     searchTripResponse.postValue(response.body());
                     status.postValue(Constants.FAIL);
                 }
             }
 
             @Override
-            public void onFailure(Call<ListTripResponse> call, Throwable t) {
+            public void onFailure(Call<List<Trip>> call, Throwable t) {
                 Log.d(TAG, "onFailure: " + t.getMessage());
                 status.postValue(Constants.FAIL);
             }
@@ -191,37 +208,11 @@ public class TripRepo {
 
     }
 
-    public void updateDriverLocation(Location location,
-                                     Long tripId, Long clientId,
-                                     MutableLiveData<List<Location>> passengerLocation) {
+    public void updateDriverLocation(ClientLocationDTO location,
+                                     List<Long> passsengerIds,
+                                     MutableLiveData<List<ClientLocationDTO>> passengerLocation) {
         ClientUpdateLocationRequest request = ClientUpdateLocationRequest.builder()
-                .tripId(tripId)
-                .clientId(clientId)
-                .location(location)
-                .build();
-        Call<ListLocationResponse> call = tripService.updateDriverLocation(request);
-        call.enqueue(new Callback<ListLocationResponse>() {
-            @Override
-            public void onResponse(Call<ListLocationResponse> call, Response<ListLocationResponse> response) {
-                if (response.isSuccessful()) {
-                    ListLocationResponse listLocationResponse = response.body();
-                    if (listLocationResponse.getStatus().equals(Constants.SUCCESS)) {
-                        passengerLocation.postValue(listLocationResponse.getLocationList());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ListLocationResponse> call, Throwable t) {
-
-            }
-        });
-    }
-    public void newUpdateDriverLocation(Location location,
-                                     List<Long> clientLocationIds,
-                                     MutableLiveData<List<Location>> passengerLocation) {
-        NewClientUpdateLocationRequest request = NewClientUpdateLocationRequest.builder()
-                .clientLocationIDs(clientLocationIds)
+                .passengerIDs(passsengerIds)
                 .location(location)
                 .build();
         Call<ListLocationResponse> call = tripService.newUpdateDriverLocation(request);
@@ -243,36 +234,10 @@ public class TripRepo {
         });
     }
 
-    public void updatePassengerLocation(Location location,
-                                        Long tripId, Long clientId,
-                                        MutableLiveData<Location> driverLocation) {
-        ClientUpdateLocationRequest request = ClientUpdateLocationRequest.builder()
-                .tripId(tripId)
-                .clientId(clientId)
-                .location(location)
-                .build();
-        Call<LocationResponse> call = tripService.updatePassengerLocation(request);
-        call.enqueue(new Callback<LocationResponse>() {
-            @Override
-            public void onResponse(Call<LocationResponse> call, Response<LocationResponse> response) {
-                if (response.isSuccessful()) {
-                    LocationResponse locationResponse = response.body();
-                    if (locationResponse.getStatus().equals(Constants.SUCCESS)) {
-                        driverLocation.postValue(locationResponse.getLocation());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<LocationResponse> call, Throwable t) {
-
-            }
-        });
-    }
-    public void newUpdatePassengerLocation(Location location,
+    public void updatePassengerLocation(ClientLocationDTO location,
                                         Long driverId,
-                                        MutableLiveData<Location> driverLocation) {
-        NewClientUpdateLocationRequest request = NewClientUpdateLocationRequest.builder()
+                                        MutableLiveData<ClientLocationDTO> driverLocation) {
+        ClientUpdateLocationRequest request = ClientUpdateLocationRequest.builder()
                 .driverId(driverId)
                 .location(location)
                 .build();
@@ -317,11 +282,13 @@ public class TripRepo {
                     }
                 } else {
                     status.postValue(Constants.FAIL);
+                    acceptedTrip.postValue(null);
                 }
             }
 
             @Override
             public void onFailure(Call<AcceptedTripResponse> call, Throwable t) {
+                acceptedTrip.postValue(null);
                 status.postValue(Constants.FAIL);
             }
         });

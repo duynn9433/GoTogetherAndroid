@@ -1,64 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:android="http://schemas.android.com/apk/res/android">
+
     <data>
 
     </data>
+
     <FrameLayout xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui_layer.fragment.search.SearchFragment">
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 tools:context=".ui_layer.fragment.search.SearchFragment">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="10dp">
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/start_place"
-                    android:gravity="center"
-                    android:layout_marginTop="16dp"
-                    android:id="@+id/search_leaving_from_edit_text"
-                    app:drawableLeftCompat="@drawable/location_icon"/>
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/end_palce"
-                    android:gravity="center"
-                    android:layout_marginTop="16dp"
-                    android:id="@+id/search_going_to_edit_text"
-                    app:drawableLeftCompat="@drawable/location_icon"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:weightSum="100"
+                android:padding="10dp">
+
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginTop="16dp"
-                android:weightSum="1"
-                android:orientation="horizontal">
+                    android:layout_weight="20"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/location_icon"/>
+
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:id="@+id/search_date_text_view"
-                    android:text="@string/start_date"
-                    app:drawableLeftCompat="@drawable/date_icon"/>
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/search_people_edit_text"
-                    android:layout_marginRight="16dp"
-                    android:text="@string/_1"
-                    android:drawableLeft="@drawable/person_icon"/>
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:hint="@string/start_place"
+                        android:textSize="18sp"
+                        android:gravity="center"
+                        android:background="@drawable/login_border"
+                        android:id="@+id/search_leaving_from_edit_text"/>
             </LinearLayout>
+
+            <LinearLayout
+                    android:layout_weight="20"
+                    android:layout_marginTop="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/location_icon"/>
+
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:hint="@string/end_palce"
+                        android:gravity="center"
+                        android:textSize="18sp"
+                        android:background="@drawable/login_border"
+                        android:id="@+id/search_going_to_edit_text"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                    android:layout_weight="20"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:weightSum="100"
+                    android:orientation="horizontal">
+
+                <TextView
+                        android:layout_weight="80"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:id="@+id/search_date_text_view"
+                        android:text="@string/start_date"
+                        app:drawableLeftCompat="@drawable/date_icon"/>
+
+                <EditText
+                        android:layout_weight="20"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/search_people_edit_text"
+                        android:layout_marginRight="16dp"
+                        android:text="@string/_1"
+                        android:drawableLeft="@drawable/person_icon"/>
+            </LinearLayout>
+
             <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/search_button"
-                android:layout_marginTop="16dp"
-                android:text="@string/search" />
+                    android:layout_weight="20"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/search_button"
+                    android:backgroundTint="#285430"
+                    android:textColor="#E5D9B6"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/search"/>
 
         </LinearLayout>
 

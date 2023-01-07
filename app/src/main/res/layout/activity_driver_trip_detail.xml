@@ -8,147 +8,182 @@
         android:padding="10dp"
         android:id="@+id/swipe_refersh_layout"
         tools:context=".ui_layer.activity.trip.DriverTripDetailActivity">
+
     <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/driver_info"
-                android:textSize="30sp"
-                android:textStyle="bold"/>
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/driver_name"
-                android:text="driver_name"/>
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/driver_rate"
-                android:text="driver_rate"/>
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/transport_number"
-                android:text="transport_number"/>
-        <View
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:layout_width="fill_parent"
-                android:layout_height="3dp"
-                android:background="@color/gray"/>
         <LinearLayout
                 android:layout_width="match_parent"
-                android:orientation="horizontal"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
             <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/trip_info"
-                    android:textSize="30sp"
+                    android:textColor="@color/dark_green"
+                    android:text="@string/driver_info"
+                    android:textSize="26sp"
                     android:textStyle="bold"/>
-            <ImageView
+
+            <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/view_map"
-                    android:src="@drawable/visibility"/>
-        </LinearLayout>
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/trip_date"
-                android:text="thoi gian"/>
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/trip_price"
-                android:text="gia"/>
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/trip_des"
-                android:text="mo ta"/>
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/trip_from"
-                android:text="bat dau"/>
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/trip_to"
-                android:text="ket thuc"/>
-        <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/trip_stop_list"/>
+                    android:id="@+id/driver_name"
+                    android:text="driver_name"/>
 
-        <View
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:layout_width="fill_parent"
-                android:layout_height="3dp"
-                android:background="@color/gray"/>
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="100"
+                    android:orientation="horizontal">
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/driver_rate"
+                        android:text="@string/danh_gia"/>
+                <RatingBar
+                        android:layout_marginStart="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/rating_bar"
+                        style="?android:attr/ratingBarStyleSmall"
+                        android:isIndicator="true"
+                        android:layout_gravity="center"
+                        android:numStars="5"
+                        android:rating="3"
+                        android:stepSize="0.1"/>
+            </LinearLayout>
 
-        <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/passenger_info"
-                android:textSize="30sp"
-                android:textStyle="bold"/>
-        <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/join_list"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
-        <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/passenger_joined_list"/>
-        <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/waiting_list"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
-        <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/passenger_waiting_list"/>
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:weightSum="2"
-                android:gravity="center"
-                android:orientation="horizontal">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/transport_number"
+                    android:text="transport_number"/>
+
+            <View
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="fill_parent"
+                    android:layout_height="3dp"
+                    android:background="@color/gray"/>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+
+                <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:textColor="@color/dark_green"
+                        android:layout_height="wrap_content"
+                        android:text="@string/trip_info"
+                        android:textSize="26sp"
+                        android:textStyle="bold"/>
+
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/view_map"
+                        android:src="@drawable/visibility"/>
+            </LinearLayout>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/trip_date"
+                    android:text="thoi gian"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/trip_price"
+                    android:text="gia"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/trip_des"
+                    android:text="mo ta"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/trip_from"
+                    android:text="bat dau"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/trip_to"
+                    android:text="ket thuc"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="@string/stop_list"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:listitem="@layout/stop_place_item"
+                    tools:itemCount="2"
+                    android:id="@+id/trip_stop_list"/>
+
+            <View
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="fill_parent"
+                    android:layout_height="3dp"
+                    android:background="@color/gray"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/passenger_info"
+                    android:textColor="@color/dark_green"
+                    android:textSize="26sp"
+                    android:textStyle="bold"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/join_list"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:listitem="@layout/passenger_join_item"
+                    tools:itemCount="1"
+                    android:id="@+id/passenger_joined_list"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/waiting_list"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:listitem="@layout/passenger_wait_item"
+                    tools:itemCount="1"
+                    android:id="@+id/passenger_waiting_list"/>
+
             <Button
-                    android:layout_width="wrap_content"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/cancel"
-                    android:layout_weight="1"
+                    android:text="@string/cancel_trip"
+                    android:textColor="@color/dark_green"
+                    android:backgroundTint="@color/soft_yellow"
                     android:id="@+id/cancel"/>
-            <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/delete"
-                    android:id="@+id/delete"/>
-<!--            <Button-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="@string/cancel"-->
-<!--                    android:id="@+id/cancel"/>-->
+
         </LinearLayout>
-    </LinearLayout>
     </ScrollView>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -72,10 +72,18 @@ public class PassengerWaitRVAdapter extends RecyclerView.Adapter<PassengerWaitRV
                     onItemClickListener.onDeleteClick(v,position);
                 }
             });
+            this.binding.detailRating.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    onItemClickListener.onRatingDetail(v,position);
+                }
+            });
         }
         public void bind(ClientTrip clientTrip){
             if(clientTrip.getClient() != null){
                 binding.passengerName.setText("Tên: "+clientTrip.getClient().getFullNameString());
+                binding.ratingBar.setRating(clientTrip.getClient().getRate().floatValue());
             }
             if(clientTrip.getPickUpPlace() != null){
                 binding.from.setText("Điểm đón: "+clientTrip.getPickUpPlace().getName());
@@ -98,5 +106,6 @@ public class PassengerWaitRVAdapter extends RecyclerView.Adapter<PassengerWaitRV
     public interface OnItemClickListener{
         void onAcceptClick(View view, int position);
         void onDeleteClick(View view, int position);
+        void onRatingDetail(View view, int position);
     }
 }

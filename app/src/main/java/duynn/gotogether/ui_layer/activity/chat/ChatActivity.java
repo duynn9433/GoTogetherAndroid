@@ -1,5 +1,6 @@
 package duynn.gotogether.ui_layer.activity.chat;
 
+import android.os.Handler;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.lifecycle.ViewModelProvider;
@@ -16,16 +17,43 @@ public class ChatActivity extends AppCompatActivity {
     private ActivityChatBinding binding;
     private MessageAdapter messageAdapter;
     private ChatViewModel chatViewModel;
+    private Thread threadUpdateDB;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        threadUpdateDB = new Thread(new Runnable() {
+            public void run() {
+                while (true) {
+                    // do something in the loop
+                    try {
+                        Thread.sleep(1000);
+                        chatViewModel.getAllMessage();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        threadUpdateDB.start();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        threadUpdateDB.interrupt();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityChatBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        chatViewModel= new ViewModelProvider(this).get(ChatViewModel.class);
 
         Bundle bundle = getIntent().getBundleExtra(Constants.Bundle);
         Client client = (Client) bundle.getSerializable(Constants.CLIENT);
+
+        chatViewModel= new ViewModelProvider(this).get(ChatViewModel.class);
 
         initRecyclerView();
         initButtonSend();
@@ -39,6 +67,7 @@ public class ChatActivity extends AppCompatActivity {
     private void observeData() {
         chatViewModel.getMessages().observe(this, messages -> {
             messageAdapter.setMessages(messages);
+            binding.msgRecyclerView.scrollToPosition(messageAdapter.getMessages().size() - 1);
             messageAdapter.notifyDataSetChanged();
         });
     }

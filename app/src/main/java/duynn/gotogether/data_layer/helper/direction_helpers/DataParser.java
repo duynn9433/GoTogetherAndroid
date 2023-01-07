@@ -1,4 +1,4 @@
-package duynn.gotogether.data_layer.direction_helpers;
+package duynn.gotogether.data_layer.helper.direction_helpers;
 
 import com.google.android.gms.maps.model.LatLng;
 

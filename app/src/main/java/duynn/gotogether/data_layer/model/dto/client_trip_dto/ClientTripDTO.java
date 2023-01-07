@@ -1,7 +1,7 @@
 package duynn.gotogether.data_layer.model.dto.client_trip_dto;
 
 import com.google.gson.annotations.SerializedName;
-import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Place;
+import duynn.gotogether.data_layer.model.model.Place;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -44,5 +44,11 @@ public class ClientTripDTO implements Serializable {
 
     @SerializedName("distance")
     private Double distance;
+
+    @SerializedName("is_driver_commentted")
+    private Boolean isDriverCommentted;
+
+    @SerializedName("is_passenger_commentted")
+    private Boolean isPassengerCommentted;
 
 }

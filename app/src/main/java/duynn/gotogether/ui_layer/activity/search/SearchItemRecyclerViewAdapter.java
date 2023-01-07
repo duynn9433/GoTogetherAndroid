@@ -76,7 +76,9 @@ public class SearchItemRecyclerViewAdapter extends RecyclerView.Adapter<SearchIt
         }
 
         public void bind(Trip trip, Double estimatedDistance) {
-            binding.searchItemDriverName.setText(trip.getId()+" - "+trip.getDriver().getFullNameString());
+            binding.searchItemTripName.setText("Chuyến đi số " + trip.getId());
+            binding.searchItemDriverName.setText("Tài xế: "+trip.getDriver().getFullNameString());
+            binding.searchItemRatingBar.setRating(trip.getDriver().getRate().floatValue());
             binding.searchItemFrom.setText(trip.getStartPlace().getName());
             binding.searchItemTo.setText(trip.getEndPlace().getName());
             binding.searchItemTime.setText("Thời gian: "+ CalendarConvertUseCase.fromCalendarToString(trip.getStartTime()));
@@ -88,6 +90,8 @@ public class SearchItemRecyclerViewAdapter extends RecyclerView.Adapter<SearchIt
     public interface OnItemClickListener{
         void onItemClick(View view, int position);
         void onItemRegisterClick(View view, int position);
+        void onItemCallClick(View view, int position);
+        void onItemMessageClick(View view, int position);
     }
 
 }

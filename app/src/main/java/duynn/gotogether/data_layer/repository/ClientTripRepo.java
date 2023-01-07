@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import duynn.gotogether.config.di.ModelMapperConfig;
+import duynn.gotogether.data_layer.helper.error_helper.ApiError;
+import duynn.gotogether.data_layer.helper.error_helper.ErrorUtils;
 import duynn.gotogether.data_layer.model.dto.client_trip_dto.ClientTripDTO;
 import duynn.gotogether.data_layer.model.dto.client_trip_dto.ClientTripResponse;
 import duynn.gotogether.data_layer.model.dto.client_trip_dto.ListClientTripResponse;
@@ -11,13 +13,11 @@ import duynn.gotogether.data_layer.model.dto.request.PassengerFinishRequest;
 import duynn.gotogether.data_layer.model.dto.request.SearchTripRequest;
 import duynn.gotogether.data_layer.model.dto.response.ListTripResponse;
 import duynn.gotogether.data_layer.model.dto.response.TripResponse;
-import duynn.gotogether.data_layer.model.model.Client;
-import duynn.gotogether.data_layer.model.model.ClientTrip;
-import duynn.gotogether.data_layer.model.model.Status;
-import duynn.gotogether.data_layer.model.model.Trip;
+import duynn.gotogether.data_layer.model.model.*;
 import duynn.gotogether.data_layer.retrofit_client.RetrofitClient;
 import duynn.gotogether.data_layer.service.ClientTripService;
 import duynn.gotogether.data_layer.service.TripService;
+import duynn.gotogether.domain_layer.ToastUseCase;
 import duynn.gotogether.domain_layer.common.Constants;
 import org.modelmapper.ModelMapper;
 import retrofit2.Call;
@@ -32,6 +32,7 @@ public class ClientTripRepo {
     private static final String TAG = ClientTripRepo.class.getSimpleName();
     private static ClientTripRepo instance;
     private ClientTripService clientTripService;
+
     public static ClientTripRepo getInstance(String token) {
         if (instance == null) {
             instance = new ClientTripRepo(token);
@@ -82,32 +83,37 @@ public class ClientTripRepo {
         });
 
     }
-    public void regitTrip(ClientTripDTO clientTripDTO,
+
+    public void regitTrip(ClientTrip clientTrip,
                           MutableLiveData<String> status,
                           MutableLiveData<String> message,
-                          MutableLiveData<ClientTripResponse> clientTripResponse) {
-        Call<ClientTripResponse> call = clientTripService.regit(clientTripDTO);
-        call.enqueue(new Callback<ClientTripResponse>() {
+                          MutableLiveData<ClientTrip> clientTripResponse) {
+        Call<ClientTrip> call = clientTripService.regit(clientTrip);
+        call.enqueue(new Callback<ClientTrip>() {
             @Override
-            public void onResponse(Call<ClientTripResponse> call, Response<ClientTripResponse> response) {
+            public void onResponse(Call<ClientTrip> call, Response<ClientTrip> response) {
                 if (response.isSuccessful()) {
-                    ClientTripResponse clientTripResponse1 = response.body();
-                    if (clientTripResponse1.getStatus().equals(Constants.SUCCESS)) {
-                        clientTripResponse.setValue(clientTripResponse1);
-                        message.postValue(clientTripResponse1.getMessage());
-                        status.postValue(Constants.SUCCESS);
-                    } else {
-                        message.postValue(clientTripResponse1.getMessage());
-                        status.postValue(Constants.FAIL);
-                    }
+                    ClientTrip clientTrip = response.body();
+                    clientTripResponse.setValue(clientTrip);
+                    message.postValue("Đăng kí thành công");
+                    status.postValue(Constants.SUCCESS);
                 } else {
-                    message.postValue("Dữ liệu trả về không hợp lệ");
+                    ApiError apiError = null;
+                    try {
+                        String errorBody = response.errorBody().string();
+                        Log.d(TAG, "error resp: " + errorBody);
+                        apiError = ErrorUtils.parseErrorWithGson(errorBody);
+                    } catch (IOException e) {
+                        apiError = new ApiError();
+                        throw new RuntimeException(e);
+                    }
+                    message.postValue(apiError.getMessage());
                     status.postValue(Constants.FAIL);
                 }
             }
 
             @Override
-            public void onFailure(Call<ClientTripResponse> call, Throwable t) {
+            public void onFailure(Call<ClientTrip> call, Throwable t) {
                 message.postValue(t.getMessage());
                 status.postValue(Constants.FAIL);
             }
@@ -117,51 +123,59 @@ public class ClientTripRepo {
     public void update(MutableLiveData<String> status,
                        MutableLiveData<String> message,
                        ClientTrip clientTrip) {
-        ModelMapper mapper = ModelMapperConfig.getInstance();
-        ClientTripDTO clientTripDTO = mapper.map(clientTrip, ClientTripDTO.class);
-        Call<ClientTripResponse> call = clientTripService.update(clientTripDTO);
-        call.enqueue(new Callback<ClientTripResponse>() {
+//        ModelMapper mapper = ModelMapperConfig.getInstance();
+//        ClientTripDTO clientTripDTO = mapper.map(clientTrip, ClientTripDTO.class);
+        Call<ClientTrip> call = clientTripService.update(clientTrip);
+        call.enqueue(new Callback<ClientTrip>() {
             @Override
-            public void onResponse(Call<ClientTripResponse> call, Response<ClientTripResponse> response) {
+            public void onResponse(Call<ClientTrip> call, Response<ClientTrip> response) {
                 if (response.isSuccessful()) {
-                    ClientTripResponse clientTripResponse = response.body();
-                    if (clientTripResponse.getStatus().equals(Constants.SUCCESS)) {
-                        message.postValue(clientTripResponse.getMessage());
-                        status.postValue(Constants.SUCCESS);
-                    } else {
-                        message.postValue(clientTripResponse.getMessage());
-                        status.postValue(Constants.FAIL);
-                    }
+                    ClientTrip clientTripResponse = response.body();
+                    message.postValue("Thành công");
+                    status.postValue(Constants.SUCCESS);
                 } else {
+                    ApiError apiError = null;
+                    try {
+                        String errorBody = response.errorBody().string();
+                        apiError = ErrorUtils.parseErrorWithGson(errorBody);
+                    } catch (IOException e) {
+                        apiError = new ApiError();
+                        throw new RuntimeException(e);
+                    }
+                    message.postValue(apiError.getMessage());
                     status.postValue(Constants.FAIL);
                 }
             }
 
             @Override
-            public void onFailure(Call<ClientTripResponse> call, Throwable t) {
+            public void onFailure(Call<ClientTrip> call, Throwable t) {
                 message.postValue(t.getMessage());
                 status.postValue(Constants.FAIL);
             }
         });
     }
 
-    public void finishTrip(PassengerFinishRequest passengerFinishRequest,
+    public void finishTrip(Comment comment,
                            MutableLiveData<String> status,
                            MutableLiveData<String> message) {
-        Call<Status> call = clientTripService.finishTrip(passengerFinishRequest);
+        Call<Status> call = clientTripService.finishTrip(comment);
         call.enqueue(new Callback<Status>() {
             @Override
             public void onResponse(Call<Status> call, Response<Status> response) {
                 if (response.isSuccessful()) {
                     Status status1 = response.body();
-                    if (status1.getStatus().equals(Constants.SUCCESS)) {
-                        message.postValue(status1.getMessage());
-                        status.postValue(Constants.SUCCESS);
-                    } else {
-                        message.postValue(status1.getMessage());
-                        status.postValue(Constants.FAIL);
-                    }
+                    message.postValue(status1.getMessage());
+                    status.postValue(Constants.SUCCESS);
                 } else {
+                    ApiError apiError = null;
+                    try {
+                        String errorBody = response.errorBody().string();
+                        apiError = ErrorUtils.parseErrorWithGson(errorBody);
+                    } catch (IOException e) {
+                        apiError = new ApiError();
+                        throw new RuntimeException(e);
+                    }
+                    message.postValue(apiError.getMessage());
                     status.postValue(Constants.FAIL);
                 }
             }
@@ -173,5 +187,43 @@ public class ClientTripRepo {
             }
         });
 
+    }
+
+    public void getUnratedClientTrip(Long id,
+                                     MutableLiveData<String> status,
+                                     MutableLiveData<String> message,
+                                     MutableLiveData<List<ClientTrip>> clientTripList) {
+        ModelMapper modelMapper = ModelMapperConfig.getInstance();
+        Call<duynn.gotogether.data_layer.model.dto.response.ListClientTripResponse> call
+                = clientTripService.getClientTripUncommented(id);
+        call.enqueue(new Callback<duynn.gotogether.data_layer.model.dto.response.ListClientTripResponse>() {
+            @Override
+            public void onResponse(Call<duynn.gotogether.data_layer.model.dto.response.ListClientTripResponse> call,
+                                   Response<duynn.gotogether.data_layer.model.dto.response.ListClientTripResponse> response) {
+                if (response.isSuccessful()) {
+                    duynn.gotogether.data_layer.model.dto.response.ListClientTripResponse listClientTripResponse = response.body();
+                    if (listClientTripResponse.getStatus().equals(Constants.SUCCESS)) {
+                        List<ClientTrip> clientTrips1 = listClientTripResponse.getData()
+                                .stream()
+                                .map(clientTripDTO -> modelMapper.map(clientTripDTO, ClientTrip.class))
+                                .collect(Collectors.toList());
+                        clientTripList.setValue(clientTrips1);
+                        message.postValue(listClientTripResponse.getMessage());
+                        status.postValue(Constants.SUCCESS);
+                    } else {
+                        message.postValue(listClientTripResponse.getMessage());
+                        status.postValue(Constants.FAIL);
+                    }
+                } else {
+                    status.postValue(Constants.FAIL);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<duynn.gotogether.data_layer.model.dto.response.ListClientTripResponse> call, Throwable t) {
+                message.postValue(t.getMessage());
+                status.postValue(Constants.FAIL);
+            }
+        });
     }
 }

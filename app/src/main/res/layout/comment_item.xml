@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="20dp"
+        app:cardPreventCornerOverlap="true"
+        app:cardUseCompatPadding="true">
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:orientation="vertical">
+        <TextView
+                android:id="@+id/sender_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nguyen van a"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="@color/dark_green"/>
+        <RatingBar
+                android:id="@+id/rating_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:rating="4.5"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:stepSize="0.1"/>
+        <TextView
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tueetj voi"/>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

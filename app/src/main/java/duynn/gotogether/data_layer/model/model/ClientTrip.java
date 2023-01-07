@@ -4,9 +4,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.Calendar;
-import java.util.Date;
-
-import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Place;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -48,5 +45,11 @@ public class ClientTrip implements Serializable {
     private Client client;
 
     private Trip trip;
+
+    @SerializedName("is_driver_commentted")
+    private Boolean isDriverCommentted;
+
+    @SerializedName("is_passenger_commentted")
+    private Boolean isPassengerCommentted;
 
 }

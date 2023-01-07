@@ -15,7 +15,7 @@ import java.io.Serializable;
 public class ClientUpdateLocationRequest implements Serializable {
     public static final long serialVersionUID = 1L;
 
-    private Location location;
+    private ClientLocationDTO location;
     private Long tripId;
     private Long clientId;
 }

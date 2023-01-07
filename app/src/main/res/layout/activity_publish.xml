@@ -10,11 +10,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/gray"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:orientation="vertical">
-
             <TextView
                 android:id="@+id/start_point"
                 android:layout_width="match_parent"
@@ -24,7 +22,8 @@
                 android:textSize="20sp"
                 android:ems="10"
                 android:inputType="none"
-                android:background="@drawable/white_border"
+                android:paddingLeft="10dp"
+                android:background="@drawable/login_border"
                 android:hint="@string/start_point"
                 android:textColor="@color/black"/>
 
@@ -38,7 +37,8 @@
                 android:ems="10"
                 android:inputType="none"
                 android:textColor="@color/black"
-                android:background="@drawable/white_border"
+                android:paddingLeft="10dp"
+                android:background="@drawable/login_border"
                 android:hint="@string/end_point"/>
 
             <LinearLayout
@@ -46,13 +46,13 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_marginTop="16dp"
-                android:weightSum="1"
+                android:weightSum="100"
                 android:orientation="horizontal">
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="80"
                     android:background="@drawable/white_border"
                     android:id="@+id/start_date"
                     android:hint="@string/date"
@@ -61,6 +61,7 @@
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/empty_seat"
+                    android:layout_weight="20"
                     android:layout_marginStart="10dp"
                     android:background="@drawable/white_border"
                     android:inputType="numberDecimal"
@@ -69,27 +70,29 @@
             <EditText
                     android:id="@+id/price_per_km"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="60dp"
                     android:layout_marginTop="16dp"
                     android:gravity="center|left"
                     android:textSize="20sp"
                     android:ems="10"
                     android:inputType="none"
                     android:textColor="@color/black"
-                    android:background="@drawable/white_border"
+                    android:paddingLeft="10dp"
+                    android:background="@drawable/login_border"
                     android:hint="@string/price_per_km" />
             <EditText
                     android:id="@+id/description"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="60dp"
                     android:layout_marginTop="16dp"
                     android:gravity="center|left"
                     android:textSize="20sp"
                     android:ems="10"
                     android:inputType="none"
                     android:textColor="@color/black"
-                    android:background="@drawable/white_border"
-                    android:hint="Description" />
+                    android:paddingLeft="10dp"
+                    android:background="@drawable/login_border"
+                    android:hint="@string/description" />
 
 <!--            <Spinner-->
 <!--                    android:layout_width="match_parent"-->
@@ -103,8 +106,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/transport_spinner"
-                    android:background="@drawable/white_border"
+                    android:background="@drawable/login_border"
                     android:layout_marginTop="16dp"
+                    tools:listitem="@layout/transport_item"
                     android:minHeight="48dp"/>
 
             <LinearLayout
@@ -113,9 +117,19 @@
                 android:background="@drawable/white_border"
                 android:layout_marginTop="16dp"
                 android:orientation="vertical">
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:text="@string/stop_list"
+                        android:textStyle="bold"
+                        android:textColor="@color/dark_green"/>
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    tools:listitem="@layout/stop_place_item"
                     android:id="@+id/stop_location_recycler_view"/>
                 <Button
                     android:layout_width="wrap_content"
@@ -123,6 +137,8 @@
                     android:id="@+id/add_stop_location"
                     android:gravity="center"
                     android:layout_gravity="center"
+                    android:backgroundTint="@color/dark_green"
+                    android:textColor="@color/soft_yellow"
                     android:text="@string/add_stop_location"/>
             </LinearLayout>
 
@@ -136,6 +152,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/cancel"
+                    android:textColor="@color/dark_green"
+                    android:backgroundTint="@color/soft_yellow"
                     android:id="@+id/cancel_button"/>
 
                 <Button
@@ -143,6 +161,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/publish"
                     android:layout_marginLeft="30dp"
+                    android:backgroundTint="@color/dark_green"
+                    android:textColor="@color/soft_yellow"
                     android:id="@+id/publish_button"/>
             </LinearLayout>
         </LinearLayout>

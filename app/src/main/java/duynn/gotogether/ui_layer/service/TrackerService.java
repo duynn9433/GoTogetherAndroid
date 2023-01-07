@@ -25,8 +25,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import duynn.gotogether.data_layer.model.dto.execute_trip.ClientLocationDTO;
+import duynn.gotogether.data_layer.model.model.Client;
 import duynn.gotogether.data_layer.model.model.ClientTrip;
 import duynn.gotogether.data_layer.model.model.Trip;
+import duynn.gotogether.data_layer.repository.ClientRepo;
 import duynn.gotogether.data_layer.repository.SessionManager;
 import duynn.gotogether.data_layer.repository.TripRepo;
 import duynn.gotogether.domain_layer.common.Constants;
@@ -46,16 +49,15 @@ public class TrackerService extends LifecycleService {
     private MutableLiveData<Long> startTime;
     private MutableLiveData<Long> endTime;
     private MutableLiveData<List<LatLng>> locationList;
-    private MutableLiveData<duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location>
-            driverLocation;
-    private MutableLiveData<List<duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location>>
-            passengerLocation;
+    private MutableLiveData<Client> driverLocation;
+    private MutableLiveData<List<Client>> passengerLocation;
     private String role;
     private Trip trip;
     private List<ClientTrip> clientTrips;
-    private List<Long> clientLocationIDs = new ArrayList<>();
+    private List<Long> passengerIDs = new ArrayList<>();
     private SessionManager sessionManager;
     private TripRepo tripRepo;
+    private ClientRepo clientRepo;
 
     // Binder given to clients
     private final IBinder binder = new LocalBinder();
@@ -80,8 +82,8 @@ public class TrackerService extends LifecycleService {
             role = bundle.getString(Constants.ROLE);
             trip = (Trip) bundle.getSerializable(Constants.TRIP);
             clientTrips = (List<ClientTrip>) bundle.getSerializable(Constants.LIST_CLIENT_TRIP);
-            for(ClientTrip clientTrip : clientTrips) {
-                clientLocationIDs.add(clientTrip.getClient().getLocation().getId());
+            for (ClientTrip clientTrip : clientTrips) {
+                passengerIDs.add(clientTrip.getClient().getId());
             }
             Log.d(TAG, "onBind: -trip " + trip);
             Log.d(TAG, "onBind: -clientTrip " + clientTrips);
@@ -107,10 +109,11 @@ public class TrackerService extends LifecycleService {
         locationList.postValue(new ArrayList<>());
         sessionManager = SessionManager.getInstance(this);
         tripRepo = TripRepo.getInstance(sessionManager.getToken());
+        clientRepo = ClientRepo.getInstance(sessionManager.getToken());
         driverLocation = new MutableLiveData<>();
         passengerLocation = new MutableLiveData<>();
         passengerLocation.postValue(new ArrayList<>());
-        driverLocation.postValue(new duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location());
+        driverLocation.postValue(new Client());
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         locationCallback = new LocationCallback() {
@@ -120,27 +123,28 @@ public class TrackerService extends LifecycleService {
                 List<Location> locations = locationResult.getLocations();
                 for (Location location : locations) {
                     updateLocationList(location);
-                    driverLocation.postValue(new duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location(0L,location.getLatitude(), location.getLongitude()));
+                    driverLocation.postValue(Client.builder()
+                            .id(trip.getDriver().getId())
+                            .lat(location.getLatitude())
+                            .lng(location.getLongitude())
+                            .build());
                     Log.d(TAG, "onLocationResult: " + location.getLatitude() + " " + location.getLongitude());
                 }
                 //TODO: update location to server
                 Location lastLocation = locations.get(locations.size() - 1);
-                duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location location =
-                        duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location
-                                .builder()
-                                .id(trip.getDriver().getLocation().getId())
-                                .lat(lastLocation.getLatitude())
-                                .lng(lastLocation.getLongitude())
-                                .build();
+                Client location = Client.builder().
+                        id(trip.getDriver().getId())
+                        .lat(lastLocation.getLatitude())
+                        .lng(lastLocation.getLongitude())
+                        .build();
                 //TODO: new driver
 //                tripRepo.updateDriverLocation(
-//                        location,
-//                        trip.getId(),
-//                        sessionManager.getClient().getId(),
+//                        clientLocationDTO,
+//                        passengerIDs,
 //                        passengerLocation);
-                tripRepo.newUpdateDriverLocation(
+                clientRepo.updateDriverLocation(
                         location,
-                        clientLocationIDs,
+                        passengerIDs,
                         passengerLocation);
             }
         };

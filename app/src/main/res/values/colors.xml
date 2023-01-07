@@ -13,4 +13,8 @@
     <color name="green">#4CAF50</color>
     <color name="receive_msg_color">#FFFFFF</color>
     <color name="send_msg_color">#fcffff</color>
+    <color name="dark_green">#285430</color>
+    <color name="soft_yellow">#E5D9B6</color>
+
+
 </resources>

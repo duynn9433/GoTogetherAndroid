@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="5dp"
+        android:elevation="5dp"
+        app:cardPreventCornerOverlap="true"
+        app:cardUseCompatPadding="true">
+    <LinearLayout
+            android:id="@+id/unrated_client_trip_item"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:orientation="vertical">
+        <TextView
+                android:id="@+id/trip_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Chuyến đi số 94"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="@color/dark_green"/>
+        <TextView
+                android:id="@+id/receiver"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Người nhận: Nguyễn Văn A"/>
+        <TextView
+                android:id="@+id/from"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bắt đầu: VInh phúc"/>
+        <TextView
+                android:id="@+id/to"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Kết thúc: Hà nội"/>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

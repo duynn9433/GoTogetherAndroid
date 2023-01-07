@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import duynn.gotogether.R;
-import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Place;
+import duynn.gotogether.data_layer.model.model.Place;
 
 public class StopPlaceRecyclerViewAdapter extends RecyclerView.Adapter<StopPlaceRecyclerViewAdapter.StopPlaceViewHolder> {
 
@@ -68,6 +69,14 @@ public class StopPlaceRecyclerViewAdapter extends RecyclerView.Adapter<StopPlace
             description = itemView.findViewById(R.id.description);
             delete = itemView.findViewById(R.id.delete_btn);
             delete.setOnClickListener(this);
+            delete.setVisibility(View.GONE);
+            LinearLayout infoLL = itemView.findViewById(R.id.info_ll);
+            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    100.0f
+            );
+            infoLL.setLayoutParams(param);
         }
 
         @Override

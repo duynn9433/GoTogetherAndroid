@@ -1,5 +1,7 @@
 package duynn.gotogether.ui_layer.fragment.your_rides;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
@@ -19,14 +21,18 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import duynn.gotogether.R;
+import duynn.gotogether.data_layer.model.model.Client;
 import duynn.gotogether.data_layer.model.model.ClientTrip;
 import duynn.gotogether.data_layer.model.model.Trip;
+import duynn.gotogether.data_layer.repository.SessionManager;
 import duynn.gotogether.databinding.FragmentProfileBinding;
 import duynn.gotogether.databinding.FragmentYourRidesBinding;
 import duynn.gotogether.domain_layer.CalendarConvertUseCase;
 import duynn.gotogether.domain_layer.common.Constants;
 import duynn.gotogether.ui_layer.activity.execute_route.TrackingMapsActivity;
 import duynn.gotogether.ui_layer.activity.execute_route.TrackingMapsForPassengerActivity;
+import duynn.gotogether.ui_layer.activity.rating.UnratedTripActivity;
+import duynn.gotogether.ui_layer.activity.search.SearchResultActivity;
 import duynn.gotogether.ui_layer.activity.trip.DriverTripDetailActivity;
 import duynn.gotogether.ui_layer.fragment.profile.ProfileViewModel;
 
@@ -58,14 +64,17 @@ public class YourRidesFragment extends Fragment implements SwipeRefreshLayout.On
         initButton();
         binding.swipeRefershLayout.setOnRefreshListener(this);
         binding.publicTrip.setVisibility(View.GONE);
-
+        binding.noPublicTrip.setVisibility(View.VISIBLE);
+        binding.noRegitTrip.setVisibility(View.VISIBLE);
 //        initAddTransport();
         return binding.getRoot();
     }
 
     private void initRegitTrip() {
         binding.acceptedTrip.setVisibility(View.GONE);
+        binding.noAcceptedTrip.setVisibility(View.VISIBLE);
         binding.regitTripRv.setVisibility(View.GONE);
+        binding.noRegitTrip.setVisibility(View.VISIBLE);
         //init recyclerview
         waitingTripRVAdapter = new WaitingTripRVAdapter(new ArrayList<>(), getContext());
         binding.regitTripRv.setAdapter(waitingTripRVAdapter);
@@ -73,13 +82,15 @@ public class YourRidesFragment extends Fragment implements SwipeRefreshLayout.On
         binding.regitTripRv.setLayoutManager(layoutManager);
         //observe data
         mViewModel.waitingTrips.observe(getViewLifecycleOwner(), trips -> {
-            if(trips != null){
+            if(trips != null && trips.size() > 0){
                 binding.regitTripRv.setVisibility(View.VISIBLE);
+                binding.noRegitTrip.setVisibility(View.GONE);
                 waitingTripRVAdapter.setListTrip(trips);
                 waitingTripRVAdapter.notifyDataSetChanged();
             }
             else {
                 binding.regitTripRv.setVisibility(View.GONE);
+                binding.noRegitTrip.setVisibility(View.VISIBLE);
             }
         });
         //on click
@@ -113,15 +124,42 @@ public class YourRidesFragment extends Fragment implements SwipeRefreshLayout.On
     }
 
     private void initButton() {
-        //start trip
+        //driver start trip
         binding.startTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mViewModel.startTrip();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setMessage(R.string.start_trip_ques)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // start
+                                mViewModel.startTrip();
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, null);
+                // Create the AlertDialog object and show
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
-        //delete trip
-
+        //driver delete trip
+        binding.deleteTrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setMessage(R.string.delete_trip)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // delete
+                                mViewModel.driverCancelTrip(mViewModel.currentTrip.getValue());
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, null);
+                // Create the AlertDialog object and show
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
         //click pulbic trip
         binding.publicTripLl.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,7 +172,7 @@ public class YourRidesFragment extends Fragment implements SwipeRefreshLayout.On
                 startActivity(intent);
             }
         });
-
+        //passenger join trip
         binding.joinTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,28 +182,45 @@ public class YourRidesFragment extends Fragment implements SwipeRefreshLayout.On
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(Constants.TRIP, trip);
                 bundle.putSerializable(Constants.CLIENT_TRIP, clientTrip);
+                Log.d(TAG, "trip: " + trip.toString());
+                Log.d(TAG, "clientTrip: " + clientTrip.toString());
                 intent.putExtra(Constants.Bundle, bundle);
                 startActivityForResult(intent,Constants.EXECUTE_TRIP_REQUEST_CODE);
             }
         });
+        //passenger cancel trip
         binding.cancelTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mViewModel.passengerCancelTrip();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setMessage(R.string.delete_trip)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // delete
+                                mViewModel.passengerCancelTrip();
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, null);
+                // Create the AlertDialog object and show
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
-        binding.deleteTrip.setOnClickListener(new View.OnClickListener() {
+        //unrated trip button
+        binding.btnUnratedTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mViewModel.driverCancelTrip(mViewModel.currentTrip.getValue());
+                Intent intent = new Intent(getActivity(), UnratedTripActivity.class);
+                startActivity(intent);
             }
         });
     }
 
     private void observeData() {
         mViewModel.currentTrip.observe(getViewLifecycleOwner(), trip -> {
-            if(trip != null){
+            if(trip != null && trip.getStartPlace().getPlaceID()!=null){
                 binding.publicTrip.setVisibility(View.VISIBLE);
+                binding.noPublicTrip.setVisibility(View.GONE);
                 if (trip.getTransport()!=null && trip.getTransport().getLicensePlate()!=null){
                     binding.publicLicensePlate.setText("BKS: "+trip.getTransport().getLicensePlate());
                 }
@@ -186,11 +241,13 @@ public class YourRidesFragment extends Fragment implements SwipeRefreshLayout.On
                 }
             }else {
                 binding.publicTrip.setVisibility(View.GONE);
+                binding.noPublicTrip.setVisibility(View.VISIBLE);
             }
         });
         mViewModel.acceptedTrip.observe(getViewLifecycleOwner(), trip -> {
-            if(trip != null){
+            if(trip != null && trip.getStartPlace().getPlaceID()!=null){
                 binding.acceptedTrip.setVisibility(View.VISIBLE);
+                binding.noAcceptedTrip.setVisibility(View.GONE);
                 if (trip.getTransport()!=null && trip.getTransport().getLicensePlate()!=null){
                     binding.acceptedLicensePlate.setText("BKS: "+trip.getTransport().getLicensePlate());
                 }
@@ -211,6 +268,7 @@ public class YourRidesFragment extends Fragment implements SwipeRefreshLayout.On
                 }
             }else {
                 binding.acceptedTrip.setVisibility(View.GONE);
+                binding.noAcceptedTrip.setVisibility(View.VISIBLE);
             }
         });
         
@@ -241,6 +299,7 @@ public class YourRidesFragment extends Fragment implements SwipeRefreshLayout.On
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == Constants.EXECUTE_TRIP_REQUEST_CODE){
             binding.swipeRefershLayout.setRefreshing(true);
+            refreshData();
         }
     }
 
@@ -254,6 +313,10 @@ public class YourRidesFragment extends Fragment implements SwipeRefreshLayout.On
 
     @Override
     public void onRefresh() {
+        refreshData();
+    }
+
+    private void refreshData(){
         mViewModel.getCurrentTrip();
         mViewModel.getAcceptedTrip();
         mViewModel.getWaitingTrips();

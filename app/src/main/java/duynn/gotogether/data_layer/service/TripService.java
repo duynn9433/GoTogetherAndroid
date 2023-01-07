@@ -1,10 +1,9 @@
 package duynn.gotogether.data_layer.service;
 
 import duynn.gotogether.data_layer.model.dto.client_trip_dto.ClientTripDTO;
-import duynn.gotogether.data_layer.model.dto.execute_trip.ClientUpdateLocationRequest;
 import duynn.gotogether.data_layer.model.dto.execute_trip.ListLocationResponse;
 import duynn.gotogether.data_layer.model.dto.execute_trip.LocationResponse;
-import duynn.gotogether.data_layer.model.dto.request.NewClientUpdateLocationRequest;
+import duynn.gotogether.data_layer.model.dto.request.ClientUpdateLocationRequest;
 import duynn.gotogether.data_layer.model.dto.request.SearchTripRequest;
 import duynn.gotogether.data_layer.model.dto.response.AcceptedTripResponse;
 import duynn.gotogether.data_layer.model.dto.response.StartTripResponse;
@@ -19,12 +18,19 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
-public interface TripService {
-    @POST("trip/publish")
-    Call<TripResponse> publish(@Body Trip trip);
+import java.util.List;
 
+public interface TripService {
+//    @POST("trip/publish")
+//    Call<TripResponse> publish(@Body Trip trip);
+
+    @POST("trip/publish")
+    Call<Trip> publish(@Body Trip trip);
+
+//    @POST("trip/search")
+//    Call<ListTripResponse> search(@Body SearchTripRequest searchTripRequest);
     @POST("trip/search")
-    Call<ListTripResponse> search(@Body SearchTripRequest searchTripRequest);
+    Call<List<Trip>> search(@Body ClientTrip searchTripRequest);
 
     @GET("trip/current/{id}")
     Call<TripResponse> getCurrentTrip(@Path("id") Long id);
@@ -33,16 +39,16 @@ public interface TripService {
     Call<StartTripResponse> startTrip(@Path("id") Long id);
 
     @POST("location/update-driver-location")
-    Call<ListLocationResponse> updateDriverLocation(@Body ClientUpdateLocationRequest request);
+    Call<ListLocationResponse> updateDriverLocation(@Body duynn.gotogether.data_layer.model.dto.execute_trip.ClientUpdateLocationRequest request);
 
     @POST("location/update-passenger-location")
-    Call<LocationResponse> updatePassengerLocation(@Body ClientUpdateLocationRequest request);
+    Call<LocationResponse> updatePassengerLocation(@Body duynn.gotogether.data_layer.model.dto.execute_trip.ClientUpdateLocationRequest request);
 
     @POST("location/new-update-driver-location")
-    Call<ListLocationResponse> newUpdateDriverLocation(@Body NewClientUpdateLocationRequest request);
+    Call<ListLocationResponse> newUpdateDriverLocation(@Body ClientUpdateLocationRequest request);
 
     @POST("location/new-update-passenger-location")
-    Call<LocationResponse> newUpdatePassengerLocation(@Body NewClientUpdateLocationRequest request);
+    Call<LocationResponse> newUpdatePassengerLocation(@Body ClientUpdateLocationRequest request);
 
     @GET("trip/get-accepted-trip/{id}")
     Call<AcceptedTripResponse> getAcceptedTrip(@Path("id") Long clientId);

@@ -11,8 +11,6 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -25,8 +23,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import duynn.gotogether.R;
-import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.GoongPlaceDetailResult;
-import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Place;
 import duynn.gotogether.data_layer.model.model.*;
 import duynn.gotogether.data_layer.repository.SessionManager;
 import duynn.gotogether.databinding.ActivityPublishBinding;
@@ -194,9 +190,7 @@ public class PublishActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == Constants.START_LOCATION_REQUEST_CODE) {
                 Bundle bundle = data.getBundleExtra(Constants.Bundle);
-                Place place = ((GoongPlaceDetailResult) bundle
-                        .getSerializable(Constants.GOONG_PLACE_DETAIL_RESULT))
-                        .getResult();
+                Place place = (Place) bundle.getSerializable(Constants.PLACE);
                 Trip trip = publishViewModel.getTripMutableLiveData().getValue();
                 assert trip != null;
                 trip.setStartPlace(place);
@@ -204,18 +198,14 @@ public class PublishActivity extends AppCompatActivity {
                 Objects.requireNonNull(publishViewModel.getTripMutableLiveData()).setValue(trip);
             } else if (requestCode == Constants.END_LOCATION_REQUEST_CODE) {
                 Bundle bundle = data.getBundleExtra(Constants.Bundle);
-                Place place = ((GoongPlaceDetailResult) bundle
-                        .getSerializable(Constants.GOONG_PLACE_DETAIL_RESULT))
-                        .getResult();
+                Place place = (Place) bundle.getSerializable(Constants.PLACE);
                 Trip trip = publishViewModel.getTripMutableLiveData().getValue();
                 assert trip != null;
                 trip.setEndPlace(place);
                 Objects.requireNonNull(publishViewModel.getTripMutableLiveData()).setValue(trip);
             } else if (requestCode == Constants.STOP_LOCATION_REQUEST_CODE) {
                 Bundle bundle = data.getBundleExtra(Constants.Bundle);
-                Place place = ((GoongPlaceDetailResult) bundle
-                        .getSerializable(Constants.GOONG_PLACE_DETAIL_RESULT))
-                        .getResult();
+                Place place = (Place) bundle.getSerializable(Constants.PLACE);
                 Trip trip = publishViewModel.getTripMutableLiveData().getValue();
                 assert trip != null;
                 trip.getListStopPlace().add(TripStopPlace.builder()

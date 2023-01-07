@@ -3,6 +3,7 @@ package duynn.gotogether.ui_layer.activity.search;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import duynn.gotogether.R;
 import duynn.gotogether.data_layer.model.dto.request.SearchTripRequest;
 import duynn.gotogether.data_layer.model.model.Client;
+import duynn.gotogether.data_layer.model.model.ClientTrip;
 import duynn.gotogether.data_layer.model.model.Trip;
 import duynn.gotogether.data_layer.repository.SessionManager;
 import duynn.gotogether.databinding.ActivitySearchResultBinding;
@@ -28,7 +30,7 @@ public class SearchResultActivity extends AppCompatActivity {
     private SearchItemRecyclerViewAdapter searchItemRecyclerViewAdapter;
     private SearchResultViewModel viewModel;
     private List<Trip> trips = new ArrayList<>();
-    private SearchTripRequest searchTripRequest;
+    private ClientTrip searchTripRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,7 @@ public class SearchResultActivity extends AppCompatActivity {
         initRecyclerView();
         observerData();
     }
+
 
     private void observerData() {
         viewModel.status.observe(this, status -> {
@@ -59,7 +62,7 @@ public class SearchResultActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getBundleExtra(Constants.Bundle);
         if (bundle != null) {
             trips = (ArrayList<Trip>) bundle.getSerializable(Constants.TRIPS);
-            searchTripRequest = (SearchTripRequest) bundle.getSerializable(Constants.SEARCH_TRIP_REQUEST);
+            searchTripRequest = (ClientTrip) bundle.getSerializable(Constants.SEARCH_TRIP_REQUEST);
             searchItemRecyclerViewAdapter = new SearchItemRecyclerViewAdapter(trips, this, viewModel.getEstimatedDistance(searchTripRequest));
             binding.searchResultRecyclerView.setAdapter(searchItemRecyclerViewAdapter);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -96,6 +99,23 @@ public class SearchResultActivity extends AppCompatActivity {
                     // Create the AlertDialog object and show
                     AlertDialog dialog = builder.create();
                     dialog.show();
+
+                }
+
+                @Override
+                public void onItemCallClick(View view, int position) {
+                    Trip trip = searchItemRecyclerViewAdapter.getListTrip().get(position);
+                    //TODO: call
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:" +
+                            trip.getDriver().getContactInfomation().getPhoneNumber()));
+                    startActivity(intent);
+                }
+
+                @Override
+                public void onItemMessageClick(View view, int position) {
+                    //TODO: message
+                    Trip trip = searchItemRecyclerViewAdapter.getListTrip().get(position);
 
                 }
             });

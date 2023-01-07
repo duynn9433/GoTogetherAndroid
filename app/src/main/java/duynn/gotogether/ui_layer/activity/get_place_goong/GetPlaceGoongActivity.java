@@ -25,6 +25,7 @@ import duynn.gotogether.BuildConfig;
 import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceAutocomple.Prediction;
 import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.GoongPlaceDetailResult;
 import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Location;
+import duynn.gotogether.data_layer.model.model.Place;
 import duynn.gotogether.data_layer.retrofit_client.GoongClient;
 import duynn.gotogether.databinding.ActivityGetPlaceGoongBinding;
 import duynn.gotogether.domain_layer.PermissionsUseCase;
@@ -116,7 +117,8 @@ public class GetPlaceGoongActivity extends AppCompatActivity {
         Intent intent = new Intent();
         if(goongPlaceDetailResult != null){
             Bundle bundle = new Bundle();
-            bundle.putSerializable(Constants.GOONG_PLACE_DETAIL_RESULT, goongPlaceDetailResult);
+            Place place = new Place(goongPlaceDetailResult.getResult());
+            bundle.putSerializable(Constants.PLACE, place);
             intent.putExtra(Constants.Bundle, bundle);
             setResult(RESULT_OK, intent);
         }else{

@@ -18,9 +18,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import duynn.gotogether.data_layer.model.dto.request.SearchTripRequest;
-import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.GoongPlaceDetailResult;
-import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Place;
 import duynn.gotogether.data_layer.model.dto.response.ListTripResponse;
+import duynn.gotogether.data_layer.model.model.ClientTrip;
+import duynn.gotogether.data_layer.model.model.Place;
+import duynn.gotogether.data_layer.model.model.Trip;
 import duynn.gotogether.databinding.FragmentSearchBinding;
 import duynn.gotogether.domain_layer.common.Constants;
 import duynn.gotogether.ui_layer.activity.get_place_goong.GetPlaceGoongActivity;
@@ -29,6 +30,7 @@ import duynn.gotogether.ui_layer.activity.search.SearchResultActivity;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Objects;
 
 public class SearchFragment extends Fragment {
@@ -53,21 +55,21 @@ public class SearchFragment extends Fragment {
     }
 
     private void observeData() {
-        searchViewModel.getSearchTripRequest().observe(getViewLifecycleOwner(), searchTripRequest -> {
-            if(searchTripRequest != null) {
-                if(searchTripRequest.getStartPlace() != null){
-                    binding.searchLeavingFromEditText.setText(searchTripRequest.getStartPlace().getName());
+        searchViewModel.getSearchClientTrip().observe(getViewLifecycleOwner(), clientTrip -> {
+            if(clientTrip != null) {
+                if(clientTrip.getPickUpPlace() != null){
+                    binding.searchLeavingFromEditText.setText(clientTrip.getPickUpPlace().getName());
                 }
-                if(searchTripRequest.getEndPlace() != null){
-                    binding.searchGoingToEditText.setText(searchTripRequest.getEndPlace().getName());
+                if(clientTrip.getDropOffPlace() != null){
+                    binding.searchGoingToEditText.setText(clientTrip.getDropOffPlace().getName());
                 }
-                if(searchTripRequest.getStartTime() != null){
+                if(clientTrip.getPickUpTime() != null){
                     binding.searchDateTextView.setText(
                             new SimpleDateFormat("dd-MM-yyyy  HH:mm")
-                                    .format(searchTripRequest.getStartTime().getTime()));
+                                    .format(clientTrip.getPickUpTime().getTime()));
                 }
-                if(searchTripRequest.getNumOfSeat() != null){
-                    binding.searchPeopleEditText.setText(searchTripRequest.getNumOfSeat() + "");
+                if(clientTrip.getNumOfPeople() != null){
+                    binding.searchPeopleEditText.setText(clientTrip.getNumOfPeople() + "");
                 }
             }
         });
@@ -78,18 +80,15 @@ public class SearchFragment extends Fragment {
                     Toast.makeText(getContext(), "Tìm thành công", Toast.LENGTH_SHORT).show();
                     //TODO: chuyển sang màn hình kết quả tìm kiếm
 //                    Intent intent = new Intent(getContext(), SearchResultActivity.class);
-                    ListTripResponse response = searchViewModel.getSearchTripResponse().getValue();
-                    if(response == null
-                            || response.getTrips() == null || response.getTrips().size() == 0 ){
+                    List<Trip> response = searchViewModel.getListTrip().getValue();
+                    if(response == null || response.size() == 0 ){
                         Toast.makeText(getContext(), "Không tìm thấy", Toast.LENGTH_SHORT).show();
-                    } else if (response.getStatus().equals(Constants.FAIL)) {
-                        Toast.makeText(getContext(), response.getMessage(), Toast.LENGTH_SHORT).show();
-                    } else{
+                    } else {
                         Intent intent = new Intent(getContext(), SearchResultActivity.class);
                         //data
                         Bundle bundle = new Bundle();
-                        bundle.putSerializable(Constants.TRIPS, new ArrayList<>(response.getTrips()));
-                        bundle.putSerializable(Constants.SEARCH_TRIP_REQUEST, searchViewModel.getSearchTripRequest().getValue());
+                        bundle.putSerializable(Constants.TRIPS, new ArrayList<>(response));
+                        bundle.putSerializable(Constants.SEARCH_TRIP_REQUEST, searchViewModel.getSearchClientTrip().getValue());
                         intent.putExtra(Constants.Bundle, bundle);
                         //go to search result activity
                         startActivity(intent);
@@ -131,9 +130,9 @@ public class SearchFragment extends Fragment {
                         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                         calendar.set(Calendar.MINUTE, minute);
                         //set new time
-                        SearchTripRequest searchTripRequest = searchViewModel.getSearchTripRequest().getValue();
-                        searchTripRequest.setStartTime(calendar);
-                        searchViewModel.getSearchTripRequest().setValue(searchTripRequest);
+                        ClientTrip searchTripRequest = searchViewModel.getSearchClientTrip().getValue();
+                        searchTripRequest.setPickUpTime(calendar);
+                        searchViewModel.getSearchClientTrip().setValue(searchTripRequest);
                     };
                     new TimePickerDialog(getContext(), timeSetListener,
                             calendar.get(Calendar.HOUR_OF_DAY),
@@ -156,10 +155,10 @@ public class SearchFragment extends Fragment {
 //                    binding.emptySeat.setError("Không được để trống");
                     } else {
                         try {
-                            SearchTripRequest searchTripRequest = searchViewModel.getSearchTripRequest().getValue();
+                            ClientTrip searchTripRequest = searchViewModel.getSearchClientTrip().getValue();
                             assert searchTripRequest != null;
-                            searchTripRequest.setNumOfSeat(Integer.parseInt(s));
-                            searchViewModel.getSearchTripRequest().setValue(searchTripRequest);
+                            searchTripRequest.setNumOfPeople(Integer.parseInt(s));
+                            searchViewModel.getSearchClientTrip().setValue(searchTripRequest);
                         }catch (NumberFormatException e){
                             binding.searchPeopleEditText.setError("Số ghế trống phải là số");
                         }
@@ -183,20 +182,18 @@ public class SearchFragment extends Fragment {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == Constants.GET_START_PLACE_FROM_SEARCH_REQUEST_CODE) {
                 Bundle bundle = data.getBundleExtra(Constants.Bundle);
-                GoongPlaceDetailResult goongPlaceDetailResult = (GoongPlaceDetailResult) bundle.getSerializable(Constants.GOONG_PLACE_DETAIL_RESULT);
-                Place place = goongPlaceDetailResult.getResult();
-                SearchTripRequest searchTripRequest = searchViewModel.getSearchTripRequest().getValue();
+                Place place = (Place) bundle.getSerializable(Constants.PLACE);
+                ClientTrip searchTripRequest = searchViewModel.getSearchClientTrip().getValue();
                 assert searchTripRequest != null;
-                searchTripRequest.setStartPlace(place);
-                searchViewModel.getSearchTripRequest().setValue(searchTripRequest);
+                searchTripRequest.setPickUpPlace(place);
+                searchViewModel.getSearchClientTrip().setValue(searchTripRequest);
             } else if (requestCode == Constants.GET_END_PLACE_FROM_SEARCH_REQUEST_CODE) {
                 Bundle bundle = data.getBundleExtra(Constants.Bundle);
-                GoongPlaceDetailResult goongPlaceDetailResult = (GoongPlaceDetailResult) bundle.getSerializable(Constants.GOONG_PLACE_DETAIL_RESULT);
-                Place place = goongPlaceDetailResult.getResult();
-                SearchTripRequest searchTripRequest = searchViewModel.getSearchTripRequest().getValue();
+                Place place = (Place) bundle.getSerializable(Constants.PLACE);
+                ClientTrip searchTripRequest = searchViewModel.getSearchClientTrip().getValue();
                 assert searchTripRequest != null;
-                searchTripRequest.setEndPlace(place);
-                searchViewModel.getSearchTripRequest().setValue(searchTripRequest);
+                searchTripRequest.setDropOffPlace(place);
+                searchViewModel.getSearchClientTrip().setValue(searchTripRequest);
             }
         }
     }

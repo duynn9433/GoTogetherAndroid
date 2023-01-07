@@ -1,5 +1,7 @@
 package duynn.gotogether.ui_layer.activity.trip;
 
+import android.content.Intent;
+import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,6 +11,7 @@ import duynn.gotogether.databinding.ActivityPassengerTripDetailBinding;
 import duynn.gotogether.domain_layer.CalendarConvertUseCase;
 import duynn.gotogether.domain_layer.common.Constants;
 import duynn.gotogether.ui_layer.activity.publish_route.StopPlaceRecyclerViewAdapter;
+import duynn.gotogether.ui_layer.activity.rating.DetailRatingActivity;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -34,13 +37,28 @@ public class PassengerTripDetailActivity extends AppCompatActivity {
 
     private void bindingData() {
         binding.driverName.setText("Tên: "+trip.getDriver().getFullNameString());
-        binding.driverRate.setText("Đánh giá: "+trip.getDriver().getRate());
+//        binding.driverRate.setText("Đánh giá: "+trip.getDriver().getRate());
+        binding.ratingBar.setRating(trip.getDriver().getRate().floatValue());
         binding.transportNumber.setText("BKS: "+trip.getTransport().getLicensePlate());
         binding.tripDate.setText("Ngày đi: "+ CalendarConvertUseCase.fromCalendarToString(trip.getStartTime()));
         binding.tripPrice.setText("Giá: "+trip.getPricePerKm()+" VND/km");
         binding.tripDes.setText("Mô tả: "+trip.getDescription());
-        binding.tripFrom.setText("Điểm đi: "+trip.getStartPlace().getName());
-        binding.tripTo.setText("Điểm đến: "+trip.getEndPlace().getName());
+        binding.startTitle.setText(trip.getStartPlace().getName());
+        binding.startDescription.setText(trip.getStartPlace().getFormattedAddress());
+        binding.endTitle.setText(trip.getEndPlace().getName());
+        binding.endDescription.setText(trip.getEndPlace().getFormattedAddress());
+        binding.detailRating.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: detail rating
+                Intent intent = new Intent(PassengerTripDetailActivity.this,
+                        DetailRatingActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putLong(Constants.ID, trip.getDriver().getId());
+                intent.putExtra(Constants.Bundle, bundle);
+                startActivity(intent);
+            }
+        });
     }
 
     private void initStopPlaceRV() {

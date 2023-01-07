@@ -86,26 +86,4 @@ public class PassengerActivity extends AppCompatActivity {
         });
     }
 
-    private void fakeData() {
-        Client client = Client.builder()
-                .fullname(new Fullname(0L,"Nguyễn", "A","Văn","no"))
-                .contactInfomation(new ContactInfomation(0L,"0966111111","abc@gmail.com"))
-                .build();
-        ClientTrip data1 = ClientTrip.builder()
-                .client(client)
-                .pickUpPlace(Place.builder().name("Bến xe Phúc Yên").build())
-                .dropOffPlace(Place.builder().name("Học viện Bưu chính Viễn thông").build())
-                .build();
-        Client client2 = Client.builder()
-                .fullname(new Fullname(0L,"Nguyễn", "B","Văn","no"))
-                .contactInfomation(new ContactInfomation(0L,"0966222222","abc2@gmail.com"))
-                .build();
-        ClientTrip data2 = ClientTrip.builder()
-                .client(client2)
-                .pickUpPlace(Place.builder().name("Bến xe Phúc Yên").build())
-                .dropOffPlace(Place.builder().name("Học viện Bưu chính Viễn thông").build())
-                .build();
-        clientTrips.add(data1);
-        clientTrips.add(data2);
-    }
 }

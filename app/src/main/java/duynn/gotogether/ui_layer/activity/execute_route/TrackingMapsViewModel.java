@@ -6,9 +6,9 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
-import duynn.gotogether.data_layer.model.dto.response.GoongMaps.PlaceDetail.Place;
 import duynn.gotogether.data_layer.model.model.Client;
 import duynn.gotogether.data_layer.model.model.ClientTrip;
+import duynn.gotogether.data_layer.model.model.Place;
 import duynn.gotogether.data_layer.model.model.Trip;
 import duynn.gotogether.data_layer.repository.FirebaseMessageRepo;
 import duynn.gotogether.data_layer.repository.SessionManager;
@@ -61,7 +61,7 @@ public class TrackingMapsViewModel extends AndroidViewModel {
         //get data
         Double distance = 10.0;
         Double startDis = mapDistance.getValue()
-                .getOrDefault(String.valueOf(clientTrip.getClient().getLocation().getId()),0.0);
+                .getOrDefault(String.valueOf(clientTrip.getClient().getId()),0.0);
         Double endDis = mapDistance.getValue().get(Constants.LAST_DISTANCE);
         distance = endDis - startDis;
 

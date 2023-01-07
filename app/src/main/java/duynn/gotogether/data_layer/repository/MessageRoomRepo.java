@@ -1,18 +1,20 @@
 package duynn.gotogether.data_layer.repository;
 
+import android.app.Application;
 import android.content.Context;
-import androidx.room.Room;
+import android.util.Log;
+import com.google.gson.Gson;
 import duynn.gotogether.data_layer.dao.ChattedClientDao;
 import duynn.gotogether.data_layer.dao.ClientDao;
 import duynn.gotogether.data_layer.dao.MessageDao;
-import duynn.gotogether.data_layer.model.chat.ChattedClient;
-import duynn.gotogether.data_layer.model.chat.ChattedClientFull;
-import duynn.gotogether.data_layer.model.chat.Client;
-import duynn.gotogether.data_layer.model.chat.Message;
+import duynn.gotogether.data_layer.fcm.FcmNotificationsSender;
+import duynn.gotogether.data_layer.model.chat.*;
 import duynn.gotogether.data_layer.room_database.MessageDatabase;
-import duynn.gotogether.data_layer.service.TripService;
+import duynn.gotogether.domain_layer.common.Constants;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MessageRoomRepo {
     private static final String TAG = MessageRoomRepo.class.getSimpleName();
@@ -39,6 +41,20 @@ public class MessageRoomRepo {
         //send to server
 
     }
+    public void sendToTarget(ChatRequest chatRequest, Application application) {
+        FcmNotificationsSender fcmNotificationsSender =
+                new FcmNotificationsSender(chatRequest.getReceiver().getFcmToken()
+                        , Constants.CHAT_MESSAGE
+                        , Constants.CHAT_MESSAGE
+                        , application
+                );
+        String json = new Gson().toJson(chatRequest);
+        Map<String, String> data = new HashMap<>();
+        data.put(Constants.CHAT_REQUEST, json);
+        Log.d(TAG, "sendToTarget: " + json);
+        fcmNotificationsSender.setData(data);
+        fcmNotificationsSender.SendNotifications();
+    }
 
     public boolean isClientExist(Long clientId){
         ClientDao clientDao = messageDatabase.clientDao();
@@ -64,6 +80,10 @@ public class MessageRoomRepo {
             //save client
             ClientDao clientDao = messageDatabase.clientDao();
             clientDao.insert(client);
+        }else {
+            //update client
+            ClientDao clientDao = messageDatabase.clientDao();
+            clientDao.update(client);
         }
         if(!isChattedClientExist(client.getId())){
             //save chatted client
@@ -78,4 +98,6 @@ public class MessageRoomRepo {
         ChattedClientDao chattedClientDao = messageDatabase.chattedClientDao();
         chattedClientDao.insert(chattedClient);
     }
+
+
 }

@@ -109,8 +109,7 @@ public class GetPlaceActivity extends AppCompatActivity implements EasyPermissio
         binding.getPlaceMyLocationBtn.setOnClickListener(v -> {
             Intent intent = new Intent();
             Bundle bundle = new Bundle();
-//            Position position = getMyLocation();
-//            bundle.putSerializable(Constants.Position, position);
+
             intent.putExtra(Constants.Bundle, bundle);
             setResult(RESULT_OK, intent);
             finish();

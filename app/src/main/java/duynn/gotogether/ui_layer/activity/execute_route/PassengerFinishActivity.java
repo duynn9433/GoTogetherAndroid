@@ -42,17 +42,18 @@ public class PassengerFinishActivity extends AppCompatActivity {
 
         binding.send.setOnClickListener(v -> {
             PassengerFinishRequest passengerFinishRequest = new PassengerFinishRequest();
-            Comment data = Comment.builder()
-                    .driver(Client.builder().id(driverId).build())
+            //TODO: fix comment
+            Comment comment = Comment.builder()
+//                    .driver(Client.builder().id(driverId).build())
                     .clientTrip(ClientTrip.builder().id(clientTripId)
                             .distance(Double.parseDouble(distance))
                             .build())
                     .content(binding.comment.getText().toString())
                     .rating((int) binding.rating.getRating())
                     .build();
-            passengerFinishRequest.setComment(data);
+            passengerFinishRequest.setComment(comment);
             Log.d("PassengerFinishViewModel", "finishTrip: "+passengerFinishRequest);
-            viewModel.finishTrip(passengerFinishRequest);
+            viewModel.finishTrip(comment);
             ToastUseCase.showShortToast(this, "Đã gửi đánh giá");
             //CLOSE NOTI
             NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);

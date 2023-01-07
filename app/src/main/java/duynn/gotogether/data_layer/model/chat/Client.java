@@ -1,6 +1,7 @@
 package duynn.gotogether.data_layer.model.chat;
 
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import lombok.*;
@@ -18,4 +19,6 @@ public class Client implements Serializable {
     private Long id;
     private String name;
     private String phone;
+    @ColumnInfo(name = "fcm_token")
+    private String fcmToken;
 }

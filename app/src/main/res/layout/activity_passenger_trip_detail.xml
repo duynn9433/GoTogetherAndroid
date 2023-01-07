@@ -5,6 +5,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="6dp"
         tools:context=".ui_layer.activity.trip.DriverTripDetailActivity">
     <LinearLayout
             android:layout_width="match_parent"
@@ -18,14 +19,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textColor="@color/dark_green"
                     android:text="@string/driver_info"
                     android:textSize="30sp"
                     android:textStyle="bold"/>
-            <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/refresh"
-                    android:src="@drawable/refresh"/>
         </LinearLayout>
 
         <TextView
@@ -33,11 +30,38 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/driver_name"
                 android:text="driver_name"/>
-        <TextView
-                android:layout_width="wrap_content"
+        <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/driver_rate"
-                android:text="driver_rate"/>
+                android:weightSum="100"
+                android:orientation="horizontal">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/driver_rate"
+                    android:text="@string/danh_gia"/>
+            <RatingBar
+                    android:layout_marginStart="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rating_bar"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:isIndicator="true"
+                    android:layout_gravity="center"
+                    android:numStars="5"
+                    android:rating="3"
+                    android:stepSize="0.1"/>
+
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/detail_rating"
+                    android:layout_weight="100"
+                    android:gravity="end"
+                    android:textColor="@color/teal_200"
+                    android:text="@string/detail_rating"/>
+        </LinearLayout>
+
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -59,6 +83,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/trip_info"
                     android:textSize="30sp"
+                    android:textColor="@color/dark_green"
                     android:textStyle="bold"/>
             <ImageView
                     android:layout_width="wrap_content"
@@ -67,33 +92,121 @@
                     android:src="@drawable/visibility"/>
         </LinearLayout>
         <TextView
+                android:layout_marginLeft="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/trip_date"
                 android:text="thoi gian"/>
         <TextView
+                android:layout_marginLeft="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/trip_price"
                 android:text="gia"/>
         <TextView
+                android:layout_marginLeft="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/trip_des"
                 android:text="mo ta"/>
         <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/trip_from"
-                android:text="bat dau"/>
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="@color/dark_green"
+                android:textSize="18sp"
+                android:text="@string/start"/>
+        <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="20dp"
+                android:outlineSpotShadowColor="@color/red"
+                app:cardPreventCornerOverlap="true"
+                app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:weightSum="100"
+                    android:padding="8dp"
+                    android:layout_height="match_parent">
+
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Title"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:id="@+id/start_title"/>
+
+                    <TextView
+                            android:id="@+id/start_description"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:autoSizeTextType="uniform"
+                            android:text="description"
+                            android:textSize="16sp"/>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
         <TextView
-                android:layout_width="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/trip_to"
-                android:text="ket thuc"/>
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="@color/dark_green"
+                android:textSize="18sp"
+                android:text="@string/end"/>
+        <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="20dp"
+                android:outlineSpotShadowColor="@color/red"
+                app:cardPreventCornerOverlap="true"
+                app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:weightSum="100"
+                    android:padding="8dp"
+                    android:layout_height="match_parent">
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Title"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:id="@+id/end_title"/>
+
+                    <TextView
+                            android:id="@+id/end_description"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:autoSizeTextType="uniform"
+                            android:text="description"
+                            android:textSize="16sp"/>
+                </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <TextView
+                android:layout_marginLeft="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/trip_stop_list_text"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="@color/dark_green"
+                android:textSize="18sp"
+                android:text="@string/stop_list"/>
         <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                tools:listitem="@layout/stop_place_item"
                 android:id="@+id/trip_stop_list"/>
     </LinearLayout>
 

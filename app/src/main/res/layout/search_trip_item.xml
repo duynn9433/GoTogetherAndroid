@@ -5,7 +5,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="20dp"
+        android:elevation="8dp"
+        android:outlineSpotShadowColor="@color/teal_200"
+        android:divider="@color/teal_200"
         app:cardPreventCornerOverlap="true"
+        app:cardElevation="8dp"
         app:cardUseCompatPadding="true">
 
     <LinearLayout
@@ -17,18 +21,38 @@
         <LinearLayout
                 android:layout_weight="1"
                 android:id="@+id/search_item_ll"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/search_item_driver_name"
+                    android:id="@+id/search_item_trip_name"
                     android:textStyle="bold"
-                    android:textSize="20dp"
-                    android:text="Ten tai xe"/>
-
+                    android:textSize="20sp"
+                    android:text="Chuyen di so 94"/>
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/search_item_driver_name"
+                        android:text="Ten tai xe"/>
+                <RatingBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/search_item_rating_bar"
+                        android:layout_marginLeft="5dp"
+                        style="?android:attr/ratingBarStyleSmall"
+                        android:isIndicator="true"
+                        android:layout_gravity="center"
+                        android:numStars="5"
+                        android:rating="3"
+                        android:stepSize="0.1"/>
+            </LinearLayout>
             <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

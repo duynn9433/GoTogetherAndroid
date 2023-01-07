@@ -19,55 +19,81 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_gravity="center"
                 android:orientation="vertical">
 
-            <TextView
-                    android:id="@+id/passenger_name"
-                    android:layout_width="wrap_content"
+                <TextView
+                        android:id="@+id/passenger_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ten hanh khach"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
+            <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Ten hanh khach"
-                    android:textSize="18sp"
-                    android:textStyle="bold"/>
+                    android:weightSum="100"
+                    android:orientation="horizontal">
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/driver_rate"
+                        android:text="@string/danh_gia"/>
+                <RatingBar
+                        android:layout_marginStart="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/rating_bar"
+                        style="?android:attr/ratingBarStyleSmall"
+                        android:isIndicator="true"
+                        android:layout_gravity="center"
+                        android:numStars="5"
+                        android:rating="3"
+                        android:stepSize="0.1"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/detail_rating"
+                        android:text="Xem chi tiết"
+                        android:gravity="end"
+                        android:layout_weight="100"
+                        android:textColor="@color/teal_200"/>
+            </LinearLayout>
 
             <TextView
                     android:id="@+id/from"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:autoSizeTextType="uniform"
-                    android:text="Thanh pho Phuc yen, vinh phuc"
-                    android:textSize="16sp"/>
+                    android:text="Thanh pho Phuc yen, vinh phuc"/>
 
             <TextView
                     android:id="@+id/to"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:autoSizeTextType="uniform"
-                    android:text="Thanh pho Phuc yen, vinh phuc"
-                    android:textSize="16sp"/>
+                    android:text="Thanh pho Phuc yen, vinh phuc"/>
 
             <TextView
                     android:id="@+id/time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:autoSizeTextType="uniform"
-                    android:text="12:12"
-                    android:textSize="16sp"/>
+                    android:text="12:12"/>
 
             <TextView
                     android:id="@+id/num_of_seat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:autoSizeTextType="uniform"
-                    android:text="123123 nguoi"
-                    android:textSize="16sp"/>
+                    android:text="123123 nguoi"/>
 
             <TextView
                     android:id="@+id/price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:autoSizeTextType="uniform"
-                    android:text="1321 vnd"
-                    android:textSize="16sp"/>
+                    android:text="1321 vnd"/>
         </LinearLayout>
 
         <LinearLayout
@@ -87,6 +113,17 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/delete_forever"
                     android:id="@+id/delete"/>
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_call_24"
+                    android:id="@+id/call"/>
+
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/message"
+                    android:id="@+id/message"/>
         </LinearLayout>
 
     </LinearLayout>

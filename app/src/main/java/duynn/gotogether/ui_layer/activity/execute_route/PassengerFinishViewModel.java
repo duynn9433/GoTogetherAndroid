@@ -36,8 +36,8 @@ public class PassengerFinishViewModel extends AndroidViewModel {
         clientTrip.setValue(new ClientTrip());
     }
 
-    public void finishTrip(PassengerFinishRequest passengerFinishRequest) {
-        clientTripRepo.finishTrip(passengerFinishRequest, status, message);
+    public void finishTrip(Comment comment) {
+        clientTripRepo.finishTrip(comment, status, message);
     }
 
     public void updateRating(int rating) {
