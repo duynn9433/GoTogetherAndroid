@@ -25,9 +25,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
     private static RetrofitClient instance;
 
-    public static final String BASE_URL_LOCAL = "http://192.168.1.170:8888/api/v1/";
-//    public static final String BASE_URL_LOCAL = "http://192.168.3.116:8888/api/v1/";
-//    public static final String BASE_URL_LOCAL = "http://192.168.132.45:8888/api/v1/";
+//    public static final String BASE_URL_LOCAL = "http://192.168.1.170:8888/api/v1/";
+    public static final String BASE_URL_LOCAL = "http://192.168.3.116:8888/api/v1/";
+//    public static final String BASE_URL_LOCAL = "http://192.168.201.45:8888/api/v1/";
     public static final String BASE_URL_LOCAL2 = "http://10.0.2.2:8888/api/v1/";
     public static final String BASE_URL_TUNNEL = "http://duynn.loca.lt/api/v1/";
 

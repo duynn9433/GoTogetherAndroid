@@ -3,7 +3,10 @@ package duynn.gotogether.ui_layer.activity.execute_route;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
@@ -462,7 +466,14 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
             }
         }
     }
-
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
     private void showBiggerPicture() {
         LatLngBounds.Builder bounds = new LatLngBounds.Builder();
         for (LatLng latLng : locationList) {
@@ -480,6 +491,7 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
         bundle.putString("time", time);
     }
 
+    private Marker driverMarker;
     private void drawPolyline() {
         if (locationList != null) {
             PolylineOptions polylineOptions = new PolylineOptions();
@@ -491,6 +503,13 @@ public class TrackingMapsForPassengerActivity extends FragmentActivity
             polylineOptions.endCap(new ButtCap());
             map.addPolyline(polylineOptions);
 //            Log.d(TAG, "drawPolyline: " + locationList.toString());
+            //draw driver icon
+            if(driverMarker!=null){
+                driverMarker.remove();
+            }
+            driverMarker = map.addMarker(new MarkerOptions()
+                    .position(locationList.get(locationList.size() - 1))
+                    .icon(bitmapDescriptorFromVector(this, R.drawable.directions_car)));
         }
     }
 
